@@ -1,11 +1,8 @@
 {
   "name": "kemet-social-web",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
-    "start": "vite",
-    "build": "npx --yes vite build",
-    "preview": "vite preview"
+    "build": "vite build"
   },
   "dependencies": {
     "react": "^18.2.0",
