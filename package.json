@@ -1,7 +1,6 @@
-Set-Content C:\Users\Maryam\Documents\GitHub\kemetc1\package.json '{
+{
   "name": "kemet-social-web",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
     "build": "vite build"
   },
@@ -11,4 +10,4 @@ Set-Content C:\Users\Maryam\Documents\GitHub\kemetc1\package.json '{
     "@vitejs/plugin-react": "^4.0.0",
     "vite": "^5.0.0"
   }
-}'
+}
