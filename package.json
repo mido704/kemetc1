@@ -1,0 +1,22 @@
+{
+  "name": "kemet-social-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kemet Social - Egypt Tourism Social Platform",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "python3 api.py",
+    "dev": "concurrently \"python3 api.py\" \"vite\""
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "concurrently": "^8.0.0",
+    "vite": "^5.0.0"
+  }
+}

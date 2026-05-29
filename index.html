@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="كيمت سوشيال — منصة المجتمع السياحي المصري" />
+  <title>KEMET Social | كيمت سوشيال</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔺</text></svg>" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000; color: #C9A84C; }
+    #root { min-height: 100vh; }
+    .splash {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      font-family: 'Cairo', sans-serif;
+    }
+    .splash-icon { font-size: 64px; animation: float 2s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .splash-text { color: #C9A84C; font-size: 14px; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="splash">
+      <div class="splash-icon">🔺</div>
+      <div class="splash-text">KEMET Social — جاري التحميل...</div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
