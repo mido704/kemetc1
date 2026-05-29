@@ -1,9 +1,14 @@
-"scripts": {
-  "build": "vite build"
-},
-"dependencies": {
-  "react": "^18.2.0",
-  "react-dom": "^18.2.0",
-  "@vitejs/plugin-react": "^4.0.0",
-  "vite": "^5.0.0"
-}
+Set-Content C:\Users\Maryam\Documents\GitHub\kemetc1\package.json '{
+  "name": "kemet-social-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^5.0.0"
+  }
+}'
