@@ -797,23 +797,6 @@ function StorePage({ lang, user, onToast }) {
 function ProfilePage({ user, lang, posts, onToast }) {
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
-  if (editMode) return (
-    <div className='modal-bg' onClick={e=>e.target===e.currentTarget&&setEditMode(false)}>
-      <div className='modal' style={{padding:24}}>
-        <div style={{fontWeight:700,color:'var(--g)',fontSize:16,marginBottom:16}}>{t('تعديل البروفايل','Edit Profile',lang)}</div>
-        <div style={{display:'flex',flexDirection:'column',gap:10}}>
-          <input className='inp' placeholder={t('الاسم','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
-          <input className='inp' placeholder={t('النيكنيم','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
-          <textarea className='inp' placeholder={t('نبذة عنك','Bio',lang)} value={editForm.bio} onChange={e=>setEditForm(f=>({...f,bio:e.target.value}))} rows={3} />
-          <div style={{display:'flex',gap:10,marginTop:6}}>
-            <button className='btn btn-o' onClick={()=>setEditMode(false)} style={{flex:1}}>{t('إلغاء','Cancel',lang)}</button>
-            <button className='btn btn-g' onClick={saveProfile} style={{flex:1}}>{t('حفظ','Save',lang)}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-  const myPosts = posts.filter(p=>p.user_id===user?.id);
   const saveProfile = async () => {
     const token = localStorage.getItem('kemet_token');
     await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(editForm) });
@@ -824,6 +807,22 @@ function ProfilePage({ user, lang, posts, onToast }) {
 
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'0 14px 14px' }}>
+      {editMode && (
+        <div className='modal-bg' onClick={e=>e.target===e.currentTarget&&setEditMode(false)}>
+          <div className='modal' style={{padding:24}}>
+            <div style={{fontWeight:700,color:'var(--g)',fontSize:16,marginBottom:16}}>{t('تعديل البروفايل','Edit Profile',lang)}</div>
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              <input className='inp' placeholder={t('الاسم','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
+              <input className='inp' placeholder={t('النيكنيم','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
+              <textarea className='inp' placeholder={t('نبذة عنك','Bio',lang)} value={editForm.bio} onChange={e=>setEditForm(f=>({...f,bio:e.target.value}))} rows={3} />
+              <div style={{display:'flex',gap:10,marginTop:6}}>
+                <button className='btn btn-o' onClick={()=>setEditMode(false)} style={{flex:1}}>{t('إلغاء','Cancel',lang)}</button>
+                <button className='btn btn-g' onClick={saveProfile} style={{flex:1}}>{t('حفظ','Save',lang)}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="pcover" style={{ marginBottom:0 }}><div className="hiero">𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div></div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:10 }}>
