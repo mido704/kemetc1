@@ -5,7 +5,7 @@ Run: python3 api.py
 Base URL: http://localhost:5000/api
 """
 import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'database'))
+sys.path.insert(0, os.path.dirname(__file__))
 
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
@@ -371,3 +371,4 @@ if __name__ == '__main__':
     print("\n🔺 Kemet Social API starting on http://localhost:5000")
     print("   Docs: GET /api/health\n")
     app.run(debug=False, host='0.0.0.0', port=5000)
+
