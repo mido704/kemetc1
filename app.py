@@ -15,7 +15,7 @@ from db import KemetDB, init_db, seed_data, get_conn
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-# ── DB per request ────────────────────────────────────────
+# â”€â”€ DB per request â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 def get_db():
     if 'db' not in g:
         g.db = KemetDB()
@@ -27,16 +27,16 @@ def close_db(exc):
     if db:
         db.close()
 
-# ── Auth decorator ────────────────────────────────────────
+# â”€â”€ Auth decorator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 def require_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization', '').replace('Bearer ', '').strip()
         if not token:
-            return jsonify({'ok': False, 'error': 'مطلوب تسجيل الدخول'}), 401
+            return jsonify({'ok': False, 'error': 'ظ…ط·ظ„ظˆط¨ طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„'}), 401
         user = get_db().validate_token(token)
         if not user:
-            return jsonify({'ok': False, 'error': 'جلسة منتهية الصلاحية'}), 401
+            return jsonify({'ok': False, 'error': 'ط¬ظ„ط³ط© ظ…ظ†طھظ‡ظٹط© ط§ظ„طµظ„ط§ط­ظٹط©'}), 401
         request.current_user = user
         return f(*args, **kwargs)
     return decorated
@@ -51,23 +51,23 @@ def ok(data=None, **kwargs):
 def err(msg, code=400):
     return jsonify({'ok': False, 'error': msg}), code
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # AUTH ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/auth/register', methods=['POST'])
 def register():
     b = request.get_json() or {}
     required = ['email', 'password', 'name', 'nickname']
     for field in required:
         if not b.get(field, '').strip():
-            return err(f'الحقل مطلوب: {field}')
+            return err(f'ط§ظ„ط­ظ‚ظ„ ظ…ط·ظ„ظˆط¨: {field}')
     if len(b['password']) < 6:
-        return err('كلمة المرور يجب أن تكون 6 أحرف على الأقل')
+        return err('ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ظٹط¬ط¨ ط£ظ† طھظƒظˆظ† 6 ط£ط­ط±ظپ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„')
     db = get_db()
     result = db.register(
         email=b['email'], password=b['password'],
         name=b['name'], nickname=b['nickname'],
-        avatar_emoji=b.get('avatar_emoji', '👑'),
+        avatar_emoji=b.get('avatar_emoji', 'ًں‘‘'),
         country=b.get('country', ''), phone=b.get('phone', '')
     )
     if not result['ok']:
@@ -80,7 +80,7 @@ def register():
 def login():
     b = request.get_json() or {}
     if not b.get('email') or not b.get('password'):
-        return err('البريد وكلمة المرور مطلوبان')
+        return err('ط§ظ„ط¨ط±ظٹط¯ ظˆظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ظ…ط·ظ„ظˆط¨ط§ظ†')
     result = get_db().login(b['email'], b['password'],
                             platform=b.get('platform', 'web'))
     if not result['ok']:
@@ -92,22 +92,22 @@ def login():
 def logout():
     token = request.headers.get('Authorization', '').replace('Bearer ', '')
     get_db().logout(token)
-    return ok({'message': 'تم تسجيل الخروج'})
+    return ok({'message': 'طھظ… طھط³ط¬ظٹظ„ ط§ظ„ط®ط±ظˆط¬'})
 
 @app.route('/api/auth/me', methods=['GET'])
 @require_auth
 def me():
     return ok(request.current_user)
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # USER ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/users/<user_id>', methods=['GET'])
 @require_auth
 def get_user(user_id):
     user = get_db().get_user(user_id)
     if not user:
-        return err('المستخدم غير موجود', 404)
+        return err('ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± ظ…ظˆط¬ظˆط¯', 404)
     return ok(user)
 
 @app.route('/api/users/profile', methods=['PUT'])
@@ -118,7 +118,7 @@ def update_profile():
     allowed = ['name', 'nickname', 'avatar_emoji', 'country', 'phone', 'bio']
     updates = {k: v for k, v in b.items() if k in allowed}
     if not updates:
-        return err('لا يوجد بيانات للتحديث')
+        return err('ظ„ط§ ظٹظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ ظ„ظ„طھط­ط¯ظٹط«')
     result = get_db().update_profile(uid, **updates)
     user = get_db().get_user(uid)
     return ok(user)
@@ -132,9 +132,9 @@ def follow_user(user_id):
         return err(result['error'])
     return ok(result)
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # POSTS ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/posts', methods=['GET'])
 @require_auth
 def get_feed():
@@ -148,9 +148,9 @@ def get_feed():
 def create_post():
     b = request.get_json() or {}
     if not b.get('content', '').strip():
-        return err('محتوى المنشور مطلوب')
+        return err('ظ…ط­طھظˆظ‰ ط§ظ„ظ…ظ†ط´ظˆط± ظ…ط·ظ„ظˆط¨')
     if len(b['content']) > 500:
-        return err('المنشور لا يتجاوز 500 حرف')
+        return err('ط§ظ„ظ…ظ†ط´ظˆط± ظ„ط§ ظٹطھط¬ط§ظˆط² 500 ط­ط±ظپ')
     uid = request.current_user['id']
     result = get_db().create_post(
         user_id=uid,
@@ -187,7 +187,7 @@ def get_comments(post_id):
 def add_comment(post_id):
     b = request.get_json() or {}
     if not b.get('content', '').strip():
-        return err('محتوى التعليق مطلوب')
+        return err('ظ…ط­طھظˆظ‰ ط§ظ„طھط¹ظ„ظٹظ‚ ظ…ط·ظ„ظˆط¨')
     uid = request.current_user['id']
     result = get_db().add_comment(
         uid, post_id, b['content'],
@@ -195,9 +195,9 @@ def add_comment(post_id):
     )
     return ok(result), 201
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # MESSAGES ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/messages/inbox', methods=['GET'])
 @require_auth
 def inbox():
@@ -217,14 +217,14 @@ def conversation(other_user_id):
 def send_message(receiver_id):
     b = request.get_json() or {}
     if not b.get('content', '').strip():
-        return err('محتوى الرسالة مطلوب')
+        return err('ظ…ط­طھظˆظ‰ ط§ظ„ط±ط³ط§ظ„ط© ظ…ط·ظ„ظˆط¨')
     uid = request.current_user['id']
     result = get_db().send_message(uid, receiver_id, b['content'])
     return ok(result), 201
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # NOTIFICATIONS ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/notifications', methods=['GET'])
 @require_auth
 def notifications():
@@ -237,11 +237,11 @@ def notifications():
 @require_auth
 def mark_read():
     get_db().mark_notifications_read(request.current_user['id'])
-    return ok({'message': 'تم تحديد الكل كمقروء'})
+    return ok({'message': 'طھظ… طھط­ط¯ظٹط¯ ط§ظ„ظƒظ„ ظƒظ…ظ‚ط±ظˆط،'})
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # STORE ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/store/categories', methods=['GET'])
 def get_categories():
     cats = get_db().get_categories()
@@ -258,16 +258,16 @@ def get_tours():
 def get_tour(tour_id):
     tour = get_db().get_tour(tour_id)
     if not tour:
-        return err('الرحلة غير موجودة', 404)
+        return err('ط§ظ„ط±ط­ظ„ط© ط؛ظٹط± ظ…ظˆط¬ظˆط¯ط©', 404)
     return ok(tour)
 
 @app.route('/api/store/nicknames', methods=['GET'])
 def get_nicknames():
     return ok(get_db().get_pharaoh_nicknames())
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # BOOKINGS ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/bookings', methods=['GET'])
 @require_auth
 def my_bookings():
@@ -279,7 +279,7 @@ def my_bookings():
 def create_booking():
     b = request.get_json() or {}
     if not b.get('tour_id'):
-        return err('معرّف الرحلة مطلوب')
+        return err('ظ…ط¹ط±ظ‘ظپ ط§ظ„ط±ط­ظ„ط© ظ…ط·ظ„ظˆط¨')
     uid = request.current_user['id']
     result = get_db().create_booking(
         user_id=uid,
@@ -300,7 +300,7 @@ def create_booking():
 def pay_booking(booking_id):
     b = request.get_json() or {}
     if not b.get('payment_method'):
-        return err('طريقة الدفع مطلوبة')
+        return err('ط·ط±ظٹظ‚ط© ط§ظ„ط¯ظپط¹ ظ…ط·ظ„ظˆط¨ط©')
     uid = request.current_user['id']
     result = get_db().confirm_payment(
         booking_id=booking_id,
@@ -312,16 +312,16 @@ def pay_booking(booking_id):
         return err(result['error'])
     return ok(result)
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # REVIEWS ROUTES
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/reviews/<tour_id>', methods=['POST'])
 @require_auth
 def add_review(tour_id):
     b = request.get_json() or {}
     rating = int(b.get('rating', 0))
     if rating not in range(1, 6):
-        return err('التقييم يجب أن يكون بين 1 و5')
+        return err('ط§ظ„طھظ‚ظٹظٹظ… ظٹط¬ط¨ ط£ظ† ظٹظƒظˆظ† ط¨ظٹظ† 1 ظˆ5')
     uid = request.current_user['id']
     result = get_db().add_review(
         user_id=uid, tour_id=tour_id,
@@ -332,43 +332,47 @@ def add_review(tour_id):
         return err(result['error'])
     return ok(result), 201
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # STATS (admin)
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
     return ok(get_db().get_stats())
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # HEALTH CHECK
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 @app.route('/api/health', methods=['GET'])
 def health():
     return ok({'status': 'online', 'service': 'Kemet Social API', 'version': '1.0.0'})
 
 @app.errorhandler(404)
 def not_found(e):
-    return err('المسار غير موجود', 404)
+    return err('ط§ظ„ظ…ط³ط§ط± ط؛ظٹط± ظ…ظˆط¬ظˆط¯', 404)
 
 @app.errorhandler(405)
 def method_not_allowed(e):
-    return err('الطريقة غير مسموح بها', 405)
+    return err('ط§ظ„ط·ط±ظٹظ‚ط© ط؛ظٹط± ظ…ط³ظ…ظˆط­ ط¨ظ‡ط§', 405)
 
 @app.errorhandler(500)
 def server_error(e):
-    return err('خطأ في الخادم', 500)
+    return err('ط®ط·ط£ ظپظٹ ط§ظ„ط®ط§ط¯ظ…', 500)
 
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 # INIT & RUN
-# ══════════════════════════════════════════════════════════
+# â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
 def init_app():
     conn = init_db()
     seed_data(conn)
     conn.close()
 
+with app.app_context():
+    init_db()
+    seed_data()
+
 if __name__ == '__main__':
     init_app()
-    print("\n🔺 Kemet Social API starting on http://localhost:5000")
+    print("\nًں”؛ Kemet Social API starting on http://localhost:5000")
     print("   Docs: GET /api/health\n")
     app.run(debug=False, host='0.0.0.0', port=5000)
 
