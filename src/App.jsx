@@ -164,7 +164,7 @@ function Avatar({ emoji = '👑', size = 44, onClick }) {
 function GoldDivider() { return <div className="gdiv" />; }
 
 // ── LANDING PAGE ──────────────────────────────────────────
-function Landing({ onLogin, onRegister, lang, setLang }) { //REPLACE
+function Landing({ onLogin, onRegister, lang, setLang }) {
   return (
     <div style={{ minHeight:'100vh', background:'radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.07) 0%,transparent 60%),#000', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
       <div style={{ position:'absolute', top:0, left:0, right:0, background:'linear-gradient(90deg,var(--gd),rgba(201,168,76,.3),var(--gd))', padding:'5px 0', textAlign:'center', fontSize:11, color:'var(--gl)', letterSpacing:1 }}>
