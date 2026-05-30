@@ -9,7 +9,7 @@ import hashlib
 import os
 from datetime import datetime, timedelta
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "kemet.db")
+DB_PATH = os.environ.get("DB_PATH", "/tmp/kemet.db")
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   name          TEXT NOT NULL,
   nickname      TEXT NOT NULL,
-  avatar_emoji  TEXT DEFAULT '👑',
+  avatar_emoji  TEXT DEFAULT 'ًں‘‘',
   country       TEXT DEFAULT '',
   phone         TEXT DEFAULT '',
   bio           TEXT DEFAULT '',
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS categories (
   id         TEXT PRIMARY KEY,
   name_ar    TEXT NOT NULL,
   name_en    TEXT NOT NULL,
-  icon       TEXT DEFAULT '🏛️',
+  icon       TEXT DEFAULT 'ًںڈ›ï¸ڈ',
   sort_order INTEGER DEFAULT 0,
   is_active  INTEGER DEFAULT 1
 );
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS tours (
   currency       TEXT DEFAULT 'USD',
   duration_days  INTEGER,
   max_guests     INTEGER DEFAULT 20,
-  image_emoji    TEXT DEFAULT '🏛️',
+  image_emoji    TEXT DEFAULT 'ًںڈ›ï¸ڈ',
   badge_ar       TEXT DEFAULT '',
   badge_en       TEXT DEFAULT '',
   rating         REAL DEFAULT 0.0,
@@ -277,18 +277,18 @@ def seed_data(conn):
 
     # Pharaoh nicknames
     pharaohs = [
-        ('رمسيس العظيم',  'Ramesses the Great', '👑', 'الأسرة التاسعة عشرة',  1),
-        ('توت عنخ آمون',  'Tutankhamun',         '⚱️', 'الأسرة الثامنة عشرة', 2),
-        ('حتشبسوت',       'Hatshepsut',           '🌺', 'الأسرة الثامنة عشرة', 3),
-        ('أخناتون',       'Akhenaten',            '☀️', 'الأسرة الثامنة عشرة', 4),
-        ('نفرتيتي',       'Nefertiti',            '💎', 'الأسرة الثامنة عشرة', 5),
-        ('تحتمس الثالث',  'Thutmose III',         '⚔️', 'الأسرة الثامنة عشرة', 6),
-        ('سنفرو',         'Sneferu',              '🔺', 'الأسرة الرابعة',       7),
-        ('خوفو',          'Khufu',                '🏛️', 'الأسرة الرابعة',      8),
-        ('نفرتاري',       'Nefertari',            '🌙', 'الأسرة التاسعة عشرة', 9),
-        ('كليوباترا',     'Cleopatra',            '🐍', 'الأسرة البطلمية',     10),
-        ('سيتي الأول',    'Seti I',               '🦅', 'الأسرة التاسعة عشرة',11),
-        ('مرنبتاح',       'Merneptah',            '🌊', 'الأسرة التاسعة عشرة',12),
+        ('ط±ظ…ط³ظٹط³ ط§ظ„ط¹ط¸ظٹظ…',  'Ramesses the Great', 'ًں‘‘', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©',  1),
+        ('طھظˆطھ ط¹ظ†ط® ط¢ظ…ظˆظ†',  'Tutankhamun',         'âڑ±ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 2),
+        ('ط­طھط´ط¨ط³ظˆطھ',       'Hatshepsut',           'ًںŒ؛', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 3),
+        ('ط£ط®ظ†ط§طھظˆظ†',       'Akhenaten',            'âک€ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 4),
+        ('ظ†ظپط±طھظٹطھظٹ',       'Nefertiti',            'ًں’ژ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 5),
+        ('طھط­طھظ…ط³ ط§ظ„ط«ط§ظ„ط«',  'Thutmose III',         'âڑ”ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 6),
+        ('ط³ظ†ظپط±ظˆ',         'Sneferu',              'ًں”؛', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط±ط§ط¨ط¹ط©',       7),
+        ('ط®ظˆظپظˆ',          'Khufu',                'ًںڈ›ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط±ط§ط¨ط¹ط©',      8),
+        ('ظ†ظپط±طھط§ط±ظٹ',       'Nefertari',            'ًںŒ™', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©', 9),
+        ('ظƒظ„ظٹظˆط¨ط§طھط±ط§',     'Cleopatra',            'ًںگچ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط¨ط·ظ„ظ…ظٹط©',     10),
+        ('ط³ظٹطھظٹ ط§ظ„ط£ظˆظ„',    'Seti I',               'ًں¦…', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©',11),
+        ('ظ…ط±ظ†ط¨طھط§ط­',       'Merneptah',            'ًںŒٹ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©',12),
     ]
     cur.executemany(
         "INSERT OR IGNORE INTO pharaoh_nicknames (name_ar,name_en,emoji,dynasty,sort_order) VALUES (?,?,?,?,?)",
@@ -297,11 +297,11 @@ def seed_data(conn):
 
     # Categories
     categories = [
-        ('cat_tours',   'رحلات سياحية',  'Tours',             '🏛️', 1),
-        ('cat_nile',    'كروز النيل',    'Nile Cruises',       '🛳️', 2),
-        ('cat_medical', 'سياحة علاجية', 'Medical Tourism',    '🏥', 3),
-        ('cat_consult', 'استشارات',      'Consulting',         '💬', 4),
-        ('cat_desert',  'رحلات صحراوية','Desert Adventures',  '🌅', 5),
+        ('cat_tours',   'ط±ط­ظ„ط§طھ ط³ظٹط§ط­ظٹط©',  'Tours',             'ًںڈ›ï¸ڈ', 1),
+        ('cat_nile',    'ظƒط±ظˆط² ط§ظ„ظ†ظٹظ„',    'Nile Cruises',       'ًں›³ï¸ڈ', 2),
+        ('cat_medical', 'ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط©', 'Medical Tourism',    'ًںڈ¥', 3),
+        ('cat_consult', 'ط§ط³طھط´ط§ط±ط§طھ',      'Consulting',         'ًں’¬', 4),
+        ('cat_desert',  'ط±ط­ظ„ط§طھ طµط­ط±ط§ظˆظٹط©','Desert Adventures',  'ًںŒ…', 5),
     ]
     cur.executemany(
         "INSERT OR IGNORE INTO categories (id,name_ar,name_en,icon,sort_order) VALUES (?,?,?,?,?)",
@@ -310,41 +310,41 @@ def seed_data(conn):
 
     # Tours
     tours = [
-        ('tour_luxor',   'cat_tours',   'رحلة الأقصر والأسوان الملكية', 'Royal Luxor & Aswan Tour',
-         'اكتشف روعة المعابد والمقابر الملكية في رحلة لا تُنسى على ضفاف النيل',
+        ('tour_luxor',   'cat_tours',   'ط±ط­ظ„ط© ط§ظ„ط£ظ‚طµط± ظˆط§ظ„ط£ط³ظˆط§ظ† ط§ظ„ظ…ظ„ظƒظٹط©', 'Royal Luxor & Aswan Tour',
+         'ط§ظƒطھط´ظپ ط±ظˆط¹ط© ط§ظ„ظ…ط¹ط§ط¨ط¯ ظˆط§ظ„ظ…ظ‚ط§ط¨ط± ط§ظ„ظ…ظ„ظƒظٹط© ظپظٹ ط±ط­ظ„ط© ظ„ط§ طھظڈظ†ط³ظ‰ ط¹ظ„ظ‰ ط¶ظپط§ظپ ط§ظ„ظ†ظٹظ„',
          'Discover the grandeur of temples and royal tombs in an unforgettable Nile journey',
-         1200.0, 7, '🏛️', 'الأكثر مبيعاً', 'Best Seller', 4.9, 128,
-         '["فندق 5 نجوم","جولات مع مرشد","وجبات","نقل"]',
+         1200.0, 7, 'ًںڈ›ï¸ڈ', 'ط§ظ„ط£ظƒط«ط± ظ…ط¨ظٹط¹ط§ظ‹', 'Best Seller', 4.9, 128,
+         '["ظپظ†ط¯ظ‚ 5 ظ†ط¬ظˆظ…","ط¬ظˆظ„ط§طھ ظ…ط¹ ظ…ط±ط´ط¯","ظˆط¬ط¨ط§طھ","ظ†ظ‚ظ„"]',
          '["5-Star Hotel","Guided Tours","Meals","Transport"]', 1),
-        ('tour_pyramids','cat_tours',   'باقة الأهرامات والقاهرة الخديوية', 'Pyramids & Khedival Cairo Package',
-         'رحلة شاملة لأعجوبة العالم القديمة وعاصمة الألف مئذنة',
+        ('tour_pyramids','cat_tours',   'ط¨ط§ظ‚ط© ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ ظˆط§ظ„ظ‚ط§ظ‡ط±ط© ط§ظ„ط®ط¯ظٹظˆظٹط©', 'Pyramids & Khedival Cairo Package',
+         'ط±ط­ظ„ط© ط´ط§ظ…ظ„ط© ظ„ط£ط¹ط¬ظˆط¨ط© ط§ظ„ط¹ط§ظ„ظ… ط§ظ„ظ‚ط¯ظٹظ…ط© ظˆط¹ط§طµظ…ط© ط§ظ„ط£ظ„ظپ ظ…ط¦ط°ظ†ط©',
          'A comprehensive trip to the wonder of the ancient world and Cairo',
-         850.0, 5, '🔺', 'عرض محدود', 'Limited Offer', 4.8, 95,
-         '["فندق 5 نجوم","المتحف المصري","أبو الهول","جيزة"]',
+         850.0, 5, 'ًں”؛', 'ط¹ط±ط¶ ظ…ط­ط¯ظˆط¯', 'Limited Offer', 4.8, 95,
+         '["ظپظ†ط¯ظ‚ 5 ظ†ط¬ظˆظ…","ط§ظ„ظ…طھط­ظپ ط§ظ„ظ…طµط±ظٹ","ط£ط¨ظˆ ط§ظ„ظ‡ظˆظ„","ط¬ظٹط²ط©"]',
          '["5-Star Hotel","Egyptian Museum","Sphinx","Giza"]', 1),
-        ('tour_nile',    'cat_nile',    'جولة النيل الفاخرة على كروز', 'Luxury Nile Cruise Tour',
-         'رحلة بحرية فاخرة على النيل من الأقصر حتى أسوان مع زيارة أفضل المعالم',
+        ('tour_nile',    'cat_nile',    'ط¬ظˆظ„ط© ط§ظ„ظ†ظٹظ„ ط§ظ„ظپط§ط®ط±ط© ط¹ظ„ظ‰ ظƒط±ظˆط²', 'Luxury Nile Cruise Tour',
+         'ط±ط­ظ„ط© ط¨ط­ط±ظٹط© ظپط§ط®ط±ط© ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„ ظ…ظ† ط§ظ„ط£ظ‚طµط± ط­طھظ‰ ط£ط³ظˆط§ظ† ظ…ط¹ ط²ظٹط§ط±ط© ط£ظپط¶ظ„ ط§ظ„ظ…ط¹ط§ظ„ظ…',
          'A luxurious Nile cruise from Luxor to Aswan with visits to the finest landmarks',
-         1800.0, 10, '🛳️', 'فاخر', 'Luxury', 5.0, 64,
-         '["كروز 5 نجوم","جميع الوجبات","مرشد خاص","نقل VIP"]',
+         1800.0, 10, 'ًں›³ï¸ڈ', 'ظپط§ط®ط±', 'Luxury', 5.0, 64,
+         '["ظƒط±ظˆط² 5 ظ†ط¬ظˆظ…","ط¬ظ…ظٹط¹ ط§ظ„ظˆط¬ط¨ط§طھ","ظ…ط±ط´ط¯ ط®ط§طµ","ظ†ظ‚ظ„ VIP"]',
          '["5-Star Cruise","All Meals","Private Guide","VIP Transfers"]', 1),
-        ('tour_consult', 'cat_consult', 'استشارة سياحية شخصية', 'Personal Tourism Consultation',
-         'احصل على استشارة سياحية مخصصة من خبراء مصريين معتمدين لتخطيط رحلتك المثالية',
+        ('tour_consult', 'cat_consult', 'ط§ط³طھط´ط§ط±ط© ط³ظٹط§ط­ظٹط© ط´ط®طµظٹط©', 'Personal Tourism Consultation',
+         'ط§ط­طµظ„ ط¹ظ„ظ‰ ط§ط³طھط´ط§ط±ط© ط³ظٹط§ط­ظٹط© ظ…ط®طµطµط© ظ…ظ† ط®ط¨ط±ط§ط، ظ…طµط±ظٹظٹظ† ظ…ط¹طھظ…ط¯ظٹظ† ظ„طھط®ط·ظٹط· ط±ط­ظ„طھظƒ ط§ظ„ظ…ط«ط§ظ„ظٹط©',
          'Get a personalized tourism consultation from certified Egyptian experts',
-         150.0, None, '💬', 'خدمة', 'Service', 4.9, 210,
-         '["جلسة ساعتين","خطة مخصصة","دعم واتساب","توصيات"]',
+         150.0, None, 'ًں’¬', 'ط®ط¯ظ…ط©', 'Service', 4.9, 210,
+         '["ط¬ظ„ط³ط© ط³ط§ط¹طھظٹظ†","ط®ط·ط© ظ…ط®طµطµط©","ط¯ط¹ظ… ظˆط§طھط³ط§ط¨","طھظˆطµظٹط§طھ"]',
          '["2-Hour Session","Custom Plan","WhatsApp Support","Recommendations"]', 0),
-        ('tour_dental',  'cat_medical', 'باقة سياحة علاجية - الأسنان', 'Medical Tourism - Dental Package',
-         'سياحة علاجية متكاملة بأسعار منافسة مع أفضل الأطباء المصريين',
+        ('tour_dental',  'cat_medical', 'ط¨ط§ظ‚ط© ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط© - ط§ظ„ط£ط³ظ†ط§ظ†', 'Medical Tourism - Dental Package',
+         'ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط© ظ…طھظƒط§ظ…ظ„ط© ط¨ط£ط³ط¹ط§ط± ظ…ظ†ط§ظپط³ط© ظ…ط¹ ط£ظپط¶ظ„ ط§ظ„ط£ط·ط¨ط§ط، ط§ظ„ظ…طµط±ظٹظٹظ†',
          'Comprehensive medical tourism at competitive prices with the best Egyptian doctors',
-         600.0, 5, '🦷', 'طبي', 'Medical', 4.7, 88,
-         '["فحص شامل","علاج متكامل","إقامة","نقل طبي"]',
+         600.0, 5, 'ًں¦·', 'ط·ط¨ظٹ', 'Medical', 4.7, 88,
+         '["ظپط­طµ ط´ط§ظ…ظ„","ط¹ظ„ط§ط¬ ظ…طھظƒط§ظ…ظ„","ط¥ظ‚ط§ظ…ط©","ظ†ظ‚ظ„ ط·ط¨ظٹ"]',
          '["Full Checkup","Complete Treatment","Accommodation","Medical Transport"]', 0),
-        ('tour_desert',  'cat_desert',  'تجربة الواحات والصحراء الغربية', 'Oasis & Western Desert Experience',
-         'مغامرة لا تُنسى في أعماق الصحراء الغربية بين الواحات والكثبان الرملية',
+        ('tour_desert',  'cat_desert',  'طھط¬ط±ط¨ط© ط§ظ„ظˆط§ط­ط§طھ ظˆط§ظ„طµط­ط±ط§ط، ط§ظ„ط؛ط±ط¨ظٹط©', 'Oasis & Western Desert Experience',
+         'ظ…ط؛ط§ظ…ط±ط© ظ„ط§ طھظڈظ†ط³ظ‰ ظپظٹ ط£ط¹ظ…ط§ظ‚ ط§ظ„طµط­ط±ط§ط، ط§ظ„ط؛ط±ط¨ظٹط© ط¨ظٹظ† ط§ظ„ظˆط§ط­ط§طھ ظˆط§ظ„ظƒط«ط¨ط§ظ† ط§ظ„ط±ظ…ظ„ظٹط©',
          'An unforgettable adventure deep in the Western Desert among oases and sand dunes',
-         950.0, 6, '🌅', 'مغامرة', 'Adventure', 4.8, 52,
-         '["خيام فاخرة","جيبات صحراوية","رصد النجوم","طعام بدوي"]',
+         950.0, 6, 'ًںŒ…', 'ظ…ط؛ط§ظ…ط±ط©', 'Adventure', 4.8, 52,
+         '["ط®ظٹط§ظ… ظپط§ط®ط±ط©","ط¬ظٹط¨ط§طھ طµط­ط±ط§ظˆظٹط©","ط±طµط¯ ط§ظ„ظ†ط¬ظˆظ…","ط·ط¹ط§ظ… ط¨ط¯ظˆظٹ"]',
          '["Luxury Camping","Desert Jeeps","Stargazing","Bedouin Food"]', 0),
     ]
     for t in tours:
@@ -358,9 +358,9 @@ def seed_data(conn):
 
     # Demo users
     demo_users = [
-        ('user_ramesses', 'ramesses@kemet.com',  hash_password('Demo1234!'), 'أحمد محمود', 'رمسيس العظيم', '👑', 'EG', 1, 'gold'),
-        ('user_nefertiti','nefertiti@kemet.com', hash_password('Demo1234!'), 'سارة علي',   'نفرتيتي',      '💎', 'SA', 1, 'platinum'),
-        ('user_thutmose', 'thutmose@kemet.com',  hash_password('Demo1234!'), 'خالد أحمد',  'تحتمس الثالث', '⚔️', 'AE', 0, 'classic'),
+        ('user_ramesses', 'ramesses@kemet.com',  hash_password('Demo1234!'), 'ط£ط­ظ…ط¯ ظ…ط­ظ…ظˆط¯', 'ط±ظ…ط³ظٹط³ ط§ظ„ط¹ط¸ظٹظ…', 'ًں‘‘', 'EG', 1, 'gold'),
+        ('user_nefertiti','nefertiti@kemet.com', hash_password('Demo1234!'), 'ط³ط§ط±ط© ط¹ظ„ظٹ',   'ظ†ظپط±طھظٹطھظٹ',      'ًں’ژ', 'SA', 1, 'platinum'),
+        ('user_thutmose', 'thutmose@kemet.com',  hash_password('Demo1234!'), 'ط®ط§ظ„ط¯ ط£ط­ظ…ط¯',  'طھط­طھظ…ط³ ط§ظ„ط«ط§ظ„ط«', 'âڑ”ï¸ڈ', 'AE', 0, 'classic'),
     ]
     for u in demo_users:
         cur.execute("""
@@ -371,17 +371,17 @@ def seed_data(conn):
     # Demo posts
     demo_posts = [
         ('post_001', 'user_ramesses',
-         'زيارة معبد الكرنك كانت تجربة روحانية لا تُوصف 🏛️ الحجارة تحكي قصص آلاف السنين! من زار الأقصر هذا الشهر؟',
-         'Visiting Karnak Temple was an indescribable spiritual experience 🏛️',
-         '🏛️', '["#الأقصر","#معبد_الكرنك","#مصر"]', 342, 28, 15),
+         'ط²ظٹط§ط±ط© ظ…ط¹ط¨ط¯ ط§ظ„ظƒط±ظ†ظƒ ظƒط§ظ†طھ طھط¬ط±ط¨ط© ط±ظˆط­ط§ظ†ظٹط© ظ„ط§ طھظڈظˆطµظپ ًںڈ›ï¸ڈ ط§ظ„ط­ط¬ط§ط±ط© طھط­ظƒظٹ ظ‚طµطµ ط¢ظ„ط§ظپ ط§ظ„ط³ظ†ظٹظ†! ظ…ظ† ط²ط§ط± ط§ظ„ط£ظ‚طµط± ظ‡ط°ط§ ط§ظ„ط´ظ‡ط±طں',
+         'Visiting Karnak Temple was an indescribable spiritual experience ًںڈ›ï¸ڈ',
+         'ًںڈ›ï¸ڈ', '["#ط§ظ„ط£ظ‚طµط±","#ظ…ط¹ط¨ط¯_ط§ظ„ظƒط±ظ†ظƒ","#ظ…طµط±"]', 342, 28, 15),
         ('post_002', 'user_nefertiti',
-         'الغروب على النيل في أسوان شيء يسرق القلب ❤️ لا يمكن وصفه بالكلمات. مصر بلد السحر والجمال الحقيقي 🌊',
-         'Sunset on the Nile in Aswan is something that steals your heart ❤️',
-         '🌅', '["#أسوان","#النيل","#Egypt"]', 891, 65, 43),
+         'ط§ظ„ط؛ط±ظˆط¨ ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„ ظپظٹ ط£ط³ظˆط§ظ† ط´ظٹط، ظٹط³ط±ظ‚ ط§ظ„ظ‚ظ„ط¨ â‌¤ï¸ڈ ظ„ط§ ظٹظ…ظƒظ† ظˆطµظپظ‡ ط¨ط§ظ„ظƒظ„ظ…ط§طھ. ظ…طµط± ط¨ظ„ط¯ ط§ظ„ط³ط­ط± ظˆط§ظ„ط¬ظ…ط§ظ„ ط§ظ„ط­ظ‚ظٹظ‚ظٹ ًںŒٹ',
+         'Sunset on the Nile in Aswan is something that steals your heart â‌¤ï¸ڈ',
+         'ًںŒ…', '["#ط£ط³ظˆط§ظ†","#ط§ظ„ظ†ظٹظ„","#Egypt"]', 891, 65, 43),
         ('post_003', 'user_thutmose',
-         'انتهيت من رحلة الأهرامات مع فريق كيمت كونسيرج 🔺 الخدمة كانت 10/10 والمرشد كان موسوعة حية. أنصح الجميع!',
-         'Just finished the Pyramids trip with Kemet Concierge 🔺 Service was 10/10!',
-         '🔺', '["#الأهرامات","#كيمت","#رحلات"]', 224, 18, 9),
+         'ط§ظ†طھظ‡ظٹطھ ظ…ظ† ط±ط­ظ„ط© ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ ظ…ط¹ ظپط±ظٹظ‚ ظƒظٹظ…طھ ظƒظˆظ†ط³ظٹط±ط¬ ًں”؛ ط§ظ„ط®ط¯ظ…ط© ظƒط§ظ†طھ 10/10 ظˆط§ظ„ظ…ط±ط´ط¯ ظƒط§ظ† ظ…ظˆط³ظˆط¹ط© ط­ظٹط©. ط£ظ†طµط­ ط§ظ„ط¬ظ…ظٹط¹!',
+         'Just finished the Pyramids trip with Kemet Concierge ًں”؛ Service was 10/10!',
+         'ًں”؛', '["#ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ","#ظƒظٹظ…طھ","#ط±ط­ظ„ط§طھ"]', 224, 18, 9),
     ]
     for p in demo_posts:
         cur.execute("""
@@ -411,7 +411,7 @@ class KemetDB:
         return [dict(r) for r in rows]
 
     # --- AUTH ---
-    def register(self, email, password, name, nickname, avatar_emoji='👑', country='', phone=''):
+    def register(self, email, password, name, nickname, avatar_emoji='ًں‘‘', country='', phone=''):
         uid = generate_id()
         ph = hash_password(password)
         try:
@@ -422,14 +422,14 @@ class KemetDB:
             self.conn.commit()
             return {'ok': True, 'user_id': uid}
         except sqlite3.IntegrityError:
-            return {'ok': False, 'error': 'البريد الإلكتروني مستخدم بالفعل'}
+            return {'ok': False, 'error': 'ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ظ…ط³طھط®ط¯ظ… ط¨ط§ظ„ظپط¹ظ„'}
 
     def login(self, email, password, platform='web'):
         row = self.conn.execute(
             "SELECT * FROM users WHERE email=? AND is_active=1", (email.lower().strip(),)
         ).fetchone()
         if not row or row['password_hash'] != hash_password(password):
-            return {'ok': False, 'error': 'بيانات الدخول غير صحيحة'}
+            return {'ok': False, 'error': 'ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¯ط®ظˆظ„ ط؛ظٹط± طµط­ظٹط­ط©'}
         token = generate_id()
         sid = generate_id()
         expires = (datetime.now() + timedelta(days=30)).isoformat()
@@ -471,7 +471,7 @@ class KemetDB:
         allowed = ['name','nickname','avatar_emoji','country','phone','bio']
         updates = {k: v for k, v in kwargs.items() if k in allowed}
         if not updates:
-            return {'ok': False, 'error': 'لا يوجد بيانات للتحديث'}
+            return {'ok': False, 'error': 'ظ„ط§ ظٹظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ ظ„ظ„طھط­ط¯ظٹط«'}
         sets = ', '.join(f"{k}=?" for k in updates)
         vals = list(updates.values()) + [user_id]
         self.conn.execute(f"UPDATE users SET {sets} WHERE id=?", vals)
@@ -549,7 +549,7 @@ class KemetDB:
     # --- FOLLOWS ---
     def toggle_follow(self, follower_id, following_id):
         if follower_id == following_id:
-            return {'ok': False, 'error': 'لا يمكنك متابعة نفسك'}
+            return {'ok': False, 'error': 'ظ„ط§ ظٹظ…ظƒظ†ظƒ ظ…طھط§ط¨ط¹ط© ظ†ظپط³ظƒ'}
         existing = self.conn.execute(
             "SELECT id FROM follows WHERE follower_id=? AND following_id=?",
             (follower_id, following_id)
@@ -661,7 +661,7 @@ class KemetDB:
                        payment_method='', contact_phone='', contact_email='', special_requests=''):
         tour = self.get_tour(tour_id)
         if not tour:
-            return {'ok': False, 'error': 'الرحلة غير موجودة'}
+            return {'ok': False, 'error': 'ط§ظ„ط±ط­ظ„ط© ط؛ظٹط± ظ…ظˆط¬ظˆط¯ط©'}
         total = tour['price'] * guests_count
         bid = generate_id()
         self.conn.execute("""
@@ -690,7 +690,7 @@ class KemetDB:
             "SELECT * FROM bookings WHERE id=? AND user_id=?", (booking_id, user_id)
         ).fetchone()
         if not booking:
-            return {'ok': False, 'error': 'الحجز غير موجود'}
+            return {'ok': False, 'error': 'ط§ظ„ط­ط¬ط² ط؛ظٹط± ظ…ظˆط¬ظˆط¯'}
         pid = generate_id()
         self.conn.execute(
             "INSERT INTO payments (id,booking_id,user_id,amount,currency,method,status,gateway_ref) VALUES (?,?,?,?,?,?,?,?)",
@@ -726,7 +726,7 @@ class KemetDB:
                 self.conn.commit()
             return {'ok': True, 'review_id': rid}
         except sqlite3.IntegrityError:
-            return {'ok': False, 'error': 'لقد قيّمت هذه الرحلة من قبل'}
+            return {'ok': False, 'error': 'ظ„ظ‚ط¯ ظ‚ظٹظ‘ظ…طھ ظ‡ط°ظ‡ ط§ظ„ط±ط­ظ„ط© ظ…ظ† ظ‚ط¨ظ„'}
 
     # --- PHARAOH NICKNAMES ---
     def get_pharaoh_nicknames(self):
@@ -758,21 +758,21 @@ def run_tests():
     conn = init_db()
     seed_data(conn)
     conn.close()
-    print("✅ Schema created and seeded")
+    print("âœ… Schema created and seeded")
 
     db = KemetDB()
     errors = []
 
     def check(label, result, expect_ok=True):
         ok = result.get('ok', False) if isinstance(result, dict) else bool(result)
-        status = "✅" if ok == expect_ok else "❌"
+        status = "âœ…" if ok == expect_ok else "â‌Œ"
         if ok != expect_ok:
             errors.append(f"{label}: {result}")
         print(f"  {status} {label}")
         return result
 
     print("\n--- AUTH TESTS ---")
-    r = check("Register new user", db.register('test@kemet.com','Pass1234!','محمد','خوفو','🏛️','EG','0100'))
+    r = check("Register new user", db.register('test@kemet.com','Pass1234!','ظ…ط­ظ…ط¯','ط®ظˆظپظˆ','ًںڈ›ï¸ڈ','EG','0100'))
     uid = r.get('user_id')
 
     check("Register duplicate email", db.register('test@kemet.com','x','y','z'), expect_ok=False)
@@ -783,7 +783,7 @@ def run_tests():
     check("Login wrong password", db.login('test@kemet.com','wrong'), expect_ok=False)
 
     user = db.validate_token(token)
-    print(f"  {'✅' if user else '❌'} Token validation: {user['nickname'] if user else 'FAILED'}")
+    print(f"  {'âœ…' if user else 'â‌Œ'} Token validation: {user['nickname'] if user else 'FAILED'}")
 
     check("Login demo user", db.login('ramesses@kemet.com','Demo1234!'))
     demo_login = db.login('ramesses@kemet.com','Demo1234!')
@@ -791,27 +791,27 @@ def run_tests():
     demo_token = demo_login.get('token')
 
     print("\n--- PROFILE TESTS ---")
-    check("Update profile", db.update_profile(uid, bio='مسافر وعاشق لحضارة كيمت'))
+    check("Update profile", db.update_profile(uid, bio='ظ…ط³ط§ظپط± ظˆط¹ط§ط´ظ‚ ظ„ط­ط¶ط§ط±ط© ظƒظٹظ…طھ'))
     u = db.get_user(uid)
-    print(f"  {'✅' if u and u.get('bio') else '❌'} Profile bio saved: {u.get('bio','') if u else 'N/A'}")
+    print(f"  {'âœ…' if u and u.get('bio') else 'â‌Œ'} Profile bio saved: {u.get('bio','') if u else 'N/A'}")
 
     print("\n--- POSTS TESTS ---")
-    r = check("Create post", db.create_post(uid, 'أول تغريدة في كيمت سوشيال! 🔺', 'My first Kemet post!', '🔺', ['#كيمت','#مصر']))
+    r = check("Create post", db.create_post(uid, 'ط£ظˆظ„ طھط؛ط±ظٹط¯ط© ظپظٹ ظƒظٹظ…طھ ط³ظˆط´ظٹط§ظ„! ًں”؛', 'My first Kemet post!', 'ًں”؛', ['#ظƒظٹظ…طھ','#ظ…طµط±']))
     pid = r.get('post_id')
 
     feed = db.get_feed(uid)
-    print(f"  {'✅' if len(feed) > 0 else '❌'} Feed loaded: {len(feed)} posts")
+    print(f"  {'âœ…' if len(feed) > 0 else 'â‌Œ'} Feed loaded: {len(feed)} posts")
 
     print("\n--- LIKES TESTS ---")
     r = check("Like post", db.toggle_like(uid, pid))
-    print(f"  {'✅' if r.get('liked') else '❌'} Post liked: {r.get('liked')}")
+    print(f"  {'âœ…' if r.get('liked') else 'â‌Œ'} Post liked: {r.get('liked')}")
     r2 = check("Unlike post", db.toggle_like(uid, pid))
-    print(f"  {'✅' if not r2.get('liked') else '❌'} Post unliked: {not r2.get('liked')}")
+    print(f"  {'âœ…' if not r2.get('liked') else 'â‌Œ'} Post unliked: {not r2.get('liked')}")
 
     print("\n--- COMMENTS TESTS ---")
-    r = check("Add comment", db.add_comment(uid, pid, 'تعليق رائع على المنشور!'))
+    r = check("Add comment", db.add_comment(uid, pid, 'طھط¹ظ„ظٹظ‚ ط±ط§ط¦ط¹ ط¹ظ„ظ‰ ط§ظ„ظ…ظ†ط´ظˆط±!'))
     comments = db.get_comments(pid)
-    print(f"  {'✅' if len(comments) > 0 else '❌'} Comments loaded: {len(comments)}")
+    print(f"  {'âœ…' if len(comments) > 0 else 'â‌Œ'} Comments loaded: {len(comments)}")
 
     print("\n--- FOLLOWS TESTS ---")
     check("Follow user", db.toggle_follow(uid, demo_uid))
@@ -819,53 +819,53 @@ def run_tests():
     check("Follow self (should fail)", db.toggle_follow(uid, uid), expect_ok=False)
 
     print("\n--- MESSAGES TESTS ---")
-    check("Send message", db.send_message(uid, demo_uid, 'مرحباً، كيف حالك؟'))
-    check("Send reply", db.send_message(demo_uid, uid, 'بخير شكراً! كيف رحلتك؟'))
+    check("Send message", db.send_message(uid, demo_uid, 'ظ…ط±ط­ط¨ط§ظ‹طŒ ظƒظٹظپ ط­ط§ظ„ظƒطں'))
+    check("Send reply", db.send_message(demo_uid, uid, 'ط¨ط®ظٹط± ط´ظƒط±ط§ظ‹! ظƒظٹظپ ط±ط­ظ„طھظƒطں'))
     conv = db.get_conversation(uid, demo_uid)
-    print(f"  {'✅' if len(conv) >= 2 else '❌'} Conversation loaded: {len(conv)} messages")
+    print(f"  {'âœ…' if len(conv) >= 2 else 'â‌Œ'} Conversation loaded: {len(conv)} messages")
     inbox = db.get_inbox(uid)
-    print(f"  {'✅' if len(inbox) > 0 else '❌'} Inbox loaded: {len(inbox)} chats")
+    print(f"  {'âœ…' if len(inbox) > 0 else 'â‌Œ'} Inbox loaded: {len(inbox)} chats")
 
     print("\n--- TOURS TESTS ---")
     tours = db.get_tours()
-    print(f"  {'✅' if len(tours) >= 6 else '❌'} All tours loaded: {len(tours)}")
+    print(f"  {'âœ…' if len(tours) >= 6 else 'â‌Œ'} All tours loaded: {len(tours)}")
     featured = db.get_tours(featured_only=True)
-    print(f"  {'✅' if len(featured) > 0 else '❌'} Featured tours: {len(featured)}")
+    print(f"  {'âœ…' if len(featured) > 0 else 'â‌Œ'} Featured tours: {len(featured)}")
     cats = db.get_categories()
-    print(f"  {'✅' if len(cats) > 0 else '❌'} Categories: {len(cats)}")
+    print(f"  {'âœ…' if len(cats) > 0 else 'â‌Œ'} Categories: {len(cats)}")
     tour = db.get_tour('tour_luxor')
-    print(f"  {'✅' if tour else '❌'} Get single tour: {tour.get('title_ar','') if tour else 'N/A'}")
+    print(f"  {'âœ…' if tour else 'â‌Œ'} Get single tour: {tour.get('title_ar','') if tour else 'N/A'}")
 
     print("\n--- BOOKINGS TESTS ---")
-    r = check("Create booking", db.create_booking(uid,'tour_pyramids',2,'2025-12-01','card','0100000000','test@kemet.com','غرفة مطلة على النيل'))
+    r = check("Create booking", db.create_booking(uid,'tour_pyramids',2,'2025-12-01','card','0100000000','test@kemet.com','ط؛ط±ظپط© ظ…ط·ظ„ط© ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„'))
     bid = r.get('booking_id')
     total = r.get('total_price')
-    print(f"  ✅ Total price calculated: ${total}")
+    print(f"  âœ… Total price calculated: ${total}")
 
     r2 = check("Confirm payment", db.confirm_payment(bid, uid, 'card', 'PAY_REF_001'))
     my_bookings = db.get_user_bookings(uid)
-    print(f"  {'✅' if len(my_bookings) > 0 else '❌'} User bookings: {len(my_bookings)}")
+    print(f"  {'âœ…' if len(my_bookings) > 0 else 'â‌Œ'} User bookings: {len(my_bookings)}")
     booking_status = my_bookings[0].get('status') if my_bookings else 'unknown'
-    print(f"  {'✅' if booking_status == 'confirmed' else '❌'} Booking status: {booking_status}")
+    print(f"  {'âœ…' if booking_status == 'confirmed' else 'â‌Œ'} Booking status: {booking_status}")
 
     print("\n--- REVIEWS TESTS ---")
-    check("Add review", db.add_review(uid, 'tour_pyramids', 5, 'رحلة لا تُنسى، أنصح الجميع!', bid))
-    check("Duplicate review (should fail)", db.add_review(uid, 'tour_pyramids', 4, 'مرة أخرى'), expect_ok=False)
+    check("Add review", db.add_review(uid, 'tour_pyramids', 5, 'ط±ط­ظ„ط© ظ„ط§ طھظڈظ†ط³ظ‰طŒ ط£ظ†طµط­ ط§ظ„ط¬ظ…ظٹط¹!', bid))
+    check("Duplicate review (should fail)", db.add_review(uid, 'tour_pyramids', 4, 'ظ…ط±ط© ط£ط®ط±ظ‰'), expect_ok=False)
 
     print("\n--- NOTIFICATIONS TESTS ---")
-    db.add_notification(uid, demo_uid, 'like', 'أعجب رمسيس بمنشورك', pid)
-    db.add_notification(uid, demo_uid, 'follow', 'بدأ رمسيس بمتابعتك')
+    db.add_notification(uid, demo_uid, 'like', 'ط£ط¹ط¬ط¨ ط±ظ…ط³ظٹط³ ط¨ظ…ظ†ط´ظˆط±ظƒ', pid)
+    db.add_notification(uid, demo_uid, 'follow', 'ط¨ط¯ط£ ط±ظ…ط³ظٹط³ ط¨ظ…طھط§ط¨ط¹طھظƒ')
     notifs = db.get_notifications(uid)
-    print(f"  {'✅' if len(notifs) >= 2 else '❌'} Notifications: {len(notifs)}")
+    print(f"  {'âœ…' if len(notifs) >= 2 else 'â‌Œ'} Notifications: {len(notifs)}")
     db.mark_notifications_read(uid)
 
     print("\n--- PHARAOH NICKNAMES TEST ---")
     pharaohs = db.get_pharaoh_nicknames()
-    print(f"  {'✅' if len(pharaohs) == 12 else '❌'} Pharaoh nicknames: {len(pharaohs)}")
+    print(f"  {'âœ…' if len(pharaohs) == 12 else 'â‌Œ'} Pharaoh nicknames: {len(pharaohs)}")
 
     print("\n--- STATS TEST ---")
     stats = db.get_stats()
-    print(f"  ✅ Stats: {stats['users']} users | {stats['posts']} posts | {stats['bookings']} bookings | ${stats['revenue']} revenue")
+    print(f"  âœ… Stats: {stats['users']} users | {stats['posts']} posts | {stats['bookings']} bookings | ${stats['revenue']} revenue")
 
     check("Logout", db.logout(token))
 
@@ -873,11 +873,11 @@ def run_tests():
 
     print("\n" + "="*60)
     if errors:
-        print(f"❌ {len(errors)} TEST(S) FAILED:")
+        print(f"â‌Œ {len(errors)} TEST(S) FAILED:")
         for e in errors:
             print(f"   - {e}")
     else:
-        print("✅ ALL TESTS PASSED — Database is fully operational")
+        print("âœ… ALL TESTS PASSED â€” Database is fully operational")
     print("="*60 + "\n")
     return len(errors) == 0
 
