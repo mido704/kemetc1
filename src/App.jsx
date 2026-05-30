@@ -800,9 +800,9 @@ function ProfilePage({ user, lang, posts }) {
 
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'0 14px 14px' }}>
-      <div className="pcover"><div className="hiero">𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div></div>
+      <div className="pcover" style={{ marginBottom:0 }}><div className="hiero">𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div></div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:-48 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:-36 }}>
           <Avatar emoji={user?.avatar_emoji||'👑'} size={90} />
           <button className="btn btn-o" style={{ marginBottom:8 }}>{t('تعديل البروفايل','Edit Profile',lang)}</button>
         </div>
