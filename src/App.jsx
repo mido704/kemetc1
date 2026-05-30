@@ -804,7 +804,7 @@ function ProfilePage({ user, lang, posts }) {
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:10 }}>
           <Avatar emoji={user?.avatar_emoji||'👑'} size={90} />
-          <button className="btn btn-o" style={{ marginBottom:8 }}>{t('تعديل البروفايل','Edit Profile',lang)}</button>
+          <button className="btn btn-o" style={{ marginBottom:8 }} onClick={()=>setEditMode(true)}>{t('تعديل البروفايل','Edit Profile',lang)}</button>
         </div>
         <div style={{ marginTop:10 }}>
           <div style={{ fontWeight:800, fontSize:20, color:'var(--g)' }}>{user?.nickname}</div>
