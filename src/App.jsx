@@ -183,10 +183,14 @@ function Landing({ onLogin, onRegister, lang, setLang }) {
           <span style={{ color:'var(--gd)', fontSize:18 }}>𓂀</span>
         </div>
         <div style={{ fontFamily:'serif', fontSize:20, color:'var(--gl)', marginBottom:4 }}>كيمت سوشيال</div>
-        <p style={{ color:'var(--tm)', fontSize:13, marginBottom:32, lineHeight:1.8 }}>
-          {t('منصة المجتمع السياحي المصري — اكتشف، تواصل، وسافر بأسلوب فرعوني',
-             "Egypt's Tourism Social Platform — Discover, Connect & Travel in Pharaonic Style", lang)}
-        </p>
+          <p style={{ color:'var(--tm)', fontSize:14, marginBottom:16, lineHeight:2 }}>
+                  {t('هل تعلم أن مصر تخفي كنوزاً لم يرها العالم بعد؟',
+                     'Did you know Egypt hides treasures the world hasn\'t seen yet?', lang)}
+             </p>
+            <p style={{ color:'var(--g)', fontSize:13, marginBottom:32, lineHeight:1.8, fontStyle:'italic' }}>
+           {t('انضم إلى مجتمع كيمت — حيث يلتقي عشاق الحضارة المصرية من كل العالم',
+              'Join Kemet Community — Where Egypt lovers from around the world unite', lang)}
+            </p>
         <div style={{ display:'flex', gap:12, justifyContent:'center' }}>
           <button className="btn btn-g" style={{ minWidth:140, fontSize:15 }} onClick={onLogin}>{t('تسجيل الدخول','Login',lang)}</button>
           <button className="btn btn-o" style={{ minWidth:140, fontSize:15 }} onClick={onRegister}>{t('إنشاء حساب','Register',lang)}</button>
