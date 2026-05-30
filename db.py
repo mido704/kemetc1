@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   name          TEXT NOT NULL,
   nickname      TEXT NOT NULL,
-  avatar_emoji  TEXT DEFAULT 'ًں‘‘',
+  avatar_emoji  TEXT DEFAULT 'ظ‹ع؛â€کâ€ک',
   country       TEXT DEFAULT '',
   phone         TEXT DEFAULT '',
   bio           TEXT DEFAULT '',
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS categories (
   id         TEXT PRIMARY KEY,
   name_ar    TEXT NOT NULL,
   name_en    TEXT NOT NULL,
-  icon       TEXT DEFAULT 'ًںڈ›ï¸ڈ',
+  icon       TEXT DEFAULT 'ظ‹ع؛عˆâ€؛أ¯آ¸عˆ',
   sort_order INTEGER DEFAULT 0,
   is_active  INTEGER DEFAULT 1
 );
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS tours (
   currency       TEXT DEFAULT 'USD',
   duration_days  INTEGER,
   max_guests     INTEGER DEFAULT 20,
-  image_emoji    TEXT DEFAULT 'ًںڈ›ï¸ڈ',
+  image_emoji    TEXT DEFAULT 'ظ‹ع؛عˆâ€؛أ¯آ¸عˆ',
   badge_ar       TEXT DEFAULT '',
   badge_en       TEXT DEFAULT '',
   rating         REAL DEFAULT 0.0,
@@ -268,6 +268,11 @@ def generate_id() -> str:
     return str(uuid.uuid4())
 
 def get_conn():
+    db_url = os.environ.get("DATABASE_URL")
+    if db_url and USE_PG:
+        conn = psycopg2.connect(db_url, cursor_factory=psycopg2.extras.RealDictCursor)
+        conn.autocommit = False
+        return conn
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
@@ -284,18 +289,18 @@ def seed_data(conn):
 
     # Pharaoh nicknames
     pharaohs = [
-        ('ط±ظ…ط³ظٹط³ ط§ظ„ط¹ط¸ظٹظ…',  'Ramesses the Great', 'ًں‘‘', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©',  1),
-        ('طھظˆطھ ط¹ظ†ط® ط¢ظ…ظˆظ†',  'Tutankhamun',         'âڑ±ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 2),
-        ('ط­طھط´ط¨ط³ظˆطھ',       'Hatshepsut',           'ًںŒ؛', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 3),
-        ('ط£ط®ظ†ط§طھظˆظ†',       'Akhenaten',            'âک€ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 4),
-        ('ظ†ظپط±طھظٹطھظٹ',       'Nefertiti',            'ًں’ژ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 5),
-        ('طھط­طھظ…ط³ ط§ظ„ط«ط§ظ„ط«',  'Thutmose III',         'âڑ”ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط«ط§ظ…ظ†ط© ط¹ط´ط±ط©', 6),
-        ('ط³ظ†ظپط±ظˆ',         'Sneferu',              'ًں”؛', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط±ط§ط¨ط¹ط©',       7),
-        ('ط®ظˆظپظˆ',          'Khufu',                'ًںڈ›ï¸ڈ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط±ط§ط¨ط¹ط©',      8),
-        ('ظ†ظپط±طھط§ط±ظٹ',       'Nefertari',            'ًںŒ™', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©', 9),
-        ('ظƒظ„ظٹظˆط¨ط§طھط±ط§',     'Cleopatra',            'ًںگچ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„ط¨ط·ظ„ظ…ظٹط©',     10),
-        ('ط³ظٹطھظٹ ط§ظ„ط£ظˆظ„',    'Seti I',               'ًں¦…', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©',11),
-        ('ظ…ط±ظ†ط¨طھط§ط­',       'Merneptah',            'ًںŒٹ', 'ط§ظ„ط£ط³ط±ط© ط§ظ„طھط§ط³ط¹ط© ط¹ط´ط±ط©',12),
+        ('ط·آ±ط¸â€¦ط·آ³ط¸ظ¹ط·آ³ ط·آ§ط¸â€‍ط·آ¹ط·آ¸ط¸ظ¹ط¸â€¦',  'Ramesses the Great', 'ظ‹ع؛â€کâ€ک', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·ع¾ط·آ§ط·آ³ط·آ¹ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©',  1),
+        ('ط·ع¾ط¸ث†ط·ع¾ ط·آ¹ط¸â€ ط·آ® ط·آ¢ط¸â€¦ط¸ث†ط¸â€ ',  'Tutankhamun',         'أ¢ع‘آ±أ¯آ¸عˆ', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ«ط·آ§ط¸â€¦ط¸â€ ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©', 2),
+        ('ط·آ­ط·ع¾ط·آ´ط·آ¨ط·آ³ط¸ث†ط·ع¾',       'Hatshepsut',           'ظ‹ع؛إ’ط›', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ«ط·آ§ط¸â€¦ط¸â€ ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©', 3),
+        ('ط·آ£ط·آ®ط¸â€ ط·آ§ط·ع¾ط¸ث†ط¸â€ ',       'Akhenaten',            'أ¢ع©â‚¬أ¯آ¸عˆ', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ«ط·آ§ط¸â€¦ط¸â€ ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©', 4),
+        ('ط¸â€ ط¸ظ¾ط·آ±ط·ع¾ط¸ظ¹ط·ع¾ط¸ظ¹',       'Nefertiti',            'ظ‹ع؛â€™عک', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ«ط·آ§ط¸â€¦ط¸â€ ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©', 5),
+        ('ط·ع¾ط·آ­ط·ع¾ط¸â€¦ط·آ³ ط·آ§ط¸â€‍ط·آ«ط·آ§ط¸â€‍ط·آ«',  'Thutmose III',         'أ¢ع‘â€‌أ¯آ¸عˆ', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ«ط·آ§ط¸â€¦ط¸â€ ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©', 6),
+        ('ط·آ³ط¸â€ ط¸ظ¾ط·آ±ط¸ث†',         'Sneferu',              'ظ‹ع؛â€‌ط›', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ±ط·آ§ط·آ¨ط·آ¹ط·آ©',       7),
+        ('ط·آ®ط¸ث†ط¸ظ¾ط¸ث†',          'Khufu',                'ظ‹ع؛عˆâ€؛أ¯آ¸عˆ', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ±ط·آ§ط·آ¨ط·آ¹ط·آ©',      8),
+        ('ط¸â€ ط¸ظ¾ط·آ±ط·ع¾ط·آ§ط·آ±ط¸ظ¹',       'Nefertari',            'ظ‹ع؛إ’â„¢', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·ع¾ط·آ§ط·آ³ط·آ¹ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©', 9),
+        ('ط¸ئ’ط¸â€‍ط¸ظ¹ط¸ث†ط·آ¨ط·آ§ط·ع¾ط·آ±ط·آ§',     'Cleopatra',            'ظ‹ع؛ع¯ع†', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ¨ط·آ·ط¸â€‍ط¸â€¦ط¸ظ¹ط·آ©',     10),
+        ('ط·آ³ط¸ظ¹ط·ع¾ط¸ظ¹ ط·آ§ط¸â€‍ط·آ£ط¸ث†ط¸â€‍',    'Seti I',               'ظ‹ع؛آ¦â€¦', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·ع¾ط·آ§ط·آ³ط·آ¹ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©',11),
+        ('ط¸â€¦ط·آ±ط¸â€ ط·آ¨ط·ع¾ط·آ§ط·آ­',       'Merneptah',            'ظ‹ع؛إ’ظ¹', 'ط·آ§ط¸â€‍ط·آ£ط·آ³ط·آ±ط·آ© ط·آ§ط¸â€‍ط·ع¾ط·آ§ط·آ³ط·آ¹ط·آ© ط·آ¹ط·آ´ط·آ±ط·آ©',12),
     ]
     cur.executemany(
         "INSERT OR IGNORE INTO pharaoh_nicknames (name_ar,name_en,emoji,dynasty,sort_order) VALUES (?,?,?,?,?)",
@@ -304,11 +309,11 @@ def seed_data(conn):
 
     # Categories
     categories = [
-        ('cat_tours',   'ط±ط­ظ„ط§طھ ط³ظٹط§ط­ظٹط©',  'Tours',             'ًںڈ›ï¸ڈ', 1),
-        ('cat_nile',    'ظƒط±ظˆط² ط§ظ„ظ†ظٹظ„',    'Nile Cruises',       'ًں›³ï¸ڈ', 2),
-        ('cat_medical', 'ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط©', 'Medical Tourism',    'ًںڈ¥', 3),
-        ('cat_consult', 'ط§ط³طھط´ط§ط±ط§طھ',      'Consulting',         'ًں’¬', 4),
-        ('cat_desert',  'ط±ط­ظ„ط§طھ طµط­ط±ط§ظˆظٹط©','Desert Adventures',  'ًںŒ…', 5),
+        ('cat_tours',   'ط·آ±ط·آ­ط¸â€‍ط·آ§ط·ع¾ ط·آ³ط¸ظ¹ط·آ§ط·آ­ط¸ظ¹ط·آ©',  'Tours',             'ظ‹ع؛عˆâ€؛أ¯آ¸عˆ', 1),
+        ('cat_nile',    'ط¸ئ’ط·آ±ط¸ث†ط·آ² ط·آ§ط¸â€‍ط¸â€ ط¸ظ¹ط¸â€‍',    'Nile Cruises',       'ظ‹ع؛â€؛آ³أ¯آ¸عˆ', 2),
+        ('cat_medical', 'ط·آ³ط¸ظ¹ط·آ§ط·آ­ط·آ© ط·آ¹ط¸â€‍ط·آ§ط·آ¬ط¸ظ¹ط·آ©', 'Medical Tourism',    'ظ‹ع؛عˆآ¥', 3),
+        ('cat_consult', 'ط·آ§ط·آ³ط·ع¾ط·آ´ط·آ§ط·آ±ط·آ§ط·ع¾',      'Consulting',         'ظ‹ع؛â€™آ¬', 4),
+        ('cat_desert',  'ط·آ±ط·آ­ط¸â€‍ط·آ§ط·ع¾ ط·آµط·آ­ط·آ±ط·آ§ط¸ث†ط¸ظ¹ط·آ©','Desert Adventures',  'ظ‹ع؛إ’â€¦', 5),
     ]
     cur.executemany(
         "INSERT OR IGNORE INTO categories (id,name_ar,name_en,icon,sort_order) VALUES (?,?,?,?,?)",
@@ -317,41 +322,41 @@ def seed_data(conn):
 
     # Tours
     tours = [
-        ('tour_luxor',   'cat_tours',   'ط±ط­ظ„ط© ط§ظ„ط£ظ‚طµط± ظˆط§ظ„ط£ط³ظˆط§ظ† ط§ظ„ظ…ظ„ظƒظٹط©', 'Royal Luxor & Aswan Tour',
-         'ط§ظƒطھط´ظپ ط±ظˆط¹ط© ط§ظ„ظ…ط¹ط§ط¨ط¯ ظˆط§ظ„ظ…ظ‚ط§ط¨ط± ط§ظ„ظ…ظ„ظƒظٹط© ظپظٹ ط±ط­ظ„ط© ظ„ط§ طھظڈظ†ط³ظ‰ ط¹ظ„ظ‰ ط¶ظپط§ظپ ط§ظ„ظ†ظٹظ„',
+        ('tour_luxor',   'cat_tours',   'ط·آ±ط·آ­ط¸â€‍ط·آ© ط·آ§ط¸â€‍ط·آ£ط¸â€ڑط·آµط·آ± ط¸ث†ط·آ§ط¸â€‍ط·آ£ط·آ³ط¸ث†ط·آ§ط¸â€  ط·آ§ط¸â€‍ط¸â€¦ط¸â€‍ط¸ئ’ط¸ظ¹ط·آ©', 'Royal Luxor & Aswan Tour',
+         'ط·آ§ط¸ئ’ط·ع¾ط·آ´ط¸ظ¾ ط·آ±ط¸ث†ط·آ¹ط·آ© ط·آ§ط¸â€‍ط¸â€¦ط·آ¹ط·آ§ط·آ¨ط·آ¯ ط¸ث†ط·آ§ط¸â€‍ط¸â€¦ط¸â€ڑط·آ§ط·آ¨ط·آ± ط·آ§ط¸â€‍ط¸â€¦ط¸â€‍ط¸ئ’ط¸ظ¹ط·آ© ط¸ظ¾ط¸ظ¹ ط·آ±ط·آ­ط¸â€‍ط·آ© ط¸â€‍ط·آ§ ط·ع¾ط¸عˆط¸â€ ط·آ³ط¸â€° ط·آ¹ط¸â€‍ط¸â€° ط·آ¶ط¸ظ¾ط·آ§ط¸ظ¾ ط·آ§ط¸â€‍ط¸â€ ط¸ظ¹ط¸â€‍',
          'Discover the grandeur of temples and royal tombs in an unforgettable Nile journey',
-         1200.0, 7, 'ًںڈ›ï¸ڈ', 'ط§ظ„ط£ظƒط«ط± ظ…ط¨ظٹط¹ط§ظ‹', 'Best Seller', 4.9, 128,
-         '["ظپظ†ط¯ظ‚ 5 ظ†ط¬ظˆظ…","ط¬ظˆظ„ط§طھ ظ…ط¹ ظ…ط±ط´ط¯","ظˆط¬ط¨ط§طھ","ظ†ظ‚ظ„"]',
+         1200.0, 7, 'ظ‹ع؛عˆâ€؛أ¯آ¸عˆ', 'ط·آ§ط¸â€‍ط·آ£ط¸ئ’ط·آ«ط·آ± ط¸â€¦ط·آ¨ط¸ظ¹ط·آ¹ط·آ§ط¸â€¹', 'Best Seller', 4.9, 128,
+         '["ط¸ظ¾ط¸â€ ط·آ¯ط¸â€ڑ 5 ط¸â€ ط·آ¬ط¸ث†ط¸â€¦","ط·آ¬ط¸ث†ط¸â€‍ط·آ§ط·ع¾ ط¸â€¦ط·آ¹ ط¸â€¦ط·آ±ط·آ´ط·آ¯","ط¸ث†ط·آ¬ط·آ¨ط·آ§ط·ع¾","ط¸â€ ط¸â€ڑط¸â€‍"]',
          '["5-Star Hotel","Guided Tours","Meals","Transport"]', 1),
-        ('tour_pyramids','cat_tours',   'ط¨ط§ظ‚ط© ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ ظˆط§ظ„ظ‚ط§ظ‡ط±ط© ط§ظ„ط®ط¯ظٹظˆظٹط©', 'Pyramids & Khedival Cairo Package',
-         'ط±ط­ظ„ط© ط´ط§ظ…ظ„ط© ظ„ط£ط¹ط¬ظˆط¨ط© ط§ظ„ط¹ط§ظ„ظ… ط§ظ„ظ‚ط¯ظٹظ…ط© ظˆط¹ط§طµظ…ط© ط§ظ„ط£ظ„ظپ ظ…ط¦ط°ظ†ط©',
+        ('tour_pyramids','cat_tours',   'ط·آ¨ط·آ§ط¸â€ڑط·آ© ط·آ§ط¸â€‍ط·آ£ط¸â€،ط·آ±ط·آ§ط¸â€¦ط·آ§ط·ع¾ ط¸ث†ط·آ§ط¸â€‍ط¸â€ڑط·آ§ط¸â€،ط·آ±ط·آ© ط·آ§ط¸â€‍ط·آ®ط·آ¯ط¸ظ¹ط¸ث†ط¸ظ¹ط·آ©', 'Pyramids & Khedival Cairo Package',
+         'ط·آ±ط·آ­ط¸â€‍ط·آ© ط·آ´ط·آ§ط¸â€¦ط¸â€‍ط·آ© ط¸â€‍ط·آ£ط·آ¹ط·آ¬ط¸ث†ط·آ¨ط·آ© ط·آ§ط¸â€‍ط·آ¹ط·آ§ط¸â€‍ط¸â€¦ ط·آ§ط¸â€‍ط¸â€ڑط·آ¯ط¸ظ¹ط¸â€¦ط·آ© ط¸ث†ط·آ¹ط·آ§ط·آµط¸â€¦ط·آ© ط·آ§ط¸â€‍ط·آ£ط¸â€‍ط¸ظ¾ ط¸â€¦ط·آ¦ط·آ°ط¸â€ ط·آ©',
          'A comprehensive trip to the wonder of the ancient world and Cairo',
-         850.0, 5, 'ًں”؛', 'ط¹ط±ط¶ ظ…ط­ط¯ظˆط¯', 'Limited Offer', 4.8, 95,
-         '["ظپظ†ط¯ظ‚ 5 ظ†ط¬ظˆظ…","ط§ظ„ظ…طھط­ظپ ط§ظ„ظ…طµط±ظٹ","ط£ط¨ظˆ ط§ظ„ظ‡ظˆظ„","ط¬ظٹط²ط©"]',
+         850.0, 5, 'ظ‹ع؛â€‌ط›', 'ط·آ¹ط·آ±ط·آ¶ ط¸â€¦ط·آ­ط·آ¯ط¸ث†ط·آ¯', 'Limited Offer', 4.8, 95,
+         '["ط¸ظ¾ط¸â€ ط·آ¯ط¸â€ڑ 5 ط¸â€ ط·آ¬ط¸ث†ط¸â€¦","ط·آ§ط¸â€‍ط¸â€¦ط·ع¾ط·آ­ط¸ظ¾ ط·آ§ط¸â€‍ط¸â€¦ط·آµط·آ±ط¸ظ¹","ط·آ£ط·آ¨ط¸ث† ط·آ§ط¸â€‍ط¸â€،ط¸ث†ط¸â€‍","ط·آ¬ط¸ظ¹ط·آ²ط·آ©"]',
          '["5-Star Hotel","Egyptian Museum","Sphinx","Giza"]', 1),
-        ('tour_nile',    'cat_nile',    'ط¬ظˆظ„ط© ط§ظ„ظ†ظٹظ„ ط§ظ„ظپط§ط®ط±ط© ط¹ظ„ظ‰ ظƒط±ظˆط²', 'Luxury Nile Cruise Tour',
-         'ط±ط­ظ„ط© ط¨ط­ط±ظٹط© ظپط§ط®ط±ط© ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„ ظ…ظ† ط§ظ„ط£ظ‚طµط± ط­طھظ‰ ط£ط³ظˆط§ظ† ظ…ط¹ ط²ظٹط§ط±ط© ط£ظپط¶ظ„ ط§ظ„ظ…ط¹ط§ظ„ظ…',
+        ('tour_nile',    'cat_nile',    'ط·آ¬ط¸ث†ط¸â€‍ط·آ© ط·آ§ط¸â€‍ط¸â€ ط¸ظ¹ط¸â€‍ ط·آ§ط¸â€‍ط¸ظ¾ط·آ§ط·آ®ط·آ±ط·آ© ط·آ¹ط¸â€‍ط¸â€° ط¸ئ’ط·آ±ط¸ث†ط·آ²', 'Luxury Nile Cruise Tour',
+         'ط·آ±ط·آ­ط¸â€‍ط·آ© ط·آ¨ط·آ­ط·آ±ط¸ظ¹ط·آ© ط¸ظ¾ط·آ§ط·آ®ط·آ±ط·آ© ط·آ¹ط¸â€‍ط¸â€° ط·آ§ط¸â€‍ط¸â€ ط¸ظ¹ط¸â€‍ ط¸â€¦ط¸â€  ط·آ§ط¸â€‍ط·آ£ط¸â€ڑط·آµط·آ± ط·آ­ط·ع¾ط¸â€° ط·آ£ط·آ³ط¸ث†ط·آ§ط¸â€  ط¸â€¦ط·آ¹ ط·آ²ط¸ظ¹ط·آ§ط·آ±ط·آ© ط·آ£ط¸ظ¾ط·آ¶ط¸â€‍ ط·آ§ط¸â€‍ط¸â€¦ط·آ¹ط·آ§ط¸â€‍ط¸â€¦',
          'A luxurious Nile cruise from Luxor to Aswan with visits to the finest landmarks',
-         1800.0, 10, 'ًں›³ï¸ڈ', 'ظپط§ط®ط±', 'Luxury', 5.0, 64,
-         '["ظƒط±ظˆط² 5 ظ†ط¬ظˆظ…","ط¬ظ…ظٹط¹ ط§ظ„ظˆط¬ط¨ط§طھ","ظ…ط±ط´ط¯ ط®ط§طµ","ظ†ظ‚ظ„ VIP"]',
+         1800.0, 10, 'ظ‹ع؛â€؛آ³أ¯آ¸عˆ', 'ط¸ظ¾ط·آ§ط·آ®ط·آ±', 'Luxury', 5.0, 64,
+         '["ط¸ئ’ط·آ±ط¸ث†ط·آ² 5 ط¸â€ ط·آ¬ط¸ث†ط¸â€¦","ط·آ¬ط¸â€¦ط¸ظ¹ط·آ¹ ط·آ§ط¸â€‍ط¸ث†ط·آ¬ط·آ¨ط·آ§ط·ع¾","ط¸â€¦ط·آ±ط·آ´ط·آ¯ ط·آ®ط·آ§ط·آµ","ط¸â€ ط¸â€ڑط¸â€‍ VIP"]',
          '["5-Star Cruise","All Meals","Private Guide","VIP Transfers"]', 1),
-        ('tour_consult', 'cat_consult', 'ط§ط³طھط´ط§ط±ط© ط³ظٹط§ط­ظٹط© ط´ط®طµظٹط©', 'Personal Tourism Consultation',
-         'ط§ط­طµظ„ ط¹ظ„ظ‰ ط§ط³طھط´ط§ط±ط© ط³ظٹط§ط­ظٹط© ظ…ط®طµطµط© ظ…ظ† ط®ط¨ط±ط§ط، ظ…طµط±ظٹظٹظ† ظ…ط¹طھظ…ط¯ظٹظ† ظ„طھط®ط·ظٹط· ط±ط­ظ„طھظƒ ط§ظ„ظ…ط«ط§ظ„ظٹط©',
+        ('tour_consult', 'cat_consult', 'ط·آ§ط·آ³ط·ع¾ط·آ´ط·آ§ط·آ±ط·آ© ط·آ³ط¸ظ¹ط·آ§ط·آ­ط¸ظ¹ط·آ© ط·آ´ط·آ®ط·آµط¸ظ¹ط·آ©', 'Personal Tourism Consultation',
+         'ط·آ§ط·آ­ط·آµط¸â€‍ ط·آ¹ط¸â€‍ط¸â€° ط·آ§ط·آ³ط·ع¾ط·آ´ط·آ§ط·آ±ط·آ© ط·آ³ط¸ظ¹ط·آ§ط·آ­ط¸ظ¹ط·آ© ط¸â€¦ط·آ®ط·آµط·آµط·آ© ط¸â€¦ط¸â€  ط·آ®ط·آ¨ط·آ±ط·آ§ط·طŒ ط¸â€¦ط·آµط·آ±ط¸ظ¹ط¸ظ¹ط¸â€  ط¸â€¦ط·آ¹ط·ع¾ط¸â€¦ط·آ¯ط¸ظ¹ط¸â€  ط¸â€‍ط·ع¾ط·آ®ط·آ·ط¸ظ¹ط·آ· ط·آ±ط·آ­ط¸â€‍ط·ع¾ط¸ئ’ ط·آ§ط¸â€‍ط¸â€¦ط·آ«ط·آ§ط¸â€‍ط¸ظ¹ط·آ©',
          'Get a personalized tourism consultation from certified Egyptian experts',
-         150.0, None, 'ًں’¬', 'ط®ط¯ظ…ط©', 'Service', 4.9, 210,
-         '["ط¬ظ„ط³ط© ط³ط§ط¹طھظٹظ†","ط®ط·ط© ظ…ط®طµطµط©","ط¯ط¹ظ… ظˆط§طھط³ط§ط¨","طھظˆطµظٹط§طھ"]',
+         150.0, None, 'ظ‹ع؛â€™آ¬', 'ط·آ®ط·آ¯ط¸â€¦ط·آ©', 'Service', 4.9, 210,
+         '["ط·آ¬ط¸â€‍ط·آ³ط·آ© ط·آ³ط·آ§ط·آ¹ط·ع¾ط¸ظ¹ط¸â€ ","ط·آ®ط·آ·ط·آ© ط¸â€¦ط·آ®ط·آµط·آµط·آ©","ط·آ¯ط·آ¹ط¸â€¦ ط¸ث†ط·آ§ط·ع¾ط·آ³ط·آ§ط·آ¨","ط·ع¾ط¸ث†ط·آµط¸ظ¹ط·آ§ط·ع¾"]',
          '["2-Hour Session","Custom Plan","WhatsApp Support","Recommendations"]', 0),
-        ('tour_dental',  'cat_medical', 'ط¨ط§ظ‚ط© ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط© - ط§ظ„ط£ط³ظ†ط§ظ†', 'Medical Tourism - Dental Package',
-         'ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط© ظ…طھظƒط§ظ…ظ„ط© ط¨ط£ط³ط¹ط§ط± ظ…ظ†ط§ظپط³ط© ظ…ط¹ ط£ظپط¶ظ„ ط§ظ„ط£ط·ط¨ط§ط، ط§ظ„ظ…طµط±ظٹظٹظ†',
+        ('tour_dental',  'cat_medical', 'ط·آ¨ط·آ§ط¸â€ڑط·آ© ط·آ³ط¸ظ¹ط·آ§ط·آ­ط·آ© ط·آ¹ط¸â€‍ط·آ§ط·آ¬ط¸ظ¹ط·آ© - ط·آ§ط¸â€‍ط·آ£ط·آ³ط¸â€ ط·آ§ط¸â€ ', 'Medical Tourism - Dental Package',
+         'ط·آ³ط¸ظ¹ط·آ§ط·آ­ط·آ© ط·آ¹ط¸â€‍ط·آ§ط·آ¬ط¸ظ¹ط·آ© ط¸â€¦ط·ع¾ط¸ئ’ط·آ§ط¸â€¦ط¸â€‍ط·آ© ط·آ¨ط·آ£ط·آ³ط·آ¹ط·آ§ط·آ± ط¸â€¦ط¸â€ ط·آ§ط¸ظ¾ط·آ³ط·آ© ط¸â€¦ط·آ¹ ط·آ£ط¸ظ¾ط·آ¶ط¸â€‍ ط·آ§ط¸â€‍ط·آ£ط·آ·ط·آ¨ط·آ§ط·طŒ ط·آ§ط¸â€‍ط¸â€¦ط·آµط·آ±ط¸ظ¹ط¸ظ¹ط¸â€ ',
          'Comprehensive medical tourism at competitive prices with the best Egyptian doctors',
-         600.0, 5, 'ًں¦·', 'ط·ط¨ظٹ', 'Medical', 4.7, 88,
-         '["ظپط­طµ ط´ط§ظ…ظ„","ط¹ظ„ط§ط¬ ظ…طھظƒط§ظ…ظ„","ط¥ظ‚ط§ظ…ط©","ظ†ظ‚ظ„ ط·ط¨ظٹ"]',
+         600.0, 5, 'ظ‹ع؛آ¦آ·', 'ط·آ·ط·آ¨ط¸ظ¹', 'Medical', 4.7, 88,
+         '["ط¸ظ¾ط·آ­ط·آµ ط·آ´ط·آ§ط¸â€¦ط¸â€‍","ط·آ¹ط¸â€‍ط·آ§ط·آ¬ ط¸â€¦ط·ع¾ط¸ئ’ط·آ§ط¸â€¦ط¸â€‍","ط·آ¥ط¸â€ڑط·آ§ط¸â€¦ط·آ©","ط¸â€ ط¸â€ڑط¸â€‍ ط·آ·ط·آ¨ط¸ظ¹"]',
          '["Full Checkup","Complete Treatment","Accommodation","Medical Transport"]', 0),
-        ('tour_desert',  'cat_desert',  'طھط¬ط±ط¨ط© ط§ظ„ظˆط§ط­ط§طھ ظˆط§ظ„طµط­ط±ط§ط، ط§ظ„ط؛ط±ط¨ظٹط©', 'Oasis & Western Desert Experience',
-         'ظ…ط؛ط§ظ…ط±ط© ظ„ط§ طھظڈظ†ط³ظ‰ ظپظٹ ط£ط¹ظ…ط§ظ‚ ط§ظ„طµط­ط±ط§ط، ط§ظ„ط؛ط±ط¨ظٹط© ط¨ظٹظ† ط§ظ„ظˆط§ط­ط§طھ ظˆط§ظ„ظƒط«ط¨ط§ظ† ط§ظ„ط±ظ…ظ„ظٹط©',
+        ('tour_desert',  'cat_desert',  'ط·ع¾ط·آ¬ط·آ±ط·آ¨ط·آ© ط·آ§ط¸â€‍ط¸ث†ط·آ§ط·آ­ط·آ§ط·ع¾ ط¸ث†ط·آ§ط¸â€‍ط·آµط·آ­ط·آ±ط·آ§ط·طŒ ط·آ§ط¸â€‍ط·ط›ط·آ±ط·آ¨ط¸ظ¹ط·آ©', 'Oasis & Western Desert Experience',
+         'ط¸â€¦ط·ط›ط·آ§ط¸â€¦ط·آ±ط·آ© ط¸â€‍ط·آ§ ط·ع¾ط¸عˆط¸â€ ط·آ³ط¸â€° ط¸ظ¾ط¸ظ¹ ط·آ£ط·آ¹ط¸â€¦ط·آ§ط¸â€ڑ ط·آ§ط¸â€‍ط·آµط·آ­ط·آ±ط·آ§ط·طŒ ط·آ§ط¸â€‍ط·ط›ط·آ±ط·آ¨ط¸ظ¹ط·آ© ط·آ¨ط¸ظ¹ط¸â€  ط·آ§ط¸â€‍ط¸ث†ط·آ§ط·آ­ط·آ§ط·ع¾ ط¸ث†ط·آ§ط¸â€‍ط¸ئ’ط·آ«ط·آ¨ط·آ§ط¸â€  ط·آ§ط¸â€‍ط·آ±ط¸â€¦ط¸â€‍ط¸ظ¹ط·آ©',
          'An unforgettable adventure deep in the Western Desert among oases and sand dunes',
-         950.0, 6, 'ًںŒ…', 'ظ…ط؛ط§ظ…ط±ط©', 'Adventure', 4.8, 52,
-         '["ط®ظٹط§ظ… ظپط§ط®ط±ط©","ط¬ظٹط¨ط§طھ طµط­ط±ط§ظˆظٹط©","ط±طµط¯ ط§ظ„ظ†ط¬ظˆظ…","ط·ط¹ط§ظ… ط¨ط¯ظˆظٹ"]',
+         950.0, 6, 'ظ‹ع؛إ’â€¦', 'ط¸â€¦ط·ط›ط·آ§ط¸â€¦ط·آ±ط·آ©', 'Adventure', 4.8, 52,
+         '["ط·آ®ط¸ظ¹ط·آ§ط¸â€¦ ط¸ظ¾ط·آ§ط·آ®ط·آ±ط·آ©","ط·آ¬ط¸ظ¹ط·آ¨ط·آ§ط·ع¾ ط·آµط·آ­ط·آ±ط·آ§ط¸ث†ط¸ظ¹ط·آ©","ط·آ±ط·آµط·آ¯ ط·آ§ط¸â€‍ط¸â€ ط·آ¬ط¸ث†ط¸â€¦","ط·آ·ط·آ¹ط·آ§ط¸â€¦ ط·آ¨ط·آ¯ط¸ث†ط¸ظ¹"]',
          '["Luxury Camping","Desert Jeeps","Stargazing","Bedouin Food"]', 0),
     ]
     for t in tours:
@@ -365,9 +370,9 @@ def seed_data(conn):
 
     # Demo users
     demo_users = [
-        ('user_ramesses', 'ramesses@kemet.com',  hash_password('Demo1234!'), 'ط£ط­ظ…ط¯ ظ…ط­ظ…ظˆط¯', 'ط±ظ…ط³ظٹط³ ط§ظ„ط¹ط¸ظٹظ…', 'ًں‘‘', 'EG', 1, 'gold'),
-        ('user_nefertiti','nefertiti@kemet.com', hash_password('Demo1234!'), 'ط³ط§ط±ط© ط¹ظ„ظٹ',   'ظ†ظپط±طھظٹطھظٹ',      'ًں’ژ', 'SA', 1, 'platinum'),
-        ('user_thutmose', 'thutmose@kemet.com',  hash_password('Demo1234!'), 'ط®ط§ظ„ط¯ ط£ط­ظ…ط¯',  'طھط­طھظ…ط³ ط§ظ„ط«ط§ظ„ط«', 'âڑ”ï¸ڈ', 'AE', 0, 'classic'),
+        ('user_ramesses', 'ramesses@kemet.com',  hash_password('Demo1234!'), 'ط·آ£ط·آ­ط¸â€¦ط·آ¯ ط¸â€¦ط·آ­ط¸â€¦ط¸ث†ط·آ¯', 'ط·آ±ط¸â€¦ط·آ³ط¸ظ¹ط·آ³ ط·آ§ط¸â€‍ط·آ¹ط·آ¸ط¸ظ¹ط¸â€¦', 'ظ‹ع؛â€کâ€ک', 'EG', 1, 'gold'),
+        ('user_nefertiti','nefertiti@kemet.com', hash_password('Demo1234!'), 'ط·آ³ط·آ§ط·آ±ط·آ© ط·آ¹ط¸â€‍ط¸ظ¹',   'ط¸â€ ط¸ظ¾ط·آ±ط·ع¾ط¸ظ¹ط·ع¾ط¸ظ¹',      'ظ‹ع؛â€™عک', 'SA', 1, 'platinum'),
+        ('user_thutmose', 'thutmose@kemet.com',  hash_password('Demo1234!'), 'ط·آ®ط·آ§ط¸â€‍ط·آ¯ ط·آ£ط·آ­ط¸â€¦ط·آ¯',  'ط·ع¾ط·آ­ط·ع¾ط¸â€¦ط·آ³ ط·آ§ط¸â€‍ط·آ«ط·آ§ط¸â€‍ط·آ«', 'أ¢ع‘â€‌أ¯آ¸عˆ', 'AE', 0, 'classic'),
     ]
     for u in demo_users:
         cur.execute("""
@@ -378,17 +383,17 @@ def seed_data(conn):
     # Demo posts
     demo_posts = [
         ('post_001', 'user_ramesses',
-         'ط²ظٹط§ط±ط© ظ…ط¹ط¨ط¯ ط§ظ„ظƒط±ظ†ظƒ ظƒط§ظ†طھ طھط¬ط±ط¨ط© ط±ظˆط­ط§ظ†ظٹط© ظ„ط§ طھظڈظˆطµظپ ًںڈ›ï¸ڈ ط§ظ„ط­ط¬ط§ط±ط© طھط­ظƒظٹ ظ‚طµطµ ط¢ظ„ط§ظپ ط§ظ„ط³ظ†ظٹظ†! ظ…ظ† ط²ط§ط± ط§ظ„ط£ظ‚طµط± ظ‡ط°ط§ ط§ظ„ط´ظ‡ط±طں',
-         'Visiting Karnak Temple was an indescribable spiritual experience ًںڈ›ï¸ڈ',
-         'ًںڈ›ï¸ڈ', '["#ط§ظ„ط£ظ‚طµط±","#ظ…ط¹ط¨ط¯_ط§ظ„ظƒط±ظ†ظƒ","#ظ…طµط±"]', 342, 28, 15),
+         'ط·آ²ط¸ظ¹ط·آ§ط·آ±ط·آ© ط¸â€¦ط·آ¹ط·آ¨ط·آ¯ ط·آ§ط¸â€‍ط¸ئ’ط·آ±ط¸â€ ط¸ئ’ ط¸ئ’ط·آ§ط¸â€ ط·ع¾ ط·ع¾ط·آ¬ط·آ±ط·آ¨ط·آ© ط·آ±ط¸ث†ط·آ­ط·آ§ط¸â€ ط¸ظ¹ط·آ© ط¸â€‍ط·آ§ ط·ع¾ط¸عˆط¸ث†ط·آµط¸ظ¾ ظ‹ع؛عˆâ€؛أ¯آ¸عˆ ط·آ§ط¸â€‍ط·آ­ط·آ¬ط·آ§ط·آ±ط·آ© ط·ع¾ط·آ­ط¸ئ’ط¸ظ¹ ط¸â€ڑط·آµط·آµ ط·آ¢ط¸â€‍ط·آ§ط¸ظ¾ ط·آ§ط¸â€‍ط·آ³ط¸â€ ط¸ظ¹ط¸â€ ! ط¸â€¦ط¸â€  ط·آ²ط·آ§ط·آ± ط·آ§ط¸â€‍ط·آ£ط¸â€ڑط·آµط·آ± ط¸â€،ط·آ°ط·آ§ ط·آ§ط¸â€‍ط·آ´ط¸â€،ط·آ±ط·ع؛',
+         'Visiting Karnak Temple was an indescribable spiritual experience ظ‹ع؛عˆâ€؛أ¯آ¸عˆ',
+         'ظ‹ع؛عˆâ€؛أ¯آ¸عˆ', '["#ط·آ§ط¸â€‍ط·آ£ط¸â€ڑط·آµط·آ±","#ط¸â€¦ط·آ¹ط·آ¨ط·آ¯_ط·آ§ط¸â€‍ط¸ئ’ط·آ±ط¸â€ ط¸ئ’","#ط¸â€¦ط·آµط·آ±"]', 342, 28, 15),
         ('post_002', 'user_nefertiti',
-         'ط§ظ„ط؛ط±ظˆط¨ ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„ ظپظٹ ط£ط³ظˆط§ظ† ط´ظٹط، ظٹط³ط±ظ‚ ط§ظ„ظ‚ظ„ط¨ â‌¤ï¸ڈ ظ„ط§ ظٹظ…ظƒظ† ظˆطµظپظ‡ ط¨ط§ظ„ظƒظ„ظ…ط§طھ. ظ…طµط± ط¨ظ„ط¯ ط§ظ„ط³ط­ط± ظˆط§ظ„ط¬ظ…ط§ظ„ ط§ظ„ط­ظ‚ظٹظ‚ظٹ ًںŒٹ',
-         'Sunset on the Nile in Aswan is something that steals your heart â‌¤ï¸ڈ',
-         'ًںŒ…', '["#ط£ط³ظˆط§ظ†","#ط§ظ„ظ†ظٹظ„","#Egypt"]', 891, 65, 43),
+         'ط·آ§ط¸â€‍ط·ط›ط·آ±ط¸ث†ط·آ¨ ط·آ¹ط¸â€‍ط¸â€° ط·آ§ط¸â€‍ط¸â€ ط¸ظ¹ط¸â€‍ ط¸ظ¾ط¸ظ¹ ط·آ£ط·آ³ط¸ث†ط·آ§ط¸â€  ط·آ´ط¸ظ¹ط·طŒ ط¸ظ¹ط·آ³ط·آ±ط¸â€ڑ ط·آ§ط¸â€‍ط¸â€ڑط¸â€‍ط·آ¨ أ¢â€Œآ¤أ¯آ¸عˆ ط¸â€‍ط·آ§ ط¸ظ¹ط¸â€¦ط¸ئ’ط¸â€  ط¸ث†ط·آµط¸ظ¾ط¸â€، ط·آ¨ط·آ§ط¸â€‍ط¸ئ’ط¸â€‍ط¸â€¦ط·آ§ط·ع¾. ط¸â€¦ط·آµط·آ± ط·آ¨ط¸â€‍ط·آ¯ ط·آ§ط¸â€‍ط·آ³ط·آ­ط·آ± ط¸ث†ط·آ§ط¸â€‍ط·آ¬ط¸â€¦ط·آ§ط¸â€‍ ط·آ§ط¸â€‍ط·آ­ط¸â€ڑط¸ظ¹ط¸â€ڑط¸ظ¹ ظ‹ع؛إ’ظ¹',
+         'Sunset on the Nile in Aswan is something that steals your heart أ¢â€Œآ¤أ¯آ¸عˆ',
+         'ظ‹ع؛إ’â€¦', '["#ط·آ£ط·آ³ط¸ث†ط·آ§ط¸â€ ","#ط·آ§ط¸â€‍ط¸â€ ط¸ظ¹ط¸â€‍","#Egypt"]', 891, 65, 43),
         ('post_003', 'user_thutmose',
-         'ط§ظ†طھظ‡ظٹطھ ظ…ظ† ط±ط­ظ„ط© ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ ظ…ط¹ ظپط±ظٹظ‚ ظƒظٹظ…طھ ظƒظˆظ†ط³ظٹط±ط¬ ًں”؛ ط§ظ„ط®ط¯ظ…ط© ظƒط§ظ†طھ 10/10 ظˆط§ظ„ظ…ط±ط´ط¯ ظƒط§ظ† ظ…ظˆط³ظˆط¹ط© ط­ظٹط©. ط£ظ†طµط­ ط§ظ„ط¬ظ…ظٹط¹!',
-         'Just finished the Pyramids trip with Kemet Concierge ًں”؛ Service was 10/10!',
-         'ًں”؛', '["#ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ","#ظƒظٹظ…طھ","#ط±ط­ظ„ط§طھ"]', 224, 18, 9),
+         'ط·آ§ط¸â€ ط·ع¾ط¸â€،ط¸ظ¹ط·ع¾ ط¸â€¦ط¸â€  ط·آ±ط·آ­ط¸â€‍ط·آ© ط·آ§ط¸â€‍ط·آ£ط¸â€،ط·آ±ط·آ§ط¸â€¦ط·آ§ط·ع¾ ط¸â€¦ط·آ¹ ط¸ظ¾ط·آ±ط¸ظ¹ط¸â€ڑ ط¸ئ’ط¸ظ¹ط¸â€¦ط·ع¾ ط¸ئ’ط¸ث†ط¸â€ ط·آ³ط¸ظ¹ط·آ±ط·آ¬ ظ‹ع؛â€‌ط› ط·آ§ط¸â€‍ط·آ®ط·آ¯ط¸â€¦ط·آ© ط¸ئ’ط·آ§ط¸â€ ط·ع¾ 10/10 ط¸ث†ط·آ§ط¸â€‍ط¸â€¦ط·آ±ط·آ´ط·آ¯ ط¸ئ’ط·آ§ط¸â€  ط¸â€¦ط¸ث†ط·آ³ط¸ث†ط·آ¹ط·آ© ط·آ­ط¸ظ¹ط·آ©. ط·آ£ط¸â€ ط·آµط·آ­ ط·آ§ط¸â€‍ط·آ¬ط¸â€¦ط¸ظ¹ط·آ¹!',
+         'Just finished the Pyramids trip with Kemet Concierge ظ‹ع؛â€‌ط› Service was 10/10!',
+         'ظ‹ع؛â€‌ط›', '["#ط·آ§ط¸â€‍ط·آ£ط¸â€،ط·آ±ط·آ§ط¸â€¦ط·آ§ط·ع¾","#ط¸ئ’ط¸ظ¹ط¸â€¦ط·ع¾","#ط·آ±ط·آ­ط¸â€‍ط·آ§ط·ع¾"]', 224, 18, 9),
     ]
     for p in demo_posts:
         cur.execute("""
@@ -418,7 +423,7 @@ class KemetDB:
         return [dict(r) for r in rows]
 
     # --- AUTH ---
-    def register(self, email, password, name, nickname, avatar_emoji='ًں‘‘', country='', phone=''):
+    def register(self, email, password, name, nickname, avatar_emoji='ظ‹ع؛â€کâ€ک', country='', phone=''):
         uid = generate_id()
         ph = hash_password(password)
         try:
@@ -429,14 +434,14 @@ class KemetDB:
             self.conn.commit()
             return {'ok': True, 'user_id': uid}
         except sqlite3.IntegrityError:
-            return {'ok': False, 'error': 'ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ظ…ط³طھط®ط¯ظ… ط¨ط§ظ„ظپط¹ظ„'}
+            return {'ok': False, 'error': 'ط·آ§ط¸â€‍ط·آ¨ط·آ±ط¸ظ¹ط·آ¯ ط·آ§ط¸â€‍ط·آ¥ط¸â€‍ط¸ئ’ط·ع¾ط·آ±ط¸ث†ط¸â€ ط¸ظ¹ ط¸â€¦ط·آ³ط·ع¾ط·آ®ط·آ¯ط¸â€¦ ط·آ¨ط·آ§ط¸â€‍ط¸ظ¾ط·آ¹ط¸â€‍'}
 
     def login(self, email, password, platform='web'):
         row = self.conn.execute(
             "SELECT * FROM users WHERE email=? AND is_active=1", (email.lower().strip(),)
         ).fetchone()
         if not row or row['password_hash'] != hash_password(password):
-            return {'ok': False, 'error': 'ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¯ط®ظˆظ„ ط؛ظٹط± طµط­ظٹط­ط©'}
+            return {'ok': False, 'error': 'ط·آ¨ط¸ظ¹ط·آ§ط¸â€ ط·آ§ط·ع¾ ط·آ§ط¸â€‍ط·آ¯ط·آ®ط¸ث†ط¸â€‍ ط·ط›ط¸ظ¹ط·آ± ط·آµط·آ­ط¸ظ¹ط·آ­ط·آ©'}
         token = generate_id()
         sid = generate_id()
         expires = (datetime.now() + timedelta(days=30)).isoformat()
@@ -478,7 +483,7 @@ class KemetDB:
         allowed = ['name','nickname','avatar_emoji','country','phone','bio']
         updates = {k: v for k, v in kwargs.items() if k in allowed}
         if not updates:
-            return {'ok': False, 'error': 'ظ„ط§ ظٹظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ ظ„ظ„طھط­ط¯ظٹط«'}
+            return {'ok': False, 'error': 'ط¸â€‍ط·آ§ ط¸ظ¹ط¸ث†ط·آ¬ط·آ¯ ط·آ¨ط¸ظ¹ط·آ§ط¸â€ ط·آ§ط·ع¾ ط¸â€‍ط¸â€‍ط·ع¾ط·آ­ط·آ¯ط¸ظ¹ط·آ«'}
         sets = ', '.join(f"{k}=?" for k in updates)
         vals = list(updates.values()) + [user_id]
         self.conn.execute(f"UPDATE users SET {sets} WHERE id=?", vals)
@@ -556,7 +561,7 @@ class KemetDB:
     # --- FOLLOWS ---
     def toggle_follow(self, follower_id, following_id):
         if follower_id == following_id:
-            return {'ok': False, 'error': 'ظ„ط§ ظٹظ…ظƒظ†ظƒ ظ…طھط§ط¨ط¹ط© ظ†ظپط³ظƒ'}
+            return {'ok': False, 'error': 'ط¸â€‍ط·آ§ ط¸ظ¹ط¸â€¦ط¸ئ’ط¸â€ ط¸ئ’ ط¸â€¦ط·ع¾ط·آ§ط·آ¨ط·آ¹ط·آ© ط¸â€ ط¸ظ¾ط·آ³ط¸ئ’'}
         existing = self.conn.execute(
             "SELECT id FROM follows WHERE follower_id=? AND following_id=?",
             (follower_id, following_id)
@@ -668,7 +673,7 @@ class KemetDB:
                        payment_method='', contact_phone='', contact_email='', special_requests=''):
         tour = self.get_tour(tour_id)
         if not tour:
-            return {'ok': False, 'error': 'ط§ظ„ط±ط­ظ„ط© ط؛ظٹط± ظ…ظˆط¬ظˆط¯ط©'}
+            return {'ok': False, 'error': 'ط·آ§ط¸â€‍ط·آ±ط·آ­ط¸â€‍ط·آ© ط·ط›ط¸ظ¹ط·آ± ط¸â€¦ط¸ث†ط·آ¬ط¸ث†ط·آ¯ط·آ©'}
         total = tour['price'] * guests_count
         bid = generate_id()
         self.conn.execute("""
@@ -697,7 +702,7 @@ class KemetDB:
             "SELECT * FROM bookings WHERE id=? AND user_id=?", (booking_id, user_id)
         ).fetchone()
         if not booking:
-            return {'ok': False, 'error': 'ط§ظ„ط­ط¬ط² ط؛ظٹط± ظ…ظˆط¬ظˆط¯'}
+            return {'ok': False, 'error': 'ط·آ§ط¸â€‍ط·آ­ط·آ¬ط·آ² ط·ط›ط¸ظ¹ط·آ± ط¸â€¦ط¸ث†ط·آ¬ط¸ث†ط·آ¯'}
         pid = generate_id()
         self.conn.execute(
             "INSERT INTO payments (id,booking_id,user_id,amount,currency,method,status,gateway_ref) VALUES (?,?,?,?,?,?,?,?)",
@@ -733,7 +738,7 @@ class KemetDB:
                 self.conn.commit()
             return {'ok': True, 'review_id': rid}
         except sqlite3.IntegrityError:
-            return {'ok': False, 'error': 'ظ„ظ‚ط¯ ظ‚ظٹظ‘ظ…طھ ظ‡ط°ظ‡ ط§ظ„ط±ط­ظ„ط© ظ…ظ† ظ‚ط¨ظ„'}
+            return {'ok': False, 'error': 'ط¸â€‍ط¸â€ڑط·آ¯ ط¸â€ڑط¸ظ¹ط¸â€کط¸â€¦ط·ع¾ ط¸â€،ط·آ°ط¸â€، ط·آ§ط¸â€‍ط·آ±ط·آ­ط¸â€‍ط·آ© ط¸â€¦ط¸â€  ط¸â€ڑط·آ¨ط¸â€‍'}
 
     # --- PHARAOH NICKNAMES ---
     def get_pharaoh_nicknames(self):
@@ -765,21 +770,21 @@ def run_tests():
     conn = init_db()
     seed_data(conn)
     conn.close()
-    print("âœ… Schema created and seeded")
+    print("أ¢إ“â€¦ Schema created and seeded")
 
     db = KemetDB()
     errors = []
 
     def check(label, result, expect_ok=True):
         ok = result.get('ok', False) if isinstance(result, dict) else bool(result)
-        status = "âœ…" if ok == expect_ok else "â‌Œ"
+        status = "أ¢إ“â€¦" if ok == expect_ok else "أ¢â€Œإ’"
         if ok != expect_ok:
             errors.append(f"{label}: {result}")
         print(f"  {status} {label}")
         return result
 
     print("\n--- AUTH TESTS ---")
-    r = check("Register new user", db.register('test@kemet.com','Pass1234!','ظ…ط­ظ…ط¯','ط®ظˆظپظˆ','ًںڈ›ï¸ڈ','EG','0100'))
+    r = check("Register new user", db.register('test@kemet.com','Pass1234!','ط¸â€¦ط·آ­ط¸â€¦ط·آ¯','ط·آ®ط¸ث†ط¸ظ¾ط¸ث†','ظ‹ع؛عˆâ€؛أ¯آ¸عˆ','EG','0100'))
     uid = r.get('user_id')
 
     check("Register duplicate email", db.register('test@kemet.com','x','y','z'), expect_ok=False)
@@ -790,7 +795,7 @@ def run_tests():
     check("Login wrong password", db.login('test@kemet.com','wrong'), expect_ok=False)
 
     user = db.validate_token(token)
-    print(f"  {'âœ…' if user else 'â‌Œ'} Token validation: {user['nickname'] if user else 'FAILED'}")
+    print(f"  {'أ¢إ“â€¦' if user else 'أ¢â€Œإ’'} Token validation: {user['nickname'] if user else 'FAILED'}")
 
     check("Login demo user", db.login('ramesses@kemet.com','Demo1234!'))
     demo_login = db.login('ramesses@kemet.com','Demo1234!')
@@ -798,27 +803,27 @@ def run_tests():
     demo_token = demo_login.get('token')
 
     print("\n--- PROFILE TESTS ---")
-    check("Update profile", db.update_profile(uid, bio='ظ…ط³ط§ظپط± ظˆط¹ط§ط´ظ‚ ظ„ط­ط¶ط§ط±ط© ظƒظٹظ…طھ'))
+    check("Update profile", db.update_profile(uid, bio='ط¸â€¦ط·آ³ط·آ§ط¸ظ¾ط·آ± ط¸ث†ط·آ¹ط·آ§ط·آ´ط¸â€ڑ ط¸â€‍ط·آ­ط·آ¶ط·آ§ط·آ±ط·آ© ط¸ئ’ط¸ظ¹ط¸â€¦ط·ع¾'))
     u = db.get_user(uid)
-    print(f"  {'âœ…' if u and u.get('bio') else 'â‌Œ'} Profile bio saved: {u.get('bio','') if u else 'N/A'}")
+    print(f"  {'أ¢إ“â€¦' if u and u.get('bio') else 'أ¢â€Œإ’'} Profile bio saved: {u.get('bio','') if u else 'N/A'}")
 
     print("\n--- POSTS TESTS ---")
-    r = check("Create post", db.create_post(uid, 'ط£ظˆظ„ طھط؛ط±ظٹط¯ط© ظپظٹ ظƒظٹظ…طھ ط³ظˆط´ظٹط§ظ„! ًں”؛', 'My first Kemet post!', 'ًں”؛', ['#ظƒظٹظ…طھ','#ظ…طµط±']))
+    r = check("Create post", db.create_post(uid, 'ط·آ£ط¸ث†ط¸â€‍ ط·ع¾ط·ط›ط·آ±ط¸ظ¹ط·آ¯ط·آ© ط¸ظ¾ط¸ظ¹ ط¸ئ’ط¸ظ¹ط¸â€¦ط·ع¾ ط·آ³ط¸ث†ط·آ´ط¸ظ¹ط·آ§ط¸â€‍! ظ‹ع؛â€‌ط›', 'My first Kemet post!', 'ظ‹ع؛â€‌ط›', ['#ط¸ئ’ط¸ظ¹ط¸â€¦ط·ع¾','#ط¸â€¦ط·آµط·آ±']))
     pid = r.get('post_id')
 
     feed = db.get_feed(uid)
-    print(f"  {'âœ…' if len(feed) > 0 else 'â‌Œ'} Feed loaded: {len(feed)} posts")
+    print(f"  {'أ¢إ“â€¦' if len(feed) > 0 else 'أ¢â€Œإ’'} Feed loaded: {len(feed)} posts")
 
     print("\n--- LIKES TESTS ---")
     r = check("Like post", db.toggle_like(uid, pid))
-    print(f"  {'âœ…' if r.get('liked') else 'â‌Œ'} Post liked: {r.get('liked')}")
+    print(f"  {'أ¢إ“â€¦' if r.get('liked') else 'أ¢â€Œإ’'} Post liked: {r.get('liked')}")
     r2 = check("Unlike post", db.toggle_like(uid, pid))
-    print(f"  {'âœ…' if not r2.get('liked') else 'â‌Œ'} Post unliked: {not r2.get('liked')}")
+    print(f"  {'أ¢إ“â€¦' if not r2.get('liked') else 'أ¢â€Œإ’'} Post unliked: {not r2.get('liked')}")
 
     print("\n--- COMMENTS TESTS ---")
-    r = check("Add comment", db.add_comment(uid, pid, 'طھط¹ظ„ظٹظ‚ ط±ط§ط¦ط¹ ط¹ظ„ظ‰ ط§ظ„ظ…ظ†ط´ظˆط±!'))
+    r = check("Add comment", db.add_comment(uid, pid, 'ط·ع¾ط·آ¹ط¸â€‍ط¸ظ¹ط¸â€ڑ ط·آ±ط·آ§ط·آ¦ط·آ¹ ط·آ¹ط¸â€‍ط¸â€° ط·آ§ط¸â€‍ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ±!'))
     comments = db.get_comments(pid)
-    print(f"  {'âœ…' if len(comments) > 0 else 'â‌Œ'} Comments loaded: {len(comments)}")
+    print(f"  {'أ¢إ“â€¦' if len(comments) > 0 else 'أ¢â€Œإ’'} Comments loaded: {len(comments)}")
 
     print("\n--- FOLLOWS TESTS ---")
     check("Follow user", db.toggle_follow(uid, demo_uid))
@@ -826,53 +831,53 @@ def run_tests():
     check("Follow self (should fail)", db.toggle_follow(uid, uid), expect_ok=False)
 
     print("\n--- MESSAGES TESTS ---")
-    check("Send message", db.send_message(uid, demo_uid, 'ظ…ط±ط­ط¨ط§ظ‹طŒ ظƒظٹظپ ط­ط§ظ„ظƒطں'))
-    check("Send reply", db.send_message(demo_uid, uid, 'ط¨ط®ظٹط± ط´ظƒط±ط§ظ‹! ظƒظٹظپ ط±ط­ظ„طھظƒطں'))
+    check("Send message", db.send_message(uid, demo_uid, 'ط¸â€¦ط·آ±ط·آ­ط·آ¨ط·آ§ط¸â€¹ط·إ’ ط¸ئ’ط¸ظ¹ط¸ظ¾ ط·آ­ط·آ§ط¸â€‍ط¸ئ’ط·ع؛'))
+    check("Send reply", db.send_message(demo_uid, uid, 'ط·آ¨ط·آ®ط¸ظ¹ط·آ± ط·آ´ط¸ئ’ط·آ±ط·آ§ط¸â€¹! ط¸ئ’ط¸ظ¹ط¸ظ¾ ط·آ±ط·آ­ط¸â€‍ط·ع¾ط¸ئ’ط·ع؛'))
     conv = db.get_conversation(uid, demo_uid)
-    print(f"  {'âœ…' if len(conv) >= 2 else 'â‌Œ'} Conversation loaded: {len(conv)} messages")
+    print(f"  {'أ¢إ“â€¦' if len(conv) >= 2 else 'أ¢â€Œإ’'} Conversation loaded: {len(conv)} messages")
     inbox = db.get_inbox(uid)
-    print(f"  {'âœ…' if len(inbox) > 0 else 'â‌Œ'} Inbox loaded: {len(inbox)} chats")
+    print(f"  {'أ¢إ“â€¦' if len(inbox) > 0 else 'أ¢â€Œإ’'} Inbox loaded: {len(inbox)} chats")
 
     print("\n--- TOURS TESTS ---")
     tours = db.get_tours()
-    print(f"  {'âœ…' if len(tours) >= 6 else 'â‌Œ'} All tours loaded: {len(tours)}")
+    print(f"  {'أ¢إ“â€¦' if len(tours) >= 6 else 'أ¢â€Œإ’'} All tours loaded: {len(tours)}")
     featured = db.get_tours(featured_only=True)
-    print(f"  {'âœ…' if len(featured) > 0 else 'â‌Œ'} Featured tours: {len(featured)}")
+    print(f"  {'أ¢إ“â€¦' if len(featured) > 0 else 'أ¢â€Œإ’'} Featured tours: {len(featured)}")
     cats = db.get_categories()
-    print(f"  {'âœ…' if len(cats) > 0 else 'â‌Œ'} Categories: {len(cats)}")
+    print(f"  {'أ¢إ“â€¦' if len(cats) > 0 else 'أ¢â€Œإ’'} Categories: {len(cats)}")
     tour = db.get_tour('tour_luxor')
-    print(f"  {'âœ…' if tour else 'â‌Œ'} Get single tour: {tour.get('title_ar','') if tour else 'N/A'}")
+    print(f"  {'أ¢إ“â€¦' if tour else 'أ¢â€Œإ’'} Get single tour: {tour.get('title_ar','') if tour else 'N/A'}")
 
     print("\n--- BOOKINGS TESTS ---")
-    r = check("Create booking", db.create_booking(uid,'tour_pyramids',2,'2025-12-01','card','0100000000','test@kemet.com','ط؛ط±ظپط© ظ…ط·ظ„ط© ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„'))
+    r = check("Create booking", db.create_booking(uid,'tour_pyramids',2,'2025-12-01','card','0100000000','test@kemet.com','ط·ط›ط·آ±ط¸ظ¾ط·آ© ط¸â€¦ط·آ·ط¸â€‍ط·آ© ط·آ¹ط¸â€‍ط¸â€° ط·آ§ط¸â€‍ط¸â€ ط¸ظ¹ط¸â€‍'))
     bid = r.get('booking_id')
     total = r.get('total_price')
-    print(f"  âœ… Total price calculated: ${total}")
+    print(f"  أ¢إ“â€¦ Total price calculated: ${total}")
 
     r2 = check("Confirm payment", db.confirm_payment(bid, uid, 'card', 'PAY_REF_001'))
     my_bookings = db.get_user_bookings(uid)
-    print(f"  {'âœ…' if len(my_bookings) > 0 else 'â‌Œ'} User bookings: {len(my_bookings)}")
+    print(f"  {'أ¢إ“â€¦' if len(my_bookings) > 0 else 'أ¢â€Œإ’'} User bookings: {len(my_bookings)}")
     booking_status = my_bookings[0].get('status') if my_bookings else 'unknown'
-    print(f"  {'âœ…' if booking_status == 'confirmed' else 'â‌Œ'} Booking status: {booking_status}")
+    print(f"  {'أ¢إ“â€¦' if booking_status == 'confirmed' else 'أ¢â€Œإ’'} Booking status: {booking_status}")
 
     print("\n--- REVIEWS TESTS ---")
-    check("Add review", db.add_review(uid, 'tour_pyramids', 5, 'ط±ط­ظ„ط© ظ„ط§ طھظڈظ†ط³ظ‰طŒ ط£ظ†طµط­ ط§ظ„ط¬ظ…ظٹط¹!', bid))
-    check("Duplicate review (should fail)", db.add_review(uid, 'tour_pyramids', 4, 'ظ…ط±ط© ط£ط®ط±ظ‰'), expect_ok=False)
+    check("Add review", db.add_review(uid, 'tour_pyramids', 5, 'ط·آ±ط·آ­ط¸â€‍ط·آ© ط¸â€‍ط·آ§ ط·ع¾ط¸عˆط¸â€ ط·آ³ط¸â€°ط·إ’ ط·آ£ط¸â€ ط·آµط·آ­ ط·آ§ط¸â€‍ط·آ¬ط¸â€¦ط¸ظ¹ط·آ¹!', bid))
+    check("Duplicate review (should fail)", db.add_review(uid, 'tour_pyramids', 4, 'ط¸â€¦ط·آ±ط·آ© ط·آ£ط·آ®ط·آ±ط¸â€°'), expect_ok=False)
 
     print("\n--- NOTIFICATIONS TESTS ---")
-    db.add_notification(uid, demo_uid, 'like', 'ط£ط¹ط¬ط¨ ط±ظ…ط³ظٹط³ ط¨ظ…ظ†ط´ظˆط±ظƒ', pid)
-    db.add_notification(uid, demo_uid, 'follow', 'ط¨ط¯ط£ ط±ظ…ط³ظٹط³ ط¨ظ…طھط§ط¨ط¹طھظƒ')
+    db.add_notification(uid, demo_uid, 'like', 'ط·آ£ط·آ¹ط·آ¬ط·آ¨ ط·آ±ط¸â€¦ط·آ³ط¸ظ¹ط·آ³ ط·آ¨ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ±ط¸ئ’', pid)
+    db.add_notification(uid, demo_uid, 'follow', 'ط·آ¨ط·آ¯ط·آ£ ط·آ±ط¸â€¦ط·آ³ط¸ظ¹ط·آ³ ط·آ¨ط¸â€¦ط·ع¾ط·آ§ط·آ¨ط·آ¹ط·ع¾ط¸ئ’')
     notifs = db.get_notifications(uid)
-    print(f"  {'âœ…' if len(notifs) >= 2 else 'â‌Œ'} Notifications: {len(notifs)}")
+    print(f"  {'أ¢إ“â€¦' if len(notifs) >= 2 else 'أ¢â€Œإ’'} Notifications: {len(notifs)}")
     db.mark_notifications_read(uid)
 
     print("\n--- PHARAOH NICKNAMES TEST ---")
     pharaohs = db.get_pharaoh_nicknames()
-    print(f"  {'âœ…' if len(pharaohs) == 12 else 'â‌Œ'} Pharaoh nicknames: {len(pharaohs)}")
+    print(f"  {'أ¢إ“â€¦' if len(pharaohs) == 12 else 'أ¢â€Œإ’'} Pharaoh nicknames: {len(pharaohs)}")
 
     print("\n--- STATS TEST ---")
     stats = db.get_stats()
-    print(f"  âœ… Stats: {stats['users']} users | {stats['posts']} posts | {stats['bookings']} bookings | ${stats['revenue']} revenue")
+    print(f"  أ¢إ“â€¦ Stats: {stats['users']} users | {stats['posts']} posts | {stats['bookings']} bookings | ${stats['revenue']} revenue")
 
     check("Logout", db.logout(token))
 
@@ -880,11 +885,11 @@ def run_tests():
 
     print("\n" + "="*60)
     if errors:
-        print(f"â‌Œ {len(errors)} TEST(S) FAILED:")
+        print(f"أ¢â€Œإ’ {len(errors)} TEST(S) FAILED:")
         for e in errors:
             print(f"   - {e}")
     else:
-        print("âœ… ALL TESTS PASSED â€” Database is fully operational")
+        print("أ¢إ“â€¦ ALL TESTS PASSED أ¢â‚¬â€‌ Database is fully operational")
     print("="*60 + "\n")
     return len(errors) == 0
 
