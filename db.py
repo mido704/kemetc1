@@ -2,6 +2,13 @@
 KEMET SOCIAL - Database Manager
 Initializes, seeds, and tests the SQLite database
 """
+import os
+try:
+    import psycopg2
+    import psycopg2.extras
+    USE_PG = bool(os.environ.get("DATABASE_URL"))
+except ImportError:
+    USE_PG = False
 import sqlite3
 import json
 import uuid
@@ -885,3 +892,4 @@ def run_tests():
 if __name__ == '__main__':
     success = run_tests()
     exit(0 if success else 1)
+
