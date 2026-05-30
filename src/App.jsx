@@ -795,6 +795,7 @@ function StorePage({ lang, user, onToast }) {
 }
 
 function ProfilePage({ user, lang, posts, onToast }) {
+  const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
   const saveProfile = async () => {
