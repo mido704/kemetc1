@@ -794,10 +794,32 @@ function StorePage({ lang, user, onToast }) {
   );
 }
 
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnrfsmtbi/image/upload';
+const CLOUDINARY_PRESET = 'kemet_upload';
+
+async function uploadToCloudinary(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  const r = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
+  const d = await r.json();
+  return d.secure_url;
+}
+
 function ProfilePage({ user, lang, posts, onToast }) {
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
+  const [uploading, setUploading] = useState(false);
+  const uploadAvatar = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await uploadToCloudinary(file);
+    setEditForm(f=>({...f, avatar_url: url}));
+    setUploading(false);
+    onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
+  };
   const saveProfile = async () => {
     const token = localStorage.getItem('kemet_token');
     await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(editForm) });
@@ -813,6 +835,13 @@ function ProfilePage({ user, lang, posts, onToast }) {
           <div className='modal' style={{padding:24}}>
             <div style={{fontWeight:700,color:'var(--g)',fontSize:16,marginBottom:16}}>{t('تعديل البروفايل','Edit Profile',lang)}</div>
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              <div style={{textAlign:'center',marginBottom:8}}>
+                <label style={{cursor:'pointer',display:'inline-block',background:'rgba(201,168,76,.1)',border:'1px solid var(--gd)',borderRadius:8,padding:'8px 16px',color:'var(--g)',fontSize:13}}>
+                  {uploading ? '⏳' : t('رفع صورة الأفاتار','Upload Avatar',lang)}
+                  <input type='file' accept='image/*' onChange={uploadAvatar} style={{display:'none'}} />
+                </label>
+                {editForm.avatar_url && <img src={editForm.avatar_url} style={{width:60,height:60,borderRadius:'50%',marginTop:8,display:'block',margin:'8px auto 0'}} />}
+              </div>
               <input className='inp' placeholder={t('الاسم','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
               <input className='inp' placeholder={t('النيكنيم','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
               <textarea className='inp' placeholder={t('نبذة عنك','Bio',lang)} value={editForm.bio} onChange={e=>setEditForm(f=>({...f,bio:e.target.value}))} rows={3} />
