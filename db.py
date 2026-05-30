@@ -1,4 +1,4 @@
-"""
+﻿"""
 KEMET SOCIAL - Database Manager
 Initializes, seeds, and tests the SQLite database
 """
@@ -273,6 +273,7 @@ def init_db():
     return conn
 
 def seed_data(conn):
+    if os.environ.get('DATABASE_URL'): return
     cur = conn.cursor()
 
     # Pharaoh nicknames
