@@ -388,8 +388,7 @@ def seed_data(conn):
             (id,category_id,title_ar,title_en,description_ar,description_en,
              price,duration_days,image_emoji,badge_ar,badge_en,rating,reviews_count,
              includes_ar,includes_en,is_featured)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-            ON CONFLICT (id) DO NOTHING
+             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING
         """, t)
 
     # Demo users
