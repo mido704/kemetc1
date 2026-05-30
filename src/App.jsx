@@ -165,109 +165,50 @@ function GoldDivider() { return <div className="gdiv" />; }
 
 // ── LANDING PAGE ──────────────────────────────────────────
 function Landing({ onLogin, onRegister, lang, setLang }) {
-  const [hovered, setHovered] = useState(null);
-  const features = lang === 'ar' ? [
-    { icon:'🏛️', title:'حضارة أصيلة', desc:'تواصل مع عشاق الحضارة المصرية من كل العالم' },
-    { icon:'✈️', title:'رحلات فاخرة', desc:'احجز رحلتك مع مرشدين معتمدين وترخيص رسمي' },
-    { icon:'💰', title:'اربح معنا', desc:'نظام مشاركة الأرباح — كلما تفاعلت كلما ربحت' },
-    { icon:'👑', title:'عضوية مؤسس', desc:'انضم الآن واحصل على شارة المؤسس مدى الحياة' },
-  ] : [
-    { icon:'🏛️', title:'Authentic Heritage', desc:'Connect with Egypt civilization lovers worldwide' },
-    { icon:'✈️', title:'Luxury Tours', desc:'Book with certified guides and official license' },
-    { icon:'💰', title:'Earn With Us', desc:'Profit sharing system — more engagement, more earnings' },
-    { icon:'👑', title:'Founder Badge', desc:'Join now and get lifetime founder membership badge' },
-  ];
-
   return (
-    <div style={{ minHeight:'100vh', background:'#000', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden', direction: lang==='ar'?'rtl':'ltr' }}>
-      
-      {/* Stars background */}
-      <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(201,168,76,0.05) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(139,105,20,0.03) 0%, transparent 70%)', pointerEvents:'none' }}/>
-      
-      {/* Hieroglyphics background */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, bottom:0, display:'flex', alignItems:'center', justifyContent:'center', fontSize:200, opacity:0.02, pointerEvents:'none', userSelect:'none' }}>
-        𓂀𓁿𓆏𓂋𓆼𓅓𓊽𓉐
-      </div>
-
-      {/* Top ticker */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, background:'linear-gradient(90deg,var(--gd),rgba(201,168,76,.4),var(--gd))', padding:'6px 0', textAlign:'center', fontSize:11, color:'#000', letterSpacing:2, fontWeight:700, zIndex:10 }}>
+    <div style={{ minHeight:'100vh', background:'radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.07) 0%,transparent 60%),#000', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
+      <div style={{ position:'absolute', top:0, left:0, right:0, background:'linear-gradient(90deg,var(--gd),rgba(201,168,76,.3),var(--gd))', padding:'5px 0', textAlign:'center', fontSize:11, color:'var(--gl)', letterSpacing:1 }}>
         ✦ كيمت سوشيال — منصة المجتمع السياحي المصري ✦ Kemet Social — Egypt Tourism Community ✦
       </div>
-
-      {/* Lang toggle */}
-      <div style={{ position:'absolute', top:16, left:16, zIndex:20 }}>
+      <div style={{ position:'absolute', top:16, left:16 }}>
         <button className="lang" onClick={() => setLang(l => l==='ar'?'en':'ar')}>{lang==='ar'?'EN':'عربي'}</button>
       </div>
+      <div style={{ position:'absolute', fontSize:380, opacity:.025, bottom:-60, left:'50%', transform:'translateX(-50%)', animation:'float 8s ease-in-out infinite', pointerEvents:'none', lineHeight:1 }}>🔺</div>
 
-      {/* Main content */}
-      <div style={{ textAlign:'center', padding:'80px 20px 40px', maxWidth:700, zIndex:1 }} className="fi">
-        
-        {/* Logo */}
-        <div style={{ fontSize:80, lineHeight:1, marginBottom:12, animation:'float 5s ease-in-out infinite', filter:'drop-shadow(0 0 30px rgba(201,168,76,0.5))' }}>🔺</div>
-        
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:12, marginBottom:6 }}>
-          <span style={{ color:'var(--gd)', fontSize:22 }}>𓂀</span>
-          <div className="logo" style={{ fontSize:48, letterSpacing:6 }}>KEMET</div>
-          <span style={{ color:'var(--gd)', fontSize:22 }}>𓂀</span>
+      <div style={{ textAlign:'center', padding:'40px 20px', maxWidth:480, zIndex:1 }} className="fi">
+        <div style={{ fontSize:96, lineHeight:1, marginBottom:8, animation:'float 5s ease-in-out infinite' }}>🔺</div>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10, marginBottom:4 }}>
+          <span style={{ color:'var(--gd)', fontSize:18 }}>𓂀</span>
+          <div className="logo" style={{ fontSize:40 }}>KEMET</div>
+          <span style={{ color:'var(--gd)', fontSize:18 }}>𓂀</span>
         </div>
-        
-        <div style={{ fontFamily:'serif', fontSize:22, color:'var(--gl)', marginBottom:8, letterSpacing:2 }}>كيمت سوشيال</div>
-        
-        {/* Hook */}
-        <div style={{ background:'linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05))', border:'1px solid rgba(201,168,76,0.2)', borderRadius:16, padding:'16px 24px', marginBottom:24 }}>
-          <p style={{ color:'var(--g)', fontSize:16, lineHeight:1.9, fontWeight:600, margin:0 }}>
-            {lang==='ar' ? '🌍 هل تعلم أن مصر تخفي كنوزاً لم يرها العالم بعد؟' : '🌍 Did you know Egypt hides treasures the world hasn\'t seen yet?'}
-          </p>
-          <p style={{ color:'var(--tm)', fontSize:13, lineHeight:1.8, margin:'8px 0 0', fontStyle:'italic' }}>
-            {lang==='ar' ? 'انضم إلى مجتمع كيمت — حيث يلتقي عشاق الحضارة من كل العالم ويربحون معاً' : 'Join Kemet — Where civilization lovers unite and earn together'}
-          </p>
+        <div style={{ fontFamily:'serif', fontSize:20, color:'var(--gl)', marginBottom:4 }}>كيمت سوشيال</div>
+          <p style={{ color:'var(--tm)', fontSize:14, marginBottom:16, lineHeight:2 }}>
+                  {t('هل تعلم أن مصر تخفي كنوزاً لم يرها العالم بعد؟',
+                     'Did you know Egypt hides treasures the world hasn\'t seen yet?', lang)}
+             </p>
+            <p style={{ color:'var(--g)', fontSize:13, marginBottom:32, lineHeight:1.8, fontStyle:'italic' }}>
+           {t('انضم إلى مجتمع كيمت — حيث يلتقي عشاق الحضارة المصرية من كل العالم',
+              'Join Kemet Community — Where Egypt lovers from around the world unite', lang)}
+            </p>
+        <div style={{ display:'flex', gap:12, justifyContent:'center' }}>
+          <button className="btn btn-g" style={{ minWidth:140, fontSize:15 }} onClick={onLogin}>{t('تسجيل الدخول','Login',lang)}</button>
+          <button className="btn btn-o" style={{ minWidth:140, fontSize:15 }} onClick={onRegister}>{t('إنشاء حساب','Register',lang)}</button>
         </div>
-
-        {/* CTA Buttons */}
-        <div style={{ display:'flex', gap:14, justifyContent:'center', marginBottom:40, flexWrap:'wrap' }}>
-          <button className="btn btn-g" style={{ minWidth:180, fontSize:16, padding:'14px 28px', borderRadius:12, boxShadow:'0 4px 20px rgba(201,168,76,0.3)' }} onClick={onRegister}>
-            {lang==='ar' ? '👑 انضم كمؤسس' : '👑 Join as Founder'}
-          </button>
-          <button className="btn btn-o" style={{ minWidth:160, fontSize:15, padding:'14px 24px', borderRadius:12 }} onClick={onLogin}>
-            {lang==='ar' ? 'تسجيل الدخول' : 'Login'}
-          </button>
-        </div>
-
-        {/* Stats */}
-        <div style={{ display:'flex', gap:0, justifyContent:'center', marginBottom:48, background:'rgba(201,168,76,0.05)', border:'1px solid rgba(201,168,76,0.15)', borderRadius:16, overflow:'hidden' }}>
-          {[['12K+', lang==='ar'?'عضو':'Members'], ['50+', lang==='ar'?'رحلة':'Tours'], ['4.9★', lang==='ar'?'تقييم':'Rating'], ['100%', lang==='ar'?'أمان':'Secure']].map(([n,l], i) => (
-            <div key={l} style={{ flex:1, textAlign:'center', padding:'16px 8px', borderLeft: i>0 ? '1px solid rgba(201,168,76,0.15)':'' }}>
-              <div style={{ fontSize:22, fontWeight:800, color:'var(--g)', fontFamily:'Cinzel,serif' }}>{n}</div>
-              <div style={{ fontSize:11, color:'var(--tm)', marginTop:2 }}>{l}</div>
+        <div style={{ display:'flex', gap:28, justifyContent:'center', marginTop:36 }}>
+          {[['12K+', t('عضو','Members',lang)],['50+',t('رحلة','Tours',lang)],['4.9★',t('تقييم','Rating',lang)]].map(([n,l]) => (
+            <div key={l} style={{ textAlign:'center' }}>
+              <div style={{ fontSize:22, fontWeight:800, color:'var(--g)' }}>{n}</div>
+              <div style={{ fontSize:11, color:'var(--tm)' }}>{l}</div>
             </div>
           ))}
-        </div>
-
-        {/* Features grid */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:12, marginBottom:32 }}>
-          {features.map((f,i) => (
-            <div key={i} style={{ background: hovered===i ? 'rgba(201,168,76,0.1)' : 'rgba(201,168,76,0.04)', border:`1px solid ${hovered===i?'rgba(201,168,76,0.4)':'rgba(201,168,76,0.12)'}`, borderRadius:12, padding:'16px 14px', textAlign:'center', cursor:'pointer', transition:'all .3s' }}
-              onMouseEnter={()=>setHovered(i)} onMouseLeave={()=>setHovered(null)}>
-              <div style={{ fontSize:28, marginBottom:6 }}>{f.icon}</div>
-              <div style={{ color:'var(--g)', fontWeight:700, fontSize:13, marginBottom:4 }}>{f.title}</div>
-              <div style={{ color:'var(--tm)', fontSize:11, lineHeight:1.6 }}>{f.desc}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Founder badge notice */}
-        <div style={{ background:'linear-gradient(135deg,rgba(201,168,76,0.15),rgba(139,105,20,0.1))', border:'1px solid var(--gd)', borderRadius:12, padding:'12px 20px', display:'inline-block' }}>
-          <span style={{ color:'var(--g)', fontSize:12, fontWeight:600 }}>
-            {lang==='ar' ? '⏳ العرض محدود — الأعضاء المؤسسون يحصلون على مزايا حصرية مدى الحياة' : '⏳ Limited — Founding members get exclusive lifetime benefits'}
-          </span>
         </div>
       </div>
-
-      {/* Bottom line */}
       <div style={{ position:'absolute', bottom:0, left:0, right:0, height:2, background:'linear-gradient(90deg,transparent,var(--g),transparent)' }} />
     </div>
   );
 }
+
 // ── LOGIN MODAL ───────────────────────────────────────────
 function LoginModal({ onClose, onSuccess, lang }) {
   const [email, setEmail] = useState('');
