@@ -927,15 +927,15 @@ def init_db():
     db_url = os.environ.get('DATABASE_URL')
     if db_url and USE_PG:
         cur = conn.cursor()
-        tables = SCHEMA.replace('PRAGMA foreign_keys = ON;','').replace('PRAGMA journal_mode = WAL;','')
-        for stmt in tables.split(';'):
-            stmt = stmt.strip()
-            if stmt:
+        pg_schema = SCHEMA.replace('PRAGMA foreign_keys = ON;','').replace('PRAGMA journal_mode = WAL;','')
+        statements = [s.strip() for s in pg_schema.split(';') if s.strip()]
+        for stmt in statements:
+            if stmt.upper().startswith('CREATE'):
                 try:
                     cur.execute(stmt)
-                except:
-                    pass
-        conn.commit()
+                    conn.commit()
+                except Exception:
+                    conn.rollback()
     else:
         conn.executescript(SCHEMA)
         conn.commit()
