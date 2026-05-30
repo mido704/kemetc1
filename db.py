@@ -903,3 +903,23 @@ if __name__ == '__main__':
     success = run_tests()
     exit(0 if success else 1)
 
+
+def init_db():
+    conn = get_conn()
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url and USE_PG:
+        cur = conn.cursor()
+        tables = SCHEMA.replace('PRAGMA foreign_keys = ON;','').replace('PRAGMA journal_mode = WAL;','')
+        for stmt in tables.split(';'):
+            stmt = stmt.strip()
+            if stmt:
+                try:
+                    cur.execute(stmt)
+                except:
+                    pass
+        conn.commit()
+    else:
+        conn.executescript(SCHEMA)
+        conn.commit()
+    return conn
+
