@@ -4,9 +4,7 @@
  * Falls back to localStorage demo mode when API is offline
  */
 
-const API_BASE = typeof window !== 'undefined' && window.KEMET_API_URL
-  ? window.KEMET_API_URL
-  : 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // ── Token management ─────────────────────────────────────
 const TOKEN_KEY = 'kemet_token';
