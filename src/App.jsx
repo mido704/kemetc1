@@ -821,7 +821,7 @@ function ProfilePage({ user, lang, posts, onToast }) {
     onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
   };
   const saveProfile = async () => {
-    const token = localStorage.getItem('kemet_token');
+    const token = storage.getToken();
     const payload = { name: editForm.name, nickname: editForm.nickname, bio: editForm.bio };
     if (editForm.avatar_url) payload.avatar_emoji = editForm.avatar_url;
     await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(payload) });
