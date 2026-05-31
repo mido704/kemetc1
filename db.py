@@ -473,9 +473,10 @@ class KemetDB:
         updates = {k: v for k, v in kwargs.items() if k in allowed}
         if not updates:
             return {'ok': False, 'error': 'لا يوجد بيانات للتحديث'}
-        sets = ', '.join(f"{k}=?" for k in updates)
+        sets = ', '.join(f"{k}=%s" for k in updates)
         vals = list(updates.values()) + [user_id]
-        self.conn.execute(f"UPDATE users SET {sets} WHERE id=?", vals)
+        self.conn.cursor().execute(f"UPDATE users SET {sets} WHERE id=%s", vals)
+
         self.conn.commit()
         return {'ok': True}
 
