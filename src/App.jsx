@@ -822,9 +822,12 @@ function ProfilePage({ user, lang, posts, onToast }) {
   };
   const saveProfile = async () => {
     const token = localStorage.getItem('kemet_token');
-    await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(editForm) });
+    const payload = { name: editForm.name, nickname: editForm.nickname, bio: editForm.bio };
+    if (editForm.avatar_url) payload.avatar_emoji = editForm.avatar_url;
+    await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(payload) });
     setEditMode(false);
     onToast && onToast(t('تم تحديث البروفايل','Profile updated',lang));
+    window.location.reload();
   };
   const [tab, setTab] = useState('posts');
 
