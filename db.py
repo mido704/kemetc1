@@ -1,4 +1,4 @@
-﻿"""
+"""
 KEMET SOCIAL - Database Manager
 Initializes, seeds, and tests the SQLite database
 """
@@ -469,7 +469,7 @@ class KemetDB:
         return u
 
     def update_profile(self, user_id, **kwargs):
-        allowed = ['name','nickname','avatar_emoji','country','phone','bio']
+        allowed = ['name','nickname','avatar_emoji','avatar_url','country','phone','bio']
         updates = {k: v for k, v in kwargs.items() if k in allowed}
         if not updates:
             return {'ok': False, 'error': 'لا يوجد بيانات للتحديث'}
