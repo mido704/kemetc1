@@ -1,8 +1,9 @@
 /**
  * KEMET SOCIAL - Main React App
  * Full social media + tourism store
+ * PATCHED: Avatar image display, Cover photo upload, Post media upload, Emoji picker
  */
-import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, createContext, useContext, useRef } from "react";
 import { authAPI, postsAPI, storeAPI, bookingsAPI, messagesAPI,
          notificationsAPI, storage } from "./utils/api.js";
 
@@ -63,6 +64,14 @@ const HASHTAGS = [
   { tag:"#Nile_Cruise",  count:"3.2K" },  { tag:"#أبو_سمبل",        count:"2.9K" },
 ];
 
+// ── Emoji list for picker ─────────────────────────────────
+const EMOJI_LIST = [
+  "😀","😂","😍","🥰","😎","🤩","😢","😡","🤔","👍","👎","❤️","🔥","✨","🎉",
+  "🏛️","🔺","🌅","🌊","🏜️","🌴","⭐","🌙","☀️","🗺️","📸","🎥","🤳","🦅",
+  "🐪","🦁","🐊","🦋","🌺","🌸","🍽️","☕","🥘","🍢","🏨","✈️","🚢","🗼",
+  "👑","⚱️","🔱","𓂀","💎","⚔️","🛡️","📜","🏺","⚡","🌟","💫","🎭","🎨",
+];
+
 // ── CSS ───────────────────────────────────────────────────
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cairo:wght@300;400;600;700;900&display=swap');
@@ -95,7 +104,7 @@ textarea.inp{resize:none}
 .card:hover{border-color:rgba(201,168,76,.2)}
 .gdiv{height:1px;background:linear-gradient(90deg,transparent,var(--gd),var(--g),var(--gd),transparent);opacity:.4;margin:12px 0}
 .badge{background:linear-gradient(135deg,var(--gd),var(--g));color:#000;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
-.av{border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--g));display:flex;align-items:center;justify-content:center;border:2px solid var(--gd);flex-shrink:0;cursor:pointer;transition:box-shadow .2s}
+.av{border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--g));display:flex;align-items:center;justify-content:center;border:2px solid var(--gd);flex-shrink:0;cursor:pointer;transition:box-shadow .2s;overflow:hidden}
 .av:hover{box-shadow:0 0 12px var(--gg)}
 .tab{padding:10px 18px;border:none;background:transparent;color:var(--tm);font-family:'Cairo',sans-serif;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-weight:600}
 .tab.on{color:var(--g);border-bottom-color:var(--g)}
@@ -108,7 +117,9 @@ textarea.inp{resize:none}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gd),var(--g));color:#000;padding:11px 24px;border-radius:30px;font-weight:700;font-size:13px;z-index:9999;animation:fadeIn .3s ease;box-shadow:0 4px 20px var(--gg);white-space:nowrap;pointer-events:none}
 .lang{background:var(--bb);border:1px solid var(--gd);color:var(--g);padding:3px 11px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s}
 .lang:hover{background:var(--gd);color:#000}
-.pcover{height:110px;background:linear-gradient(135deg,#0D0A02,#1A1200,#0D0A02);border-radius:12px 12px 0 0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.pcover{height:160px;border-radius:12px 12px 0 0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pcover:hover .cover-overlay{opacity:1}
+.cover-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-size:13px;color:var(--gl);gap:6px;font-weight:600}
 .hiero{color:var(--gd);opacity:.25;font-size:22px;letter-spacing:10px;white-space:nowrap;overflow:hidden}
 .pharaoh-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-height:260px;overflow-y:auto}
 .ph-opt{background:var(--bi);border:1px solid var(--bb);border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;font-size:11px}
@@ -130,7 +141,43 @@ textarea.inp{resize:none}
 .msg-bubble{padding:9px 13px;border-radius:12px;font-size:13px;max-width:78%;margin-bottom:6px}
 .msg-me{background:linear-gradient(135deg,var(--gd),rgba(201,168,76,.6));color:#000;margin-right:auto;border-radius:12px 12px 0 12px}
 .msg-other{background:var(--bb);color:var(--gl);margin-left:auto;border-radius:12px 12px 12px 0}
+.emoji-picker{background:var(--bc);border:1px solid var(--gd);border-radius:12px;padding:10px;display:grid;grid-template-columns:repeat(8,1fr);gap:4px;max-height:200px;overflow-y:auto;position:absolute;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.7)}
+.emoji-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;border-radius:6px;transition:background .15s}
+.emoji-btn:hover{background:rgba(201,168,76,.15)}
+.media-preview{border-radius:10px;overflow:hidden;position:relative;margin-top:10px;border:1px solid var(--bb)}
+.media-preview img,.media-preview video{width:100%;max-height:300px;object-fit:cover;display:block}
+.media-remove{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.7);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.upload-progress{height:3px;background:var(--bb);border-radius:2px;overflow:hidden;margin-top:6px}
+.upload-bar{height:100%;background:linear-gradient(90deg,var(--gd),var(--g));transition:width .3s}
 `;
+
+// ── Cloudinary ────────────────────────────────────────────
+const CLOUDINARY_CLOUD = 'dnrfsmtbi';
+const CLOUDINARY_PRESET = 'kemet_upload';
+
+async function uploadToCloudinary(file, onProgress) {
+  const isVideo = file.type.startsWith('video/');
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${isVideo ? 'video' : 'image'}/upload`;
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) onProgress(Math.round(e.loaded / e.total * 100));
+    };
+    xhr.onload = () => {
+      try {
+        const d = JSON.parse(xhr.responseText);
+        resolve(d.secure_url);
+      } catch { reject(new Error('Upload failed')); }
+    };
+    xhr.onerror = () => reject(new Error('Upload failed'));
+    xhr.send(fd);
+  });
+}
 
 // ── Helpers ───────────────────────────────────────────────
 function t(ar, en, lang) { return lang === 'ar' ? ar : en; }
@@ -153,10 +200,14 @@ function Toast({ msg, onDone }) {
   return <div className="toast">{msg}</div>;
 }
 
-function Avatar({ emoji = '👑', size = 44, onClick }) {
+// ── FIX 1: Avatar now shows real image URL if available ───
+function Avatar({ emoji = '👑', size = 44, url, onClick }) {
   return (
     <div className="av" style={{ width: size, height: size, fontSize: size * 0.45 }} onClick={onClick}>
-      {emoji}
+      {url
+        ? <img src={url} alt="avatar" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+        : emoji
+      }
     </div>
   );
 }
@@ -394,7 +445,7 @@ function PostCard({ post, lang, onLike, currentUserId }) {
   return (
     <div className="post-card">
       <div style={{ display:'flex', gap:11, alignItems:'flex-start', marginBottom:11 }}>
-        <Avatar emoji={post.avatar_emoji} size={42} />
+        <Avatar emoji={post.avatar_emoji} size={42} url={post.avatar_url} />
         <div style={{ flex:1 }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
             <span style={{ fontWeight:700, fontSize:14, color:'var(--g)' }}>{post.nickname}</span>
@@ -410,7 +461,18 @@ function PostCard({ post, lang, onLike, currentUserId }) {
         {lang==='ar' ? post.content : (post.content_en||post.content)}
       </div>
 
-      {post.image_emoji && (
+      {/* Real media (image/video URL from Cloudinary) */}
+      {post.media_url && (
+        <div className="media-preview" style={{ marginBottom:10 }}>
+          {post.media_type==='video'
+            ? <video src={post.media_url} controls style={{ width:'100%', maxHeight:300, borderRadius:10 }} />
+            : <img src={post.media_url} alt="post media" style={{ width:'100%', maxHeight:300, objectFit:'cover', borderRadius:10 }} />
+          }
+        </div>
+      )}
+
+      {/* Emoji image fallback for demo posts */}
+      {!post.media_url && post.image_emoji && (
         <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', borderRadius:10, padding:'28px 0', textAlign:'center', fontSize:60, marginBottom:10, border:'1px solid var(--bb)' }}>
           {post.image_emoji}
         </div>
@@ -431,7 +493,7 @@ function PostCard({ post, lang, onLike, currentUserId }) {
       </div>
 
       <div style={{ display:'flex', gap:4 }}>
-        <button className="btn btn-gh" onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:13, className:likeAnim?'liked-anim':'' }}>
+        <button className="btn btn-gh" onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:13 }}>
           {liked?'❤️':'🤍'} {t('إعجاب','Like',lang)}
         </button>
         <button className="btn btn-gh" onClick={loadComments} style={{ flex:1, fontSize:13 }}>
@@ -465,32 +527,131 @@ function PostCard({ post, lang, onLike, currentUserId }) {
   );
 }
 
-// ── CREATE POST BOX ───────────────────────────────────────
+// ── FIX 3 & 4: CREATE POST with real media upload + emoji picker ──
 function CreatePost({ user, lang, onPosted }) {
   const [text, setText] = useState('');
   const [posting, setPosting] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaPreview, setMediaPreview] = useState(null);
+  const [mediaType, setMediaType] = useState(null); // 'image' | 'video'
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const imageRef = useRef();
+  const videoRef = useRef();
+  const emojiRef = useRef();
+
+  // Close emoji picker on outside click
+  useEffect(() => {
+    const handler = (e) => { if (emojiRef.current && !emojiRef.current.contains(e.target)) setShowEmoji(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleMediaSelect = (e, type) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setMediaFile(file);
+    setMediaType(type);
+    const url = URL.createObjectURL(file);
+    setMediaPreview(url);
+    e.target.value = '';
+  };
+
+  const removeMedia = () => {
+    setMediaFile(null);
+    setMediaPreview(null);
+    setMediaType(null);
+    setUploadProgress(0);
+  };
+
+  const addEmoji = (emoji) => {
+    setText(t => t + emoji);
+    setShowEmoji(false);
+  };
 
   const submit = async () => {
-    if (!text.trim()) return;
+    if (!text.trim() && !mediaFile) return;
     setPosting(true);
-    const r = await postsAPI.createPost({ content:text, language:'ar' });
+    let media_url = null;
+
+    if (mediaFile) {
+      setUploading(true);
+      try {
+        media_url = await uploadToCloudinary(mediaFile, (p) => setUploadProgress(p));
+      } catch (err) {
+        console.error('Upload error:', err);
+      }
+      setUploading(false);
+    }
+
+    const r = await postsAPI.createPost({ content: text, language:'ar', media_url, media_type: mediaType });
     setPosting(false);
-    if (r.ok) { onPosted(text, r.data.post_id); setText(''); }
+    if (r.ok) {
+      onPosted(text, r.data.post_id, media_url, mediaType);
+      setText('');
+      removeMedia();
+    }
   };
 
   return (
     <div className="card" style={{ padding:14, marginBottom:14 }}>
       <div style={{ display:'flex', gap:11, alignItems:'flex-start' }}>
-        <Avatar emoji={user?.avatar_emoji||'👑'} size={42} />
+        <Avatar emoji={user?.avatar_emoji||'👑'} size={42} url={user?.avatar_url} />
         <div style={{ flex:1 }}>
           <textarea className="inp" placeholder={t('ما الذي تفكر فيه يا فرعون؟ 🔺','What are you thinking, Pharaoh? 🔺',lang)}
             value={text} onChange={e=>setText(e.target.value)} rows={3} />
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:9 }}>
-            <div style={{ display:'flex', gap:6 }}>
-              {['📷','🎥','😊','📍'].map(e=><button key={e} className="btn btn-gh" style={{ padding:'3px 8px', fontSize:16 }}>{e}</button>)}
+
+          {/* Media preview */}
+          {mediaPreview && (
+            <div className="media-preview">
+              {mediaType==='video'
+                ? <video src={mediaPreview} controls style={{ width:'100%', maxHeight:220 }} />
+                : <img src={mediaPreview} alt="preview" />
+              }
+              <button className="media-remove" onClick={removeMedia}>✕</button>
+              {uploading && (
+                <div className="upload-progress">
+                  <div className="upload-bar" style={{ width: uploadProgress+'%' }} />
+                </div>
+              )}
             </div>
-            <button className="btn btn-g" onClick={submit} disabled={posting||!text.trim()} style={{ padding:'8px 20px' }}>
-              {posting?'⏳':t('نشر','Post',lang)}
+          )}
+
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:9, position:'relative' }}>
+            <div style={{ display:'flex', gap:2, alignItems:'center' }}>
+              {/* Image upload */}
+              <button className="btn btn-gh" style={{ padding:'3px 8px', fontSize:16 }}
+                onClick={() => imageRef.current.click()} title={t('صورة','Image',lang)}>📷</button>
+              <input ref={imageRef} type="file" accept="image/*" style={{ display:'none' }}
+                onChange={e => handleMediaSelect(e, 'image')} />
+
+              {/* Video upload */}
+              <button className="btn btn-gh" style={{ padding:'3px 8px', fontSize:16 }}
+                onClick={() => videoRef.current.click()} title={t('فيديو','Video',lang)}>🎥</button>
+              <input ref={videoRef} type="file" accept="video/*" style={{ display:'none' }}
+                onChange={e => handleMediaSelect(e, 'video')} />
+
+              {/* Emoji picker */}
+              <div ref={emojiRef} style={{ position:'relative' }}>
+                <button className="btn btn-gh" style={{ padding:'3px 8px', fontSize:16 }}
+                  onClick={() => setShowEmoji(v=>!v)}>😊</button>
+                {showEmoji && (
+                  <div className="emoji-picker" style={{ bottom:'36px', right:0 }}>
+                    {EMOJI_LIST.map(em => (
+                      <button key={em} className="emoji-btn" onClick={() => addEmoji(em)}>{em}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <button className="btn btn-gh" style={{ padding:'3px 8px', fontSize:16 }}>📍</button>
+            </div>
+
+            <button className="btn btn-g" onClick={submit}
+              disabled={posting || uploading || (!text.trim() && !mediaFile)}
+              style={{ padding:'8px 20px' }}>
+              {posting || uploading ? `⏳ ${uploadProgress>0 && uploadProgress<100 ? uploadProgress+'%' : ''}` : t('نشر','Post',lang)}
             </button>
           </div>
         </div>
@@ -689,7 +850,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
       <div style={{ marginTop:'auto', paddingTop:14, borderTop:'1px solid var(--bb)' }}>
         {user && (
           <div style={{ display:'flex', alignItems:'center', gap:9, padding:'6px 4px', cursor:'pointer' }} onClick={()=>setPage('profile')}>
-            <Avatar emoji={user.avatar_emoji||'👑'} size={34} />
+            <Avatar emoji={user.avatar_emoji||'👑'} size={34} url={user.avatar_url} />
             <div style={{ flex:1, overflow:'hidden' }}>
               <div style={{ fontSize:12, color:'var(--g)', fontWeight:600, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user.nickname}</div>
               <div style={{ fontSize:10, color:'var(--tm)' }}>{user.email}</div>
@@ -727,24 +888,24 @@ function RightSidebar({ lang }) {
   );
 }
 
-// ── PAGES ─────────────────────────────────────────────────
+// ── FEED PAGE ─────────────────────────────────────────────
 function FeedPage({ user, lang, posts, setPosts, onToast }) {
-  const handlePosted = (text, postId) => {
+  const handlePosted = (text, postId, media_url, media_type) => {
     const newPost = {
       id: postId || `p_${Date.now()}`,
       user_id: user.id, nickname: user.nickname,
-      avatar_emoji: user.avatar_emoji, is_verified: user.is_verified||0,
+      avatar_emoji: user.avatar_emoji, avatar_url: user.avatar_url||null,
+      is_verified: user.is_verified||0,
       membership: user.membership||'free',
-      content: text, content_en: text, image_emoji:'',
+      content: text, content_en: text,
+      image_emoji: '',
+      media_url: media_url||null,
+      media_type: media_type||null,
       hashtags:'[]', likes_count:0, comments_count:0, shares_count:0, liked:false,
       created_at: new Date().toISOString()
     };
     setPosts(p => [newPost, ...p]);
     onToast(t('تم نشر المنشور! 🔺','Post published! 🔺',lang));
-  };
-
-  const handleLike = async (postId) => {
-    await postsAPI.likePost(postId);
   };
 
   return (
@@ -755,11 +916,12 @@ function FeedPage({ user, lang, posts, setPosts, onToast }) {
         <button className="tab">{t('مصر','Egypt',lang)}</button>
       </div>
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
-      {posts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} />)}
+      {posts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} currentUserId={user?.id} />)}
     </div>
   );
 }
 
+// ── STORE PAGE ────────────────────────────────────────────
 function StorePage({ lang, user, onToast }) {
   const [tours, setTours] = useState(DEMO_TOURS);
   const [tab, setTab] = useState('all');
@@ -794,82 +956,153 @@ function StorePage({ lang, user, onToast }) {
   );
 }
 
-const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnrfsmtbi/image/upload';
-const CLOUDINARY_PRESET = 'kemet_upload';
-
-async function uploadToCloudinary(file) {
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('upload_preset', CLOUDINARY_PRESET);
-  const r = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
-  const d = await r.json();
-  return d.secure_url;
-}
-
-function ProfilePage({ user, lang, posts, onToast }) {
-  const myPosts = posts.filter(p=>p.user_id===user?.id);
+// ── FIX 2: PROFILE PAGE with cover photo upload + avatar url ──
+function ProfilePage({ user, setUser, lang, posts, onToast }) {
+  const myPosts = posts.filter(p => p.user_id === user?.id);
   const [editMode, setEditMode] = useState(false);
-  const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
-  const [uploading, setUploading] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: user?.name||'',
+    nickname: user?.nickname||'',
+    bio: user?.bio||'',
+    avatar_url: user?.avatar_url||'',
+    cover_url: user?.cover_url||'',
+  });
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [tab, setTab] = useState('posts');
+  const coverInputRef = useRef();
+
+  // Upload avatar
   const uploadAvatar = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setUploading(true);
-    const url = await uploadToCloudinary(file);
-    setEditForm(f=>({...f, avatar_url: url}));
-    setUploading(false);
-    onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
+    setUploadingAvatar(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      setEditForm(f => ({...f, avatar_url: url}));
+      onToast && onToast(t('تم رفع الأفاتار ✓','Avatar uploaded ✓', lang));
+    } catch { onToast && onToast(t('فشل الرفع','Upload failed', lang)); }
+    setUploadingAvatar(false);
   };
+
+  // Upload cover
+  const uploadCover = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingCover(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      setEditForm(f => ({...f, cover_url: url}));
+      onToast && onToast(t('تم رفع صورة الغلاف ✓','Cover uploaded ✓', lang));
+    } catch { onToast && onToast(t('فشل الرفع','Upload failed', lang)); }
+    setUploadingCover(false);
+  };
+
+  // Save profile to API + update local user state
   const saveProfile = async () => {
     const token = storage.getToken();
-    const payload = { name: editForm.name, nickname: editForm.nickname, bio: editForm.bio };
+    const payload = {
+      name: editForm.name,
+      nickname: editForm.nickname,
+      bio: editForm.bio,
+    };
     if (editForm.avatar_url) payload.avatar_url = editForm.avatar_url;
-    const r = await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(payload) });
-    const data = await r.json();
-    if (data.ok) {
-      const updatedUser = {...user, ...payload};
-      storage.setUser(updatedUser);
-    }
-    setEditMode(false);
-    onToast && onToast(t('تم تحديث البروفايل','Profile updated',lang));
+    if (editForm.cover_url)  payload.cover_url  = editForm.cover_url;
 
+    try {
+      const r = await fetch('https://kemetc1-production.up.railway.app/api/users/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+        body: JSON.stringify(payload)
+      });
+      const data = await r.json();
+      if (data.ok || r.ok) {
+        const updatedUser = {...user, ...payload};
+        storage.setUser(updatedUser);
+        setUser(updatedUser); // ← update app-level user state immediately
+      }
+    } catch (err) { console.error(err); }
+
+    setEditMode(false);
+    onToast && onToast(t('تم تحديث البروفايل ✓','Profile updated ✓', lang));
   };
-  const [tab, setTab] = useState('posts');
+
+  // Determine cover background
+  const coverBg = editForm.cover_url
+    ? `url(${editForm.cover_url}) center/cover no-repeat`
+    : 'linear-gradient(135deg,#0D0A02,#1A1200,#0D0A02)';
 
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'0 14px 14px' }}>
+
+      {/* Edit Profile Modal */}
       {editMode && (
-        <div className='modal-bg' onClick={e=>e.target===e.currentTarget&&setEditMode(false)}>
-          <div className='modal' style={{padding:24}}>
-            <div style={{fontWeight:700,color:'var(--g)',fontSize:16,marginBottom:16}}>{t('تعديل البروفايل','Edit Profile',lang)}</div>
-            <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <div style={{textAlign:'center',marginBottom:8}}>
-                <label style={{cursor:'pointer',display:'inline-block',background:'rgba(201,168,76,.1)',border:'1px solid var(--gd)',borderRadius:8,padding:'8px 16px',color:'var(--g)',fontSize:13}}>
-                  {uploading ? '⏳' : t('رفع صورة الأفاتار','Upload Avatar',lang)}
-                  <input type='file' accept='image/*' onChange={uploadAvatar} style={{display:'none'}} />
-                </label>
-                {editForm.avatar_url && <img src={editForm.avatar_url} style={{width:60,height:60,borderRadius:'50%',marginTop:8,display:'block',margin:'8px auto 0'}} />}
+        <div className="modal-bg" onClick={e=>e.target===e.currentTarget&&setEditMode(false)}>
+          <div className="modal" style={{ padding:24 }}>
+            <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:16 }}>
+              {t('تعديل البروفايل','Edit Profile',lang)}
+            </div>
+            <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+
+              {/* Cover photo upload */}
+              <div>
+                <div style={{ fontSize:12, color:'var(--tm)', marginBottom:6 }}>{t('صورة الغلاف','Cover Photo',lang)}</div>
+                <div style={{
+                  height:90, borderRadius:8, background: editForm.cover_url ? `url(${editForm.cover_url}) center/cover no-repeat` : 'linear-gradient(135deg,#0D0A02,#1A1200)',
+                  border:'1px dashed var(--gd)', display:'flex', alignItems:'center', justifyContent:'center',
+                  cursor:'pointer', position:'relative', overflow:'hidden'
+                }} onClick={() => coverInputRef.current.click()}>
+                  <div style={{ textAlign:'center', color:'var(--g)', fontSize:12, pointerEvents:'none' }}>
+                    {uploadingCover ? '⏳ ' + t('جاري الرفع...','Uploading...',lang) : (
+                      <>{editForm.cover_url ? '✏️ ' : '📷 '}{t('رفع صورة الغلاف','Upload Cover Photo',lang)}</>
+                    )}
+                  </div>
+                  <input ref={coverInputRef} type="file" accept="image/*" style={{ display:'none' }} onChange={uploadCover} />
+                </div>
               </div>
-              <input className='inp' placeholder={t('الاسم','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
-              <input className='inp' placeholder={t('النيكنيم','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
-              <textarea className='inp' placeholder={t('نبذة عنك','Bio',lang)} value={editForm.bio} onChange={e=>setEditForm(f=>({...f,bio:e.target.value}))} rows={3} />
-              <div style={{display:'flex',gap:10,marginTop:6}}>
-                <button className='btn btn-o' onClick={()=>setEditMode(false)} style={{flex:1}}>{t('إلغاء','Cancel',lang)}</button>
-                <button className='btn btn-g' onClick={saveProfile} style={{flex:1}}>{t('حفظ','Save',lang)}</button>
+
+              {/* Avatar upload */}
+              <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+                <Avatar emoji={user?.avatar_emoji||'👑'} size={60} url={editForm.avatar_url} />
+                <label style={{ cursor:'pointer', background:'rgba(201,168,76,.1)', border:'1px solid var(--gd)', borderRadius:8, padding:'8px 16px', color:'var(--g)', fontSize:13, flex:1, textAlign:'center' }}>
+                  {uploadingAvatar ? '⏳ ' + t('جاري الرفع...','Uploading...',lang) : t('رفع صورة الأفاتار','Upload Avatar',lang)}
+                  <input type="file" accept="image/*" onChange={uploadAvatar} style={{ display:'none' }} />
+                </label>
+              </div>
+
+              <input className="inp" placeholder={t('الاسم','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
+              <input className="inp" placeholder={t('النيكنيم','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
+              <textarea className="inp" placeholder={t('نبذة عنك','Bio',lang)} value={editForm.bio} onChange={e=>setEditForm(f=>({...f,bio:e.target.value}))} rows={3} />
+
+              <div style={{ display:'flex', gap:10, marginTop:4 }}>
+                <button className="btn btn-o" onClick={()=>setEditMode(false)} style={{ flex:1 }}>{t('إلغاء','Cancel',lang)}</button>
+                <button className="btn btn-g" onClick={saveProfile} style={{ flex:1 }}>{t('حفظ ✓','Save ✓',lang)}</button>
               </div>
             </div>
           </div>
         </div>
       )}
-      <div className="pcover" style={{ marginBottom:0 }}><div className="hiero">𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div></div>
+
+      {/* Cover photo — clickable to upload directly from profile too */}
+      <div className="pcover" style={{ background: coverBg, marginBottom:0 }}
+        onClick={() => setEditMode(true)}>
+        {!editForm.cover_url && <div className="hiero">𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div>}
+        <div className="cover-overlay">
+          📷 {t('تغيير صورة الغلاف','Change Cover Photo',lang)}
+        </div>
+      </div>
+
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:10 }}>
           <Avatar emoji={user?.avatar_emoji||'👑'} size={90} url={user?.avatar_url} />
-          <button className="btn btn-o" style={{ marginBottom:8 }} onClick={()=>setEditMode(true)}>{t('تعديل البروفايل','Edit Profile',lang)}</button>
+          <button className="btn btn-o" style={{ marginBottom:8 }} onClick={()=>setEditMode(true)}>
+            {t('تعديل البروفايل','Edit Profile',lang)}
+          </button>
         </div>
         <div style={{ marginTop:10 }}>
           <div style={{ fontWeight:800, fontSize:20, color:'var(--g)' }}>{user?.nickname}</div>
           <div style={{ fontSize:13, color:'var(--tm)', marginTop:2 }}>{user?.name} · {user?.email}</div>
+          {user?.bio && <div style={{ fontSize:13, color:'var(--gl)', marginTop:6, lineHeight:1.6 }}>{user.bio}</div>}
           <div style={{ marginTop:7 }}>
             <span className="badge">👑 {t('عضو مميز','Premium Member',lang)}</span>
             {user?.country && <span style={{ fontSize:12, color:'var(--tm)', marginRight:10 }}>🌍 {user.country}</span>}
@@ -881,15 +1114,17 @@ function ProfilePage({ user, lang, posts, onToast }) {
           </div>
         </div>
       </div>
+
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
         {[['posts',t('المنشورات','Posts',lang)],['media',t('الوسائط','Media',lang)],['likes',t('الإعجابات','Likes',lang)]].map(([k,l])=>(
           <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>setTab(k)}>{l}</button>
         ))}
       </div>
+
       {myPosts.length===0 ? (
         <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
           <div style={{ fontSize:48, marginBottom:10 }}>📝</div>
-          <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول تغريدة!','No posts yet. Start with your first tweet!',lang)}</div>
+          <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول منشور!','No posts yet. Start with your first post!',lang)}</div>
         </div>
       ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} />)}
     </div>
@@ -1114,7 +1349,7 @@ export default function App() {
         <div style={{ minHeight:'calc(100vh - 52px)', borderLeft:'1px solid var(--bb)', borderRight:'1px solid var(--bb)' }}>
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
-          {page==='profile'       && <ProfilePage       user={user} lang={lang} posts={posts} />}
+          {page==='profile'       && <ProfilePage       user={user} setUser={setUser} lang={lang} posts={posts} onToast={showToast} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
           {page==='search'        && <SearchPage        lang={lang} />}
