@@ -859,7 +859,7 @@ function ProfilePage({ user, lang, posts, onToast }) {
       <div className="pcover" style={{ marginBottom:0 }}><div className="hiero">𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div></div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:10 }}>
-          <Avatar emoji={user?.avatar_emoji||'👑'} size={90} />
+          <Avatar emoji={user?.avatar_emoji||'👑'} size={90} url={user?.avatar_url} />
           <button className="btn btn-o" style={{ marginBottom:8 }} onClick={()=>setEditMode(true)}>{t('تعديل البروفايل','Edit Profile',lang)}</button>
         </div>
         <div style={{ marginTop:10 }}>
@@ -1096,7 +1096,7 @@ export default function App() {
             <button key={k} className="btn btn-gh" style={{ color:page===k?'var(--g)':'var(--tm)', fontSize:18, padding:'4px 10px' }} onClick={()=>setPage(k)}>{ic}</button>
           ))}
           <button className="lang" onClick={()=>setLang(l=>l==='ar'?'en':'ar')}>{lang==='ar'?'EN':'عربي'}</button>
-          <Avatar emoji={user?.avatar_emoji||'👑'} size={34} onClick={()=>setPage('profile')} />
+          <Avatar emoji={user?.avatar_emoji||'👑'} size={34} url={user?.avatar_url} onClick={()=>setPage('profile')} />
         </div>
       </div>
 
