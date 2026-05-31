@@ -1,12 +1,16 @@
 /**
  * KEMET SOCIAL - API Client
- * Connects web frontend to Flask REST API
- * Falls back to localStorage demo mode when API is offline
+ * Connects web frontend to Flask REST API on Railway
+ * Falls back to demo mode when API is offline
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// ── IMPORTANT: Railway backend URL ───────────────────────
+// Priority: env variable → Railway production → localhost fallback
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  'https://kemetc1-production.up.railway.app/api';
 
-// ── Token management ─────────────────────────────────────
+// ── Token management ──────────────────────────────────────
 const TOKEN_KEY = 'kemet_token';
 const USER_KEY  = 'kemet_user';
 
@@ -52,12 +56,11 @@ async function apiFetch(path, options = {}) {
     const data = await res.json();
     return { status: res.status, ...data };
   } catch (e) {
-    // API offline → return demo error
     return { ok: false, error: 'الخادم غير متاح حالياً - وضع تجريبي', offline: true };
   }
 }
 
-// ── AUTH API ─────────────────────────────────────────────
+// ── AUTH API ──────────────────────────────────────────────
 export const authAPI = {
   async register(payload) {
     const r = await apiFetch('/auth/register', { method: 'POST', body: payload });
@@ -93,44 +96,69 @@ export const authAPI = {
 // ── USERS API ─────────────────────────────────────────────
 export const usersAPI = {
   getUser: (id) => apiFetch(`/users/${id}`),
+
+  // Supports avatar_url, cover_url, name, nickname, bio
   updateProfile: (data) => apiFetch('/users/profile', { method: 'PUT', body: data }),
+
   follow: (id) => apiFetch(`/users/${id}/follow`, { method: 'POST' }),
 };
 
 // ── POSTS API ─────────────────────────────────────────────
 export const postsAPI = {
-  getFeed: (limit = 20, offset = 0) => apiFetch(`/posts?limit=${limit}&offset=${offset}`),
+  getFeed: (limit = 20, offset = 0) =>
+    apiFetch(`/posts?limit=${limit}&offset=${offset}`),
+
+  // data can include: { content, language, media_url, media_type }
+  // media_url and media_type come from Cloudinary upload in the frontend
   createPost: (data) => apiFetch('/posts', { method: 'POST', body: data }),
+
   deletePost: (id) => apiFetch(`/posts/${id}`, { method: 'DELETE' }),
+
   likePost: (id) => apiFetch(`/posts/${id}/like`, { method: 'POST' }),
+
   getComments: (id) => apiFetch(`/posts/${id}/comments`),
+
   addComment: (id, content, parentId = null) =>
-    apiFetch(`/posts/${id}/comments`, { method: 'POST', body: { content, parent_id: parentId } }),
+    apiFetch(`/posts/${id}/comments`, {
+      method: 'POST',
+      body: { content, parent_id: parentId },
+    }),
 };
 
 // ── STORE API ─────────────────────────────────────────────
 export const storeAPI = {
   getCategories: () => apiFetch('/store/categories'),
+
   getTours: (params = {}) => {
     const q = new URLSearchParams(params).toString();
     return apiFetch(`/store/tours${q ? '?' + q : ''}`);
   },
+
   getTour: (id) => apiFetch(`/store/tours/${id}`),
+
   getNicknames: () => apiFetch('/store/nicknames'),
 };
 
 // ── BOOKINGS API ──────────────────────────────────────────
 export const bookingsAPI = {
   getMyBookings: () => apiFetch('/bookings'),
+
   createBooking: (data) => apiFetch('/bookings', { method: 'POST', body: data }),
+
   payBooking: (id, method, ref = '') =>
-    apiFetch(`/bookings/${id}/pay`, { method: 'POST', body: { payment_method: method, payment_ref: ref } }),
+    apiFetch(`/bookings/${id}/pay`, {
+      method: 'POST',
+      body: { payment_method: method, payment_ref: ref },
+    }),
 };
 
 // ── MESSAGES API ──────────────────────────────────────────
 export const messagesAPI = {
   getInbox: () => apiFetch('/messages/inbox'),
-  getConversation: (userId, limit = 50) => apiFetch(`/messages/${userId}?limit=${limit}`),
+
+  getConversation: (userId, limit = 50) =>
+    apiFetch(`/messages/${userId}?limit=${limit}`),
+
   sendMessage: (userId, content) =>
     apiFetch(`/messages/${userId}`, { method: 'POST', body: { content } }),
 };
@@ -144,15 +172,17 @@ export const notificationsAPI = {
 // ── REVIEWS API ───────────────────────────────────────────
 export const reviewsAPI = {
   add: (tourId, rating, comment, bookingId = null) =>
-    apiFetch(`/reviews/${tourId}`, { method: 'POST', body: { rating, comment, booking_id: bookingId } }),
+    apiFetch(`/reviews/${tourId}`, {
+      method: 'POST',
+      body: { rating, comment, booking_id: bookingId },
+    }),
 };
 
-// ── STATS ─────────────────────────────────────────────────
+// ── STATS & HEALTH ────────────────────────────────────────
 export const statsAPI = {
   get: () => apiFetch('/stats'),
 };
 
-// ── Health check ──────────────────────────────────────────
 export const checkHealth = () => apiFetch('/health');
 
 export default {
