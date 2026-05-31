@@ -827,7 +827,7 @@ function ProfilePage({ user, lang, posts, onToast }) {
     await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(payload) });
     setEditMode(false);
     onToast && onToast(t('تم تحديث البروفايل','Profile updated',lang));
-    window.location.reload();
+
   };
   const [tab, setTab] = useState('posts');
 
