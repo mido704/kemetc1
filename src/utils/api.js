@@ -53,6 +53,12 @@ async function apiFetch(path, options = {}) {
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
     });
+
+    // Auto-clear token on 401 (expired/invalid) — except logout itself
+    if (res.status === 401 && !path.includes('/auth/logout')) {
+      storage.clear();
+    }
+
     const data = await res.json();
     return { status: res.status, ...data };
   } catch (e) {
@@ -81,8 +87,10 @@ export const authAPI = {
   },
 
   async logout() {
-    await apiFetch('/auth/logout', { method: 'POST' });
+    // Always clear local storage first — don't wait for API
+    // 401 on logout is harmless (token already expired/invalid)
     storage.clear();
+    try { await apiFetch('/auth/logout', { method: 'POST' }); } catch {}
     return { ok: true };
   },
 
