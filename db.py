@@ -265,10 +265,32 @@ def generate_id() -> str:
     return str(uuid.uuid4())
 
 def get_conn():
+    db_url = os.environ.get("DATABASE_URL")
+    if db_url and USE_PG:
+        from urllib.parse import urlparse
+        r = urlparse(db_url)
+        conn = psycopg2.connect(
+            host=r.hostname,
+            port=r.port or 5432,
+            user=r.username,
+            password=r.password,
+            dbname=r.path.lstrip("/"),
+            cursor_factory=psycopg2.extras.RealDictCursor
+        )
+        conn.autocommit = False
+        return conn
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
+
+def placeholder():
+    return "%s" if USE_PG else "?"
+
+def adapt_query(sql):
+    if USE_PG:
+        return sql.replace("?", "%s").replace("INSERT OR IGNORE", "INSERT").replace("ON CONFLICT IGNORE", "ON CONFLICT DO NOTHING").replace("datetime('now')", "NOW()")
+    return sql
 
 def init_db():
     conn = get_conn()
