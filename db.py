@@ -1,15 +1,19 @@
 """
 KEMET SOCIAL - Database Manager
-Initializes, seeds, and tests the SQLite database
 """
+import os
+try:
+    import psycopg2
+    import psycopg2.extras
+    USE_PG = bool(os.environ.get("DATABASE_URL"))
+except ImportError:
+    USE_PG = False
 import sqlite3
 import json
 import uuid
 import hashlib
-import os
 from datetime import datetime, timedelta
-
-DB_PATH = os.path.join(os.path.dirname(__file__), "kemet.db")
+DB_PATH = os.environ.get("DB_PATH", "/tmp/kemet.db")
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
