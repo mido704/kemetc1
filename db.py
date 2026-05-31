@@ -446,7 +446,7 @@ class KemetDB:
     def validate_token(self, token):
         row = self.conn.execute("""
             SELECT u.* FROM sessions s JOIN users u ON s.user_id=u.id
-            WHERE s.token=%s AND s.expires_at > NOW()::text AND u.is_active=1
+            WHERE s.token=%s AND u.is_active=1
         """, (token,)).fetchone()
         if not row:
             return None
