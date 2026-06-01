@@ -294,8 +294,20 @@ def adapt_query(sql):
 
 def init_db():
     conn = get_conn()
-    conn.executescript(SCHEMA)
-    conn.commit()
+    if USE_PG:
+        cur = conn.cursor()
+        pg_schema = SCHEMA.replace('PRAGMA foreign_keys = ON;','').replace('PRAGMA journal_mode = WAL;','').replace("datetime('now')", 'NOW()')
+        for stmt in pg_schema.split(';'):
+            stmt = stmt.strip()
+            if stmt and stmt.upper().startswith('CREATE'):
+                try:
+                    cur.execute(stmt)
+                    conn.commit()
+                except Exception:
+                    conn.rollback()
+    else:
+        conn.executescript(SCHEMA)
+        conn.commit()
     return conn
 
 def seed_data(conn):
