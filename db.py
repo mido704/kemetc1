@@ -277,18 +277,37 @@ def get_conn():
             dbname=r.path.lstrip("/"),
             cursor_factory=psycopg2.extras.RealDictCursor
         )
-        conn.autocommit = False
-        conn._cursor = conn.cursor()
-        conn.execute = conn._cursor.execute
-        conn.executemany = conn._cursor.executemany
-        conn.fetchone = conn._cursor.fetchone
-        conn.fetchall = conn._cursor.fetchall
+       conn.autocommit = False
+        return PGConnWrapper(conn)
         return conn
-        
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
+
+class PGConnWrapper:
+    def __init__(self, conn):
+        self._conn = conn
+        self._cur = conn.cursor()
+    def execute(self, sql, params=None):
+        self._cur.execute(sql, params or ())
+        return self._cur
+    def executemany(self, sql, params):
+        self._cur.executemany(sql, params)
+        return self._cur
+    def fetchone(self):
+        return self._cur.fetchone()
+    def fetchall(self):
+        return self._cur.fetchall()
+    def commit(self):
+        self._conn.commit()
+    def rollback(self):
+        self._conn.rollback()
+    def close(self):
+        self._cur.close()
+        self._conn.close()
+    def cursor(self):
+        return self._conn.cursor()
 
 def placeholder():
     return "%s" if USE_PG else "?"
