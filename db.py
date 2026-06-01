@@ -289,9 +289,11 @@ class PGConnWrapper:
         self._conn = conn
         self._cur = conn.cursor()
     def execute(self, sql, params=None):
+        sql = sql.replace("?", "%s").replace("INSERT OR IGNORE INTO", "INSERT INTO").replace("datetime('now')", "NOW()")
         self._cur.execute(sql, params or ())
         return self._cur
     def executemany(self, sql, params):
+        sql = sql.replace("?", "%s").replace("INSERT OR IGNORE INTO", "INSERT INTO").replace("datetime('now')", "NOW()")
         self._cur.executemany(sql, params)
         return self._cur
     def fetchone(self):
