@@ -410,9 +410,8 @@ function PostCard({ post, lang, onLike, currentUserId }) {
         {lang==='ar' ? post.content : (post.content_en||post.content)}
       </div>
 
-      {post.image_emoji && (
-        <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', borderRadius:10, padding:'28px 0', textAlign:'center', fontSize:60, marginBottom:10, border:'1px solid var(--bb)' }}>
-          {post.image_emoji}
+      {post.image_url && (
+         <img src={post.image_url} style={{width:'100%',maxHeight:300,objectFit:'cover',borderRadius:10,marginBottom:10}} />
         </div>
       )}
 
