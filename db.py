@@ -584,15 +584,15 @@ class KemetDB:
         return {'ok': True}
 
     # --- POSTS ---
-   def create_post(self, user_id, content, content_en='', image_emoji='', image_url='', hashtags=None, language='ar'):
-    pid = generate_id()
-    tags = json.dumps(hashtags or [], ensure_ascii=False)
-    self.conn.execute(
-        "INSERT INTO posts (id,user_id,content,content_en,image_emoji,image_url,hashtags,language) VALUES (?,?,?,?,?,?,?,?)",
-        (pid, user_id, content, content_en, image_emoji, image_url, tags, language)
-    )
-    self.conn.commit()
-    return {'ok': True, 'post_id': pid}
+    def create_post(self, user_id, content, content_en='', image_emoji='', image_url='', hashtags=None, language='ar'):
+        pid = generate_id()
+        tags = json.dumps(hashtags or [], ensure_ascii=False)
+        self.conn.execute(
+            "INSERT INTO posts (id,user_id,content,content_en,image_emoji,image_url,hashtags,language) VALUES (?,?,?,?,?,?,?,?)",
+            (pid, user_id, content, content_en, image_emoji, image_url, tags, language)
+        )
+        self.conn.commit()
+        return {'ok': True, 'post_id': pid}
        
     # --- LIKES ---
     def toggle_like(self, user_id, post_id):
