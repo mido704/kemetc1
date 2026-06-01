@@ -243,8 +243,7 @@ END;
 
 -- VIEWS
 CREATE VIEW IF NOT EXISTS v_posts_full AS
-SELECT p.id, p.content, p.content_en, p.image_emoji, p.hashtags,
-  p.likes_count, p.comments_count, p.shares_count, p.created_at,
+SELECT p.id, p.content, p.content_en, p.image_emoji, p.image_url, p.hashtags,  p.likes_count, p.comments_count, p.shares_count, p.created_at,
   u.id as user_id, u.nickname, u.avatar_emoji, u.is_verified, u.membership
 FROM posts p JOIN users u ON p.user_id = u.id
 WHERE p.is_deleted = 0
@@ -585,34 +584,16 @@ class KemetDB:
         return {'ok': True}
 
     # --- POSTS ---
-    def create_post(self, user_id, content, content_en='', image_emoji='', hashtags=None, language='ar'):
-        pid = generate_id()
-        tags = json.dumps(hashtags or [], ensure_ascii=False)
-        self.conn.execute(
-            "INSERT INTO posts (id,user_id,content,content_en,image_emoji,hashtags,language) VALUES (?,?,?,?,?,?,?)",
-            (pid, user_id, content, content_en, image_emoji, tags, language)
-        )
-        self.conn.commit()
-        return {'ok': True, 'post_id': pid}
-
-    def get_feed(self, user_id=None, limit=20, offset=0):
-        rows = self.conn.execute("""
-            SELECT p.id, p.content, p.content_en, p.image_emoji, p.hashtags,
-                   p.likes_count, p.comments_count, p.shares_count, p.created_at,
-                   u.id as user_id, u.nickname, u.avatar_emoji, u.avatar_url, u.is_verified, u.membership
-            FROM posts p JOIN users u ON p.user_id=u.id
-            WHERE p.is_deleted=0
-            ORDER BY p.created_at DESC LIMIT ? OFFSET ?
-        """, (limit, offset)).fetchall()
-        return self._rows_to_list(rows)
-
-    def delete_post(self, post_id, user_id):
-        self.conn.execute(
-            "UPDATE posts SET is_deleted=1 WHERE id=? AND user_id=?", (post_id, user_id)
-        )
-        self.conn.commit()
-        return {'ok': True}
-
+   def create_post(self, user_id, content, content_en='', image_emoji='', image_url='', hashtags=None, language='ar'):
+    pid = generate_id()
+    tags = json.dumps(hashtags or [], ensure_ascii=False)
+    self.conn.execute(
+        "INSERT INTO posts (id,user_id,content,content_en,image_emoji,image_url,hashtags,language) VALUES (?,?,?,?,?,?,?,?)",
+        (pid, user_id, content, content_en, image_emoji, image_url, tags, language)
+    )
+    self.conn.commit()
+    return {'ok': True, 'post_id': pid}
+       
     # --- LIKES ---
     def toggle_like(self, user_id, post_id):
         existing = self.conn.execute(
