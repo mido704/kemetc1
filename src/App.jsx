@@ -689,7 +689,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
       <div style={{ marginTop:'auto', paddingTop:14, borderTop:'1px solid var(--bb)' }}>
         {user && (
           <div style={{ display:'flex', alignItems:'center', gap:9, padding:'6px 4px', cursor:'pointer' }} onClick={()=>setPage('profile')}>
-            <Avatar emoji={user.avatar_emoji||'👑'} size={34} />
+            <Avatar emoji={user.avatar_emoji||'👑'} url={user?.avatar_url} size={34} />
             <div style={{ flex:1, overflow:'hidden' }}>
               <div style={{ fontSize:12, color:'var(--g)', fontWeight:600, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user.nickname}</div>
               <div style={{ fontSize:10, color:'var(--tm)' }}>{user.email}</div>
