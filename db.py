@@ -278,12 +278,13 @@ def get_conn():
             cursor_factory=psycopg2.extras.RealDictCursor
         )
         conn.autocommit = False
-          conn._cursor = conn.cursor()
+        conn._cursor = conn.cursor()
         conn.execute = conn._cursor.execute
         conn.executemany = conn._cursor.executemany
         conn.fetchone = conn._cursor.fetchone
         conn.fetchall = conn._cursor.fetchall
         return conn
+        
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
