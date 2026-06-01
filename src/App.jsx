@@ -469,25 +469,48 @@ function PostCard({ post, lang, onLike, currentUserId }) {
 function CreatePost({ user, lang, onPosted }) {
   const [text, setText] = useState('');
   const [posting, setPosting] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆'];
+
+  const uploadImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await uploadToCloudinary(file);
+    setImageUrl(url);
+    setUploading(false);
+  };
 
   const submit = async () => {
     if (!text.trim()) return;
     setPosting(true);
-    const r = await postsAPI.createPost({ content:text, language:'ar' });
+    const r = await postsAPI.createPost({ content:text, language:'ar', image_url: imageUrl });
     setPosting(false);
-    if (r.ok) { onPosted(text, r.data.post_id); setText(''); }
+    if (r.ok) { onPosted(text, r.data?.post_id); setText(''); setImageUrl(''); setShowEmoji(false); }
   };
 
   return (
     <div className="card" style={{ padding:14, marginBottom:14 }}>
       <div style={{ display:'flex', gap:11, alignItems:'flex-start' }}>
-        <Avatar emoji={user?.avatar_emoji||'👑'} size={42} />
+        <Avatar emoji={user?.avatar_emoji||'👑'} size={42} url={user?.avatar_url} />
         <div style={{ flex:1 }}>
           <textarea className="inp" placeholder={t('ما الذي تفكر فيه يا فرعون؟ 🔺','What are you thinking, Pharaoh? 🔺',lang)}
             value={text} onChange={e=>setText(e.target.value)} rows={3} />
+          {imageUrl && <img src={imageUrl} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:8}} />}
+          {showEmoji && (
+            <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:8,background:'var(--bb)',padding:10,borderRadius:8}}>
+              {emojis.map(em=><span key={em} style={{cursor:'pointer',fontSize:22}} onClick={()=>{setText(t=>t+em);setShowEmoji(false)}}>{em}</span>)}
+            </div>
+          )}
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:9 }}>
-            <div style={{ display:'flex', gap:6 }}>
-              {['📷','🎥','😊','📍'].map(e=><button key={e} className="btn btn-gh" style={{ padding:'3px 8px', fontSize:16 }}>{e}</button>)}
+            <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>
+                {uploading ? '⏳' : '📷'}
+                <input type='file' accept='image/*,video/*' onChange={uploadImage} style={{display:'none'}} />
+              </label>
+              <button className="btn btn-gh" style={{padding:'3px 8px',fontSize:16}} onClick={()=>setShowEmoji(v=>!v)}>😊</button>
             </div>
             <button className="btn btn-g" onClick={submit} disabled={posting||!text.trim()} style={{ padding:'8px 20px' }}>
               {posting?'⏳':t('نشر','Post',lang)}
@@ -498,7 +521,6 @@ function CreatePost({ user, lang, onPosted }) {
     </div>
   );
 }
-
 // ── TOUR CARD ─────────────────────────────────────────────
 function TourCard({ tour, lang, onBuy }) {
   const [open, setOpen] = useState(false);
