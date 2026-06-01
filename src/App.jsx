@@ -806,7 +806,7 @@ async function uploadToCloudinary(file) {
   return d.secure_url;
 }
 
-function ProfilePage({ user, lang, posts, onToast }) {
+  function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
@@ -826,9 +826,9 @@ function ProfilePage({ user, lang, posts, onToast }) {
     if (editForm.avatar_url) payload.avatar_url = editForm.avatar_url;
     const r = await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(payload) });
     const data = await r.json();
-    if (data.ok) {
+   if (data.ok) {
       const updatedUser = {...user, ...payload};
-      storage.setUser(updatedUser);
+      onUpdateUser && onUpdateUser(updatedUser);
     }
     setEditMode(false);
     onToast && onToast(t('تم تحديث البروفايل','Profile updated',lang));
@@ -1114,7 +1114,7 @@ export default function App() {
         <div style={{ minHeight:'calc(100vh - 52px)', borderLeft:'1px solid var(--bb)', borderRight:'1px solid var(--bb)' }}>
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
-          {page==='profile'       && <ProfilePage       user={user} lang={lang} posts={posts} />}
+          {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
           {page==='search'        && <SearchPage        lang={lang} />}
