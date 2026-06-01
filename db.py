@@ -277,7 +277,7 @@ def get_conn():
             dbname=r.path.lstrip("/"),
             cursor_factory=psycopg2.extras.RealDictCursor
         )
-       conn.autocommit = False
+        conn.autocommit = False
         return PGConnWrapper(conn)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -307,6 +307,46 @@ class PGConnWrapper:
         self._conn.close()
     def cursor(self):
         return self._conn.cursor()
+
+def get_conn():
+    db_url = os.environ.get("DATABASE_URL")
+    if db_url and USE_PG:
+        from urllib.parse import urlparse
+        r = urlparse(db_url)
+        conn = psycopg2.connect(
+            host=r.hostname,
+            port=r.port or 5432,
+            user=r.username,
+            password=r.password,
+            dbname=r.path.lstrip("/"),
+            cursor_factory=psycopg2.extras.RealDictCursor
+        )
+        conn.autocommit = False
+        return PGConnWrapper(conn)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+def get_conn():
+    db_url = os.environ.get("DATABASE_URL")
+    if db_url and USE_PG:
+        from urllib.parse import urlparse
+        r = urlparse(db_url)
+        conn = psycopg2.connect(
+            host=r.hostname,
+            port=r.port or 5432,
+            user=r.username,
+            password=r.password,
+            dbname=r.path.lstrip("/"),
+            cursor_factory=psycopg2.extras.RealDictCursor
+        )
+        conn.autocommit = False
+        return PGConnWrapper(conn)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
 
 def placeholder():
     return "%s" if USE_PG else "?"
