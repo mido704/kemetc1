@@ -394,7 +394,7 @@ function PostCard({ post, lang, onLike, currentUserId }) {
   return (
     <div className="post-card">
       <div style={{ display:'flex', gap:11, alignItems:'flex-start', marginBottom:11 }}>
-        <Avatar emoji={post.avatar_emoji} size={42} />
+       <Avatar emoji={post.avatar_emoji} size={42} url={post?.avatar_url} />
         <div style={{ flex:1 }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
             <span style={{ fontWeight:700, fontSize:14, color:'var(--g)' }}>{post.nickname}</span>
