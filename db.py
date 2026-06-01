@@ -599,7 +599,7 @@ class KemetDB:
         rows = self.conn.execute("""
             SELECT p.id, p.content, p.content_en, p.image_emoji, p.hashtags,
                    p.likes_count, p.comments_count, p.shares_count, p.created_at,
-                   u.id as user_id, u.nickname, u.avatar_emoji, u.is_verified, u.membership
+                   u.id as user_id, u.nickname, u.avatar_emoji, u.avatar_url, u.is_verified, u.membership
             FROM posts p JOIN users u ON p.user_id=u.id
             WHERE p.is_deleted=0
             ORDER BY p.created_at DESC LIMIT ? OFFSET ?
