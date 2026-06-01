@@ -115,7 +115,7 @@ def get_user(user_id):
 def update_profile():
     b = request.get_json() or {}
     uid = request.current_user['id']
-    allowed = ['name', 'nickname', 'avatar_emoji', 'country', 'phone', 'bio']
+    allowed = ['name', 'nickname', 'avatar_emoji', 'avatar_url', 'country', 'phone', 'bio']
     updates = {k: v for k, v in b.items() if k in allowed}
     if not updates:
         return err('ط¸â€‍ط·آ§ ط¸ظ¹ط¸ث†ط·آ¬ط·آ¯ ط·آ¨ط¸ظ¹ط·آ§ط¸â€ ط·آ§ط·ع¾ ط¸â€‍ط¸â€‍ط·ع¾ط·آ­ط·آ¯ط¸ظ¹ط·آ«')
