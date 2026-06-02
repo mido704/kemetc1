@@ -157,6 +157,7 @@ def create_post():
         content=b['content'],
         content_en=b.get('content_en', ''),
         image_emoji=b.get('image_emoji', ''),
+        image_url=b.get('image_url', ''),
         hashtags=b.get('hashtags', []),
         language=b.get('language', 'ar')
     )
