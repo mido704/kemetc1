@@ -593,7 +593,18 @@ class KemetDB:
         )
         self.conn.commit()
         return {'ok': True, 'post_id': pid}
-       
+
+    def get_feed(self, user_id=None, limit=20, offset=0):
+        rows = self.conn.execute("""
+            SELECT p.id, p.content, p.content_en, p.image_emoji, p.image_url, p.hashtags,
+                   p.likes_count, p.comments_count, p.shares_count, p.created_at,
+                   u.id as user_id, u.nickname, u.avatar_emoji, u.avatar_url, u.is_verified, u.membership
+            FROM posts p JOIN users u ON p.user_id=u.id
+            WHERE p.is_deleted=0
+            ORDER BY p.created_at DESC LIMIT ? OFFSET ?
+        """, (limit, offset)).fetchall()
+        return self._rows_to_list(rows)
+        
     # --- LIKES ---
     def toggle_like(self, user_id, post_id):
         existing = self.conn.execute(
