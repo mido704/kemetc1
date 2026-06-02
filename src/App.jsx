@@ -412,8 +412,7 @@ function PostCard({ post, lang, onLike, currentUserId }) {
 
       {post.image_url && (
          <img src={post.image_url} style={{width:'100%',maxHeight:300,objectFit:'cover',borderRadius:10,marginBottom:10}} />
-        </div>
-      )}
+         )}
 
       {tags.length>0 && (
         <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
