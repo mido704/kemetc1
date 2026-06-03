@@ -379,7 +379,7 @@ function RegisterModal({ onClose, onSuccess, lang }) {
 }
 
 // ── POST CARD ─────────────────────────────────────────────
-function PostCard({ post, lang, onLike, currentUserId, user, onToast }) {
+function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProfile }) {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -420,17 +420,18 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast }) {
        <Avatar emoji={post.avatar_emoji} size={42} url={post?.avatar_url} />
         <div style={{ flex:1 }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
-            <span style={{ fontWeight:700, fontSize:14, color:'var(--g)' }}>{post.nickname}</span>
+           <span style={{ fontWeight:700, fontSize:14, color:'var(--g)', cursor:'pointer' }} onClick={()=>onViewProfile && onViewProfile(post.user_id)}>{post.nickname}</span>
             {post.is_verified===1 && <span style={{ fontSize:13 }}>✓</span>}
             {post.membership==='gold' && <span className="badge" style={{ fontSize:10 }}>Gold</span>}
             {post.membership==='platinum' && <span className="badge" style={{ fontSize:10, background:'linear-gradient(135deg,#6B5B95,#9B8EC4)' }}>Platinum</span>}
           </div>
           <div style={{ fontSize:11, color:'var(--tm)', marginTop:1 }}>{timeAgo(post.created_at, lang)}</div>
-                 {post.user_id !== user?.id && (
+               {post.user_id !== currentUserId && (
   <button className="btn btn-gh" style={{fontSize:11,padding:'2px 8px',color:'var(--gd)',border:'1px solid var(--gd)',borderRadius:20,marginTop:2}}
-    onClick={async()=>{
+    onClick={async(e)=>{
+      e.stopPropagation();
       const r = await usersAPI.follow(post.user_id);
-      onToast && onToast(r.ok ? t('تمت المتابعة','Followed',lang) : t('إلغاء المتابعة','Unfollowed',lang));
+      onToast && onToast(t('تمت المتابعة','Followed',lang));
     }}>
     + {t('متابعة','Follow',lang)}
   </button>
