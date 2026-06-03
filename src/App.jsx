@@ -4,6 +4,7 @@
  */
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { authAPI, postsAPI, storeAPI, bookingsAPI, messagesAPI, notificationsAPI, usersAPI, storage } from "./utils/api.js";
+
 // ── App Context ───────────────────────────────────────────
 const AppCtx = createContext(null);
 const useApp = () => useContext(AppCtx);
