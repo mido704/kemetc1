@@ -467,9 +467,17 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
         <button className="btn btn-gh" onClick={loadComments} style={{ flex:1, fontSize:13 }}>
           💬 {t('تعليق','Comment',lang)}
         </button>
-        <button className="btn btn-gh" style={{ flex:1, fontSize:13 }}>
-          🔁 {t('مشاركة','Share',lang)}
-        </button>
+       <button className="btn btn-gh" style={{ flex:1, fontSize:13 }} onClick={async()=>{
+  const shareText = `${post.nickname}: ${post.content}`;
+  if (navigator.share) {
+    await navigator.share({ title: 'كيمت سوشيال', text: shareText, url: window.location.href });
+  } else {
+    await navigator.clipboard.writeText(shareText);
+    onToast && onToast(t('تم نسخ البوست','Post copied',lang));
+  }
+}}>
+  🔁 {t('مشاركة','Share',lang)}
+</button>
       </div>
 
       {showComments && (
