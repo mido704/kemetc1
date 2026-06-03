@@ -807,7 +807,7 @@ function FeedPage({ user, lang, posts, setPosts, onToast }) {
         <button className="tab">{t('مصر','Egypt',lang)}</button>
       </div>
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
-      {posts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} />)}
+      {posts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} />)}
     </div>
   );
 }
