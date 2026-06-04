@@ -594,7 +594,7 @@ class KemetDB:
         self.conn.commit()
         return {'ok': True, 'post_id': pid}
 
-  def get_feed(self, user_id=None, limit=20, offset=0):
+   def get_feed(self,user_id=None,limit=20,offset=0):
         rows = self.conn.execute("""
             SELECT p.id, p.content, p.content_en, p.image_emoji, p.image_url, p.hashtags,
                    p.likes_count, p.comments_count, p.shares_count, p.created_at,
