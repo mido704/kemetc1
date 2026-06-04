@@ -948,7 +948,7 @@ async function uploadToCloudinary(file) {
           <div style={{ fontSize:48, marginBottom:10 }}>📝</div>
           <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول تغريدة!','No posts yet. Start with your first tweet!',lang)}</div>
         </div>
-      ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} />)}
+      ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />{}} />)}
     </div>
   );
 }
