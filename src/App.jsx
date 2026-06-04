@@ -955,26 +955,33 @@ async function uploadToCloudinary(file) {
 
 function NotificationsPage({ lang, user }) {
   const [notifs, setNotifs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(()=>{
     if (user) {
-      notificationsAPI.get().then(r=>{ if(r.ok) setNotifs(r.data||[]); });
-      notificationsAPI.markRead();
+      notificationsAPI.get().then(r=>{
+        if(r.ok && r.data?.length > 0) {
+          setNotifs(r.data);
+        }
+        setLoading(false);
+        notificationsAPI.markRead();
+      });
     }
-    setNotifs([
-      { id:'n1', type:'like',    content:t('أعجب رمسيس بمنشورك','Ramesses liked your post',lang),     actor_avatar:'👑', created_at:new Date(Date.now()-5*60000).toISOString() },
-      { id:'n2', type:'comment', content:t('علّقت نفرتيتي على منشورك','Nefertiti commented on your post',lang), actor_avatar:'💎', created_at:new Date(Date.now()-20*60000).toISOString() },
-      { id:'n3', type:'follow',  content:t('بدأ تحتمس بمتابعتك','Thutmose started following you',lang),  actor_avatar:'⚔️', created_at:new Date(Date.now()-60*60000).toISOString() },
-      { id:'n4', type:'system',  content:t('مرحباً بك في كيمت سوشيال! 🔺','Welcome to Kemet Social! 🔺',lang), actor_avatar:'🔺', created_at:new Date(Date.now()-86400000).toISOString() },
-    ]);
-  },[]);
+  },[user]);
 
   const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
-      {notifs.map(n=>(
+      {loading ? (
+        <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>⏳</div>
+      ) : notifs.length === 0 ? (
+        <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
+          <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
+          <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
+        </div>
+      ) : notifs.map(n=>(
         <div key={n.id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center' }}>
           <span style={{ fontSize:26 }}>{icons[n.type]||'🔔'}</span>
           <div style={{ flex:1 }}>
