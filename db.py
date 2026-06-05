@@ -609,7 +609,7 @@ class KemetDB:
         return self._rows_to_list(rows)
         
     # --- LIKES ---
-    def toggle_like(self, user_id, post_id):
+   def toggle_like(self, user_id, post_id):
         existing = self.conn.execute(
             "SELECT id FROM likes WHERE user_id=? AND post_id=?", (user_id, post_id)
         ).fetchone()
@@ -620,6 +620,14 @@ class KemetDB:
         else:
             lid = generate_id()
             self.conn.execute("INSERT INTO likes (id,user_id,post_id) VALUES (?,?,?)", (lid, user_id, post_id))
+            # Add notification
+            post = self.conn.execute("SELECT user_id FROM posts WHERE id=?", (post_id,)).fetchone()
+            if post and post['user_id'] != user_id:
+                nid = generate_id()
+                self.conn.execute(
+                    "INSERT INTO notifications (id,user_id,actor_id,type,post_id,content) VALUES (?,?,?,?,?,?)",
+                    (nid, post['user_id'], user_id, 'like', post_id, 'أعجب بمنشورك')
+                )
             self.conn.commit()
             return {'ok': True, 'liked': True}
 
