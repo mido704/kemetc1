@@ -727,7 +727,7 @@ class KemetDB:
     def get_notifications(self, user_id, limit=20):
         rows = self.conn.execute("""
             SELECT n.id, n.type, n.content, n.is_read, n.created_at,
-                   u.nickname as actor_name, u.avatar_emoji as actor_avatar
+                   u.nickname as actor_name, u.avatar_emoji as actor_avatar, u.avatar_url as actor_url
             FROM notifications n
             LEFT JOIN users u ON n.actor_id=u.id
             WHERE n.user_id=?
