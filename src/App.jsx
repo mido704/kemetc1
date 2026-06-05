@@ -1180,7 +1180,7 @@ export default function App() {
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
           {page==='search'        && <SearchPage        lang={lang} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
