@@ -609,7 +609,7 @@ class KemetDB:
         return self._rows_to_list(rows)
         
     # --- LIKES ---
-   def toggle_like(self, user_id, post_id):
+    def toggle_like(self,user_id,post_id):
         existing = self.conn.execute(
             "SELECT id FROM likes WHERE user_id=? AND post_id=?", (user_id, post_id)
         ).fetchone()
