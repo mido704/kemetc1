@@ -166,67 +166,66 @@ function GoldDivider() { return <div className="gdiv" />; }
 function Landing({ onLogin, onRegister, lang, setLang }) {
   return (
     <div style={{ minHeight:'100vh', background:'#000', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden', direction:lang==='ar'?'rtl':'ltr' }}>
-      <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(201,168,76,.06) 0%,transparent 50%)', pointerEvents:'none' }}/>
-      <div style={{ position:'absolute', fontSize:500, opacity:.018, bottom:-100, left:'50%', transform:'translateX(-50%)', pointerEvents:'none', lineHeight:1, filter:'sepia(1) saturate(2)' }}>🔺</div>
-      <div style={{ position:'absolute', top:0, left:0, right:0, background:'linear-gradient(90deg,var(--gd),rgba(201,168,76,.5),var(--gd))', padding:'6px 0', textAlign:'center', fontSize:11, color:'#000', letterSpacing:2, fontWeight:700, zIndex:10 }}>
-        ✦ كيمت سوشيال — منصة المجتمع السياحي المصري ✦ Kemet Social — Egypt Tourism Community ✦
-      </div>
-      <div style={{ position:'absolute', top:16, left:16, zIndex:20 }}>
+      
+      {/* Background glow */}
+      <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 50% 30%,rgba(201,168,76,.1) 0%,transparent 65%)', pointerEvents:'none' }}/>
+      
+      {/* Floating pyramid */}
+      <div style={{ position:'absolute', fontSize:420, opacity:.015, bottom:-80, left:'50%', transform:'translateX(-50%)', pointerEvents:'none', lineHeight:1 }}>🔺</div>
+
+      {/* Lang toggle */}
+      <div style={{ position:'absolute', top:20, right:20, zIndex:20 }}>
         <button className="lang" onClick={()=>setLang(l=>l==='ar'?'en':'ar')}>{lang==='ar'?'EN':'عربي'}</button>
       </div>
-      <div style={{ textAlign:'center', padding:'80px 20px 40px', maxWidth:640, zIndex:1 }}>
-        <div style={{ fontSize:88, lineHeight:1, marginBottom:14, animation:'float 5s ease-in-out infinite', filter:'drop-shadow(0 0 40px rgba(201,168,76,.5))' }}>🔺</div>
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:12, marginBottom:8 }}>
-          <span style={{ color:'var(--gd)', fontSize:22 }}>𓂀</span>
-          <div className="logo" style={{ fontSize:50, letterSpacing:6 }}>KEMET</div>
-          <span style={{ color:'var(--gd)', fontSize:22 }}>𓂀</span>
+
+      {/* Main content */}
+      <div style={{ textAlign:'center', padding:'40px 24px', maxWidth:540, zIndex:1 }}>
+        
+        {/* Logo */}
+        <div style={{ fontSize:72, lineHeight:1, marginBottom:16, animation:'float 5s ease-in-out infinite', filter:'drop-shadow(0 0 30px rgba(201,168,76,.6))' }}>🔺</div>
+        
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10, marginBottom:6 }}>
+          <span style={{ color:'var(--gd)', fontSize:18 }}>𓂀</span>
+          <div className="logo" style={{ fontSize:44, letterSpacing:5 }}>KEMET</div>
+          <span style={{ color:'var(--gd)', fontSize:18 }}>𓂀</span>
         </div>
-        <div style={{ fontFamily:'serif', fontSize:22, color:'var(--gl)', marginBottom:24, letterSpacing:2 }}>كيمت سوشيال</div>
-        <div style={{ background:'rgba(201,168,76,.06)', border:'1px solid rgba(201,168,76,.25)', borderRadius:16, padding:'20px 28px', marginBottom:28 }}>
-          <p style={{ color:'var(--g)', fontSize:16, lineHeight:1.9, fontWeight:600, margin:'0 0 10px' }}>
-            {lang==='ar' ? '🌍 هل تعلم أن مصر تخفي كنوزاً لم يرها العالم بعد؟' : '🌍 Did you know Egypt hides treasures the world has never seen?'}
-          </p>
-          <p style={{ color:'var(--tm)', fontSize:13, lineHeight:1.8, margin:0 }}>
-            {lang==='ar' ? 'انضم إلى مجتمع كيمت — حيث يلتقي عشاق الحضارة من كل العالم ويربحون معاً' : 'Join Kemet — Where civilization lovers unite and earn together'}
-          </p>
+        
+        <div style={{ fontSize:12, color:'var(--gd)', letterSpacing:4, marginBottom:32, textTransform:'uppercase' }}>
+          {lang==='ar' ? 'كيمت ليجاسي' : 'Legacy'}
         </div>
-        <div style={{ display:'flex', gap:14, justifyContent:'center', marginBottom:36, flexWrap:'wrap' }}>
-          <button className="btn btn-g" style={{ minWidth:190, fontSize:16, padding:'14px 28px', borderRadius:12, boxShadow:'0 4px 24px rgba(201,168,76,.35)' }} onClick={onRegister}>
-            {lang==='ar' ? '👑 انضم كمؤسس' : '👑 Join as Founder'}
+
+        {/* Tagline */}
+        <h1 style={{ fontSize:24, fontWeight:800, color:'var(--gl)', lineHeight:1.5, marginBottom:12 }}>
+          {lang==='ar' 
+            ? 'اكتشف أسرار الحضارة المصرية من خلال التواصل مع أبنائها'
+            : 'Discover the Secrets of Egyptian Civilization Through Its People'}
+        </h1>
+        
+        <p style={{ fontSize:14, color:'var(--tm)', lineHeight:1.9, marginBottom:36 }}>
+          {lang==='ar'
+            ? 'انضم إلى مجتمع حي من عشاق التاريخ والثقافة المصرية حول العالم'
+            : 'Join a living community of history lovers and Egyptian culture enthusiasts worldwide'}
+        </p>
+
+        {/* CTA Buttons */}
+        <div style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
+          <button className="btn btn-g" style={{ minWidth:180, fontSize:16, padding:'14px 32px', borderRadius:12, boxShadow:'0 4px 28px rgba(201,168,76,.4)', letterSpacing:1 }} onClick={onRegister}>
+            {lang==='ar' ? 'ابدأ رحلتك' : 'Join Now'}
           </button>
-          <button className="btn btn-o" style={{ minWidth:160, fontSize:15, padding:'14px 22px', borderRadius:12 }} onClick={onLogin}>
-            {lang==='ar' ? 'تسجيل الدخول' : 'Login'}
+          <button className="btn btn-o" style={{ minWidth:150, fontSize:15, padding:'14px 24px', borderRadius:12 }} onClick={onLogin}>
+            {lang==='ar' ? 'تسجيل الدخول' : 'Sign In'}
           </button>
         </div>
-        <div style={{ display:'flex', justifyContent:'center', marginBottom:36, background:'rgba(201,168,76,.05)', border:'1px solid rgba(201,168,76,.15)', borderRadius:16, overflow:'hidden' }}>
-          {[['12K+',lang==='ar'?'عضو':'Members'],['50+',lang==='ar'?'رحلة':'Tours'],['4.9★',lang==='ar'?'تقييم':'Rating'],['100%',lang==='ar'?'أمان':'Secure']].map(([n,l],i)=>(
-            <div key={l} style={{ flex:1, textAlign:'center', padding:'16px 8px', borderLeft:i>0?'1px solid rgba(201,168,76,.15)':'' }}>
-              <div style={{ fontSize:20, fontWeight:800, color:'var(--g)', fontFamily:'Cinzel,serif' }}>{n}</div>
-              <div style={{ fontSize:11, color:'var(--tm)', marginTop:2 }}>{l}</div>
-            </div>
-          ))}
+
+        {/* Subtle tagline */}
+        <div style={{ marginTop:40, color:'var(--td)', fontSize:11, letterSpacing:2, textTransform:'uppercase' }}>
+          {lang==='ar' ? '𓂀 حضارة لا تموت 𓂀' : '𓂀 A Civilization That Never Dies 𓂀'}
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:10, marginBottom:28 }}>
-          {[
-            {icon:'🏛️', ar:'حضارة أصيلة', en:'Authentic Heritage', dar:'تواصل مع عشاق الحضارة المصرية من كل العالم', den:'Connect with Egypt lovers worldwide'},
-            {icon:'✈️', ar:'رحلات فاخرة', en:'Luxury Tours', dar:'احجز مع مرشدين معتمدين وترخيص رسمي', den:'Book with certified guides & official license'},
-            {icon:'💰', ar:'اربح معنا', en:'Earn With Us', dar:'نظام مشاركة أرباح — كلما تفاعلت كلما ربحت', den:'Profit sharing — engage and earn more'},
-            {icon:'👑', ar:'عضوية مؤسس', en:'Founder Badge', dar:'انضم الآن واحصل على شارة المؤسس مدى الحياة', den:'Join now for lifetime founder badge'},
-          ].map((f,i)=>(
-            <div key={i} style={{ background:'rgba(201,168,76,.04)', border:'1px solid rgba(201,168,76,.12)', borderRadius:12, padding:'16px 14px', textAlign:'center', transition:'all .3s' }}>
-              <div style={{ fontSize:28, marginBottom:6 }}>{f.icon}</div>
-              <div style={{ color:'var(--g)', fontWeight:700, fontSize:13, marginBottom:4 }}>{lang==='ar'?f.ar:f.en}</div>
-              <div style={{ color:'var(--tm)', fontSize:11, lineHeight:1.6 }}>{lang==='ar'?f.dar:f.den}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ background:'linear-gradient(135deg,rgba(201,168,76,.15),rgba(139,105,20,.1))', border:'1px solid var(--gd)', borderRadius:12, padding:'12px 20px' }}>
-          <span style={{ color:'var(--g)', fontSize:12, fontWeight:600 }}>
-            {lang==='ar' ? '⏳ عرض محدود — الأعضاء المؤسسون يحصلون على مزايا حصرية مدى الحياة' : '⏳ Limited — Founding members get exclusive lifetime benefits'}
-          </span>
-        </div>
+
       </div>
-      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:2, background:'linear-gradient(90deg,transparent,var(--g),transparent)' }} />
+
+      {/* Bottom line */}
+      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,var(--g),transparent)' }} />
     </div>
   );
 }
