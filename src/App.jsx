@@ -1014,12 +1014,8 @@ function MessagesPage({ lang, user }) {
   const [conv, setConv] = useState([]);
   const [msg, setMsg] = useState('');
 
-  useEffect(()=>{
+ useEffect(()=>{
     messagesAPI.getInbox().then(r=>{ if(r.ok) setInbox(r.data||[]); });
-    setInbox([
-      { other_id:'user_ramesses', other_name:'رمسيس العظيم', avatar_emoji:'👑', last_message:t('مرحباً، كيف حالك؟','Hello, how are you?',lang), created_at:new Date().toISOString(), unread:2 },
-      { other_id:'user_nefertiti',other_name:'نفرتيتي',       avatar_emoji:'💎', last_message:t('رحلة الأقصر كانت رائعة!','The Luxor trip was amazing!',lang), created_at:new Date(Date.now()-3600000).toISOString(), unread:0 },
-    ]);
   },[]);
 
   const openChat = async (item) => {
