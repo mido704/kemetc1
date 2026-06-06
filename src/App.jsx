@@ -980,9 +980,19 @@ function NotificationsPage({ lang, user }) {
           <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
           <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
         </div>
-      {notifs.map(n=>(
+     return (
+    <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
+      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
+      {loading ? (
+        <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>⏳</div>
+      ) : notifs.length === 0 ? (
+        <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
+          <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
+          <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
+        </div>
+      ) : notifs.map(n=>(
         <div key={n.id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center' }}>
-          {n.actor_url ? 
+          {n.actor_url ?
             <Avatar emoji={n.actor_avatar||'👑'} size={40} url={n.actor_url} /> :
             <div className="av" style={{width:40,height:40,fontSize:20,display:'flex',alignItems:'center',justifyContent:'center'}}>
               {n.actor_avatar || icons[n.type] || '🔔'}
@@ -995,6 +1005,8 @@ function NotificationsPage({ lang, user }) {
           </div>
         </div>
       ))}
+    </div>
+  );
       
 function MessagesPage({ lang, user }) {
   const [inbox, setInbox] = useState([]);
