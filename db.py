@@ -712,8 +712,8 @@ class KemetDB:
              WHERE m.sender_id=? OR m.receiver_id=?
              GROUP BY other_id, u.nickname, u.avatar_emoji, u.avatar_url
              ORDER BY MAX(m.created_at) DESC
-         """, (user_id, user_id, user_id, user_id, user_id)).fetchall()
-         return self._rows_to_list(rows)
+        """, (user_id, user_id, user_id, user_id, user_id)).fetchall()
+        return self._rows_to_list(rows)
 
     # --- NOTIFICATIONS ---
     def add_notification(self, user_id, actor_id, ntype, content, post_id=None):
