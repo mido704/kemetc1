@@ -700,7 +700,7 @@ class KemetDB:
         """, (user_a,user_b,user_b,user_a,limit)).fetchall()
         return self._rows_to_list(rows)
 
-     def get_inbox(self, user_id):
+    def get_inbox(self, user_id):
         rows = self.conn.execute("""
              SELECT
                 CASE WHEN m.sender_id=? THEN m.receiver_id ELSE m.sender_id END as other_id,
