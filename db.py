@@ -700,20 +700,20 @@ class KemetDB:
         """, (user_a,user_b,user_b,user_a,limit)).fetchall()
         return self._rows_to_list(rows)
 
-  def get_inbox(self, user_id):
+     def get_inbox(self, user_id):
         rows = self.conn.execute("""
-            SELECT
+             SELECT
                 CASE WHEN m.sender_id=? THEN m.receiver_id ELSE m.sender_id END as other_id,
                 u.nickname as other_name, u.avatar_emoji, u.avatar_url,
                 MAX(m.content) as last_message, MAX(m.created_at) as created_at,
                 SUM(CASE WHEN m.receiver_id=? AND m.is_read=0 THEN 1 ELSE 0 END) as unread
-            FROM messages m
-            JOIN users u ON u.id = CASE WHEN m.sender_id=? THEN m.receiver_id ELSE m.sender_id END
-            WHERE m.sender_id=? OR m.receiver_id=?
-            GROUP BY other_id, u.nickname, u.avatar_emoji, u.avatar_url
-            ORDER BY MAX(m.created_at) DESC
-        """, (user_id, user_id, user_id, user_id, user_id)).fetchall()
-        return self._rows_to_list(rows)
+             FROM messages m
+             JOIN users u ON u.id = CASE WHEN m.sender_id=? THEN m.receiver_id ELSE m.sender_id END
+             WHERE m.sender_id=? OR m.receiver_id=?
+             GROUP BY other_id, u.nickname, u.avatar_emoji, u.avatar_url
+             ORDER BY MAX(m.created_at) DESC
+         """, (user_id, user_id, user_id, user_id, user_id)).fetchall()
+         return self._rows_to_list(rows)
 
     # --- NOTIFICATIONS ---
     def add_notification(self, user_id, actor_id, ntype, content, post_id=None):
