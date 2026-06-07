@@ -959,17 +959,14 @@ function NotificationsPage({ lang, user }) {
   useEffect(()=>{
     if (user) {
       notificationsAPI.get().then(r=>{
-        if(r.ok && r.data?.length > 0) {
-          setNotifs(r.data);
+        if(r.ok) {
+          setNotifs(r.data || []);
         }
         setLoading(false);
-        notificationsAPI.markRead();
       });
     }
   },[user]);
-
-  const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
-
+      
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
