@@ -697,7 +697,7 @@ class KemetDB:
             WHERE (m.sender_id=? AND m.receiver_id=?)
                OR (m.sender_id=? AND m.receiver_id=?)
             ORDER BY m.created_at DESC LIMIT ?
-        """, (user_a, user_b, user_b, user_a, limit)).fetchall()
+        """, (user_a,user_b,user_b,user_a,limit)).fetchall()
         return self._rows_to_list(rows)
 
   def get_inbox(self, user_id):
