@@ -955,29 +955,18 @@ async function uploadToCloudinary(file) {
 function NotificationsPage({ lang, user }) {
   const [notifs, setNotifs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
   useEffect(()=>{
     if (user) {
       notificationsAPI.get().then(r=>{
-        if(r.ok) {
-          setNotifs(r.data || []);
-        }
+        if(r.ok) setNotifs(r.data || []);
         setLoading(false);
       });
     }
   },[user]);
-      
+
   return (
-    <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
-      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
-      {loading ? (
-        <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>⏳</div>
-      ) : notifs.length === 0 ? (
-        <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
-          <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
-          <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
-        </div>
-     return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
       {loading ? (
@@ -1004,6 +993,7 @@ function NotificationsPage({ lang, user }) {
       ))}
     </div>
   );
+}
       
 function MessagesPage({ lang, user }) {
   const [inbox, setInbox] = useState([]);
