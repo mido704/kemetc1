@@ -743,6 +743,13 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
           <span>{t('الإدارة','Admin',lang)}</span>
         </div>
       )}
+      {user?.email==='mido704@gmail.com' && (
+        <div className={`si ${page==='admin'?'on':''}`} onClick={()=>setPage('admin')}>
+          <span style={{ fontSize:17, width:22, textAlign:'center' }}>🛡️</span>
+          <span>{t('الإدارة','Admin',lang)}</span>
+        </div>
+      )}
+      
       {navItems.map(item=>(
         <div key={item.key} className={`si ${page===item.key?'on':''}`} onClick={()=>setPage(item.key)}>
           <span style={{ fontSize:17, width:22, textAlign:'center' }}>{item.icon}</span>
