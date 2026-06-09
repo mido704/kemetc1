@@ -743,7 +743,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
           <span>{t('الإدارة','Admin',lang)}</span>
         </div>
       )}
-      {user?.email==='mido704@gmail.com' && (
+      {user && (
         <div className={`si ${page==='admin'?'on':''}`} onClick={()=>setPage('admin')}>
           <span style={{ fontSize:17, width:22, textAlign:'center' }}>🛡️</span>
           <span>{t('الإدارة','Admin',lang)}</span>
