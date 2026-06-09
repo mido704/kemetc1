@@ -952,15 +952,14 @@ async function uploadToCloudinary(file) {
   );
 }
 
-function NotificationsPage({ lang, user }) {
-  const [notifs, setNotifs] = useState([]);
-  const [loading, setLoading] = useState(false);
+ffunction NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
+  const [loading, setLoading] = useState(notifsList.length === 0);
   const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
   useEffect(()=>{
-    if (user) {
+    if (user && notifsList.length === 0) {
       notificationsAPI.get().then(r=>{
-        if(r.ok) setNotifs(r.data || []);
+        if(r.ok) setNotifsList(r.data || []);
         setLoading(false);
       });
     }
@@ -1111,6 +1110,7 @@ export default function App() {
   const [lang, setLang] = useState('ar');
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState(DEMO_POSTS);
+  const [notifsList, setNotifsList] = useState([]);
   const [toast, setToast] = useState(null);
 
   // Auto-login if token exists
@@ -1172,7 +1172,7 @@ export default function App() {
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} setNotifsList={setNotifsList} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
           {page==='search'        && <SearchPage        lang={lang} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
