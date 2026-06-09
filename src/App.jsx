@@ -1008,11 +1008,12 @@ function NotificationsPage({ lang, user, onToast, notifsList }) {
   );
 }
       
-function MessagesPage({ lang, user }) {
+function MessagesPage({ lang, user, initialChat, onChatOpened }) {
   const [inbox, setInbox] = useState([]);
   const [active, setActive] = useState(null);
   const [conv, setConv] = useState([]);
   const [msg, setMsg] = useState('');
+  useEffect(()=>{ if(initialChat){ openChat({other_id:initialChat.id, other_name:initialChat.nickname, avatar_emoji:initialChat.avatar_emoji||'👑'}); onChatOpened&&onChatOpened(); } },[initialChat]);
 
  useEffect(()=>{
     messagesAPI.getInbox().then(r=>{ if(r.ok) setInbox(r.data||[]); });
@@ -1185,6 +1186,7 @@ function AdminDashboard({ lang, user, onBack }) {
 export default function App() {
   const [screen, setScreen] = useState('landing');
   const [page, setPage] = useState('feed');
+  const [activeChatUser, setActiveChatUser] = useState(null);
   const [user, setUser] = useState(()=>storage.getUser());
   const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
@@ -1271,9 +1273,9 @@ export default function App() {
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
-          {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setPage('messages'); }} />}
+          {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} />}
-          {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
+          {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='search'        && <SearchPage        lang={lang} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
         </div>
