@@ -730,8 +730,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
   ];
   const isAdmin = user?.email === 'mido704@gmail.com';
-  ];
-      
+       
   return (
     <div style={{ borderLeft:'1px solid var(--bb)', padding:'18px 10px', position:'sticky', top:52, height:'calc(100vh - 52px)', overflowY:'auto', background:'var(--b)', display:'flex', flexDirection:'column' }}>
       <div style={{ padding:'0 8px', marginBottom:22 }}>
