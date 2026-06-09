@@ -978,12 +978,7 @@ function NotificationsPage({ lang, user }) {
         </div>
       ) : notifs.map(n=>(
         <div key={n.id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center' }}>
-          {n.actor_url ?
-           <Avatar emoji={n.actor_avatar||'👑'} size={40} url={n.actor_url} /> :
-           <div className="av" style={{width:40,height:40,fontSize:20,display:'flex',alignItems:'center',justifyContent:'center'}}>
-         {n.actor_avatar || icons[n.type] || '🔔'}
-       </div>
-     }
+          <Avatar emoji={n.actor_avatar||icons[n.type]||'🔔'} size={40} url={n.actor_url||null} />
           <div style={{ flex:1, textAlign:'right' }}>
            <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'🔔'}</div>
            <div style={{ fontSize:13, color:'var(--gl)', marginTop:2 }}>{n.content}</div>
