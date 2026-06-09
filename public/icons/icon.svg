@@ -1,0 +1,5 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#000000"/>
+  <polygon points="256,80 80,420 432,420" fill="#C9A84C"/>
+  <text x="256" y="480" text-anchor="middle" font-family="serif" font-size="60" fill="#C9A84C">KEMET</text>
+</svg>
