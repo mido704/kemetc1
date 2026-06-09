@@ -728,6 +728,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'💬', ar:'الرسائل',   en:'Messages',      key:'messages' },
     { icon:'🔍', ar:'البحث',      en:'Search',        key:'search' },
     { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
+    { icon:'🛡️', ar:'الإدارة', en:'Admin', key:'admin' },
   ];
   const isAdmin = user?.email === 'mido704@gmail.com';
        
