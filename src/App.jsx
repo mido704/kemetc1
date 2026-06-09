@@ -530,7 +530,7 @@ function CreatePost({ user, lang, onPosted }) {
       <div style={{ display:'flex', gap:11, alignItems:'flex-start' }}>
         <Avatar emoji={user?.avatar_emoji||'👑'} size={42} url={user?.avatar_url} />
         <div style={{ flex:1 }}>
-          <textarea className="inp" placeholder={t('ما الذي تفكر فيه يا فرعون؟ 🔺','What are you thinking, Pharaoh? 🔺',lang)}
+          <textarea className="inp" placeholder={t('ما الذي تفكر فيه ؟ 🔺','What are you thinking? 🔺',lang)}
             value={text} onChange={e=>setText(e.target.value)} rows={3} />
           {imageUrl && <img src={imageUrl} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:8}} />}
           {showEmoji && (
@@ -984,10 +984,10 @@ function NotificationsPage({ lang, user }) {
               {n.actor_avatar || icons[n.type] || '🔔'}
             </div>
           }
-          <div style={{ flex:1 }}>
-            <div style={{ fontSize:13, color:'var(--g)', fontWeight:600 }}>{n.actor_name}</div>
-            <div style={{ fontSize:13, color:'var(--gl)' }}>{n.content}</div>
-            <div style={{ fontSize:11, color:'var(--tm)', marginTop:2 }}>{timeAgo(n.created_at, lang)}</div>
+          <div style={{ flex:1, textAlign:'right' }}>
+           <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'🔔'}</div>
+           <div style={{ fontSize:13, color:'var(--gl)', marginTop:2 }}>{n.content}</div>
+           <div style={{ fontSize:11, color:'var(--tm)', marginTop:2 }}>{timeAgo(n.created_at, lang)}</div>
           </div>
         </div>
       ))}
