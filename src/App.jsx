@@ -956,14 +956,16 @@ async function uploadToCloudinary(file) {
      const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
   useEffect(()=>{
-    if (user) {
-      const token = storage.getToken();
-      if (!token) return;
-      notificationsAPI.get().then(r=>{
-        if(r.ok && r.data?.length > 0) setNotifsList(r.data);
-      });
-    }
-  },[user]);
+  if (screen==='app' && user) {
+    const token = localStorage.getItem('kemet_token');
+    if (!token) return;
+    fetch('https://kemetc1-production.up.railway.app/api/notifications', {
+      headers:{'Authorization': 'Bearer ' + token}
+    }).then(r=>r.json()).then(d=>{
+      if(d.ok) setNotifsList(d.data || []);
+    });
+  }
+},[screen, user]);
 
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
