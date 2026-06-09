@@ -1100,7 +1100,7 @@ function SettingsPage({ lang, setLang, onLogout }) {
     </div>
   );
 }
-      function AdminDashboard({ lang, user, onBack }) {
+function AdminDashboard({ lang, user, onBack }) {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [tab, setTab] = useState('stats');
