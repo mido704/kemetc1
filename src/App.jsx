@@ -727,14 +727,23 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'🔔', ar:'الإشعارات', en:'Notifications', key:'notifications', dot:true },
     { icon:'💬', ar:'الرسائل',   en:'Messages',      key:'messages' },
     { icon:'🔍', ar:'البحث',      en:'Search',        key:'search' },
-    { icon:'⚙️', ar:'الإعدادات', en:'Settings',      key:'settings' },
+    { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
   ];
+  const isAdmin = user?.email === 'mido704@gmail.com';
+  ];
+      
   return (
     <div style={{ borderLeft:'1px solid var(--bb)', padding:'18px 10px', position:'sticky', top:52, height:'calc(100vh - 52px)', overflowY:'auto', background:'var(--b)', display:'flex', flexDirection:'column' }}>
       <div style={{ padding:'0 8px', marginBottom:22 }}>
         <div className="logo" style={{ fontSize:18 }}>KEMET</div>
         <div style={{ fontSize:10, color:'var(--tm)', marginTop:1 }}>سوشيال</div>
       </div>
+      {isAdmin && (
+        <div className={`si ${page==='admin'?'on':''}`} onClick={()=>setPage('admin')}>
+          <span style={{ fontSize:17, width:22, textAlign:'center' }}>🛡️</span>
+          <span>{t('الإدارة','Admin',lang)}</span>
+        </div>
+      )}
       {navItems.map(item=>(
         <div key={item.key} className={`si ${page===item.key?'on':''}`} onClick={()=>setPage(item.key)}>
           <span style={{ fontSize:17, width:22, textAlign:'center' }}>{item.icon}</span>
@@ -1090,13 +1099,73 @@ function SettingsPage({ lang, setLang, onLogout }) {
     </div>
   );
 }
+      function AdminDashboard({ lang, user, onBack }) {
+  const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [tab, setTab] = useState('stats');
+  const token = localStorage.getItem('kemet_token');
+  const API = 'https://kemetc1-production.up.railway.app/api';
+
+  useEffect(()=>{
+    fetch(`${API}/admin/stats`, {headers:{'Authorization':'Bearer '+token}})
+      .then(r=>r.json()).then(d=>{ if(d.ok) setStats(d.data); });
+    fetch(`${API}/admin/users`, {headers:{'Authorization':'Bearer '+token}})
+      .then(r=>r.json()).then(d=>{ if(d.ok) setUsers(d.data); });
+  },[]);
+
+  const toggleUser = async (uid) => {
+    await fetch(`${API}/admin/users/${uid}/toggle`, {method:'POST', headers:{'Authorization':'Bearer '+token}});
+    setUsers(u=>u.map(x=>x.id===uid?{...x,is_active:x.is_active?0:1}:x));
+  };
+
+  return (
+    <div style={{maxWidth:700,margin:'0 auto',padding:14,direction:'rtl'}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
+        <button className="btn btn-gh" onClick={onBack}>← رجوع</button>
+        <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>🏛️ لوحة الإدارة</div>
+      </div>
+      <div style={{display:'flex',gap:8,marginBottom:16}}>
+        {[['stats','📊 إحصائيات'],['users','👥 المستخدمين']].map(([k,l])=>(
+          <button key={k} className={`btn ${tab===k?'btn-g':'btn-gh'}`} onClick={()=>setTab(k)}>{l}</button>
+        ))}
+      </div>
+      {tab==='stats' && stats && (
+        <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:10}}>
+          {[['👥','المستخدمين',stats.users],['📝','البوستات',stats.posts],['❤️','الإعجابات',stats.likes],['👥','المتابعات',stats.follows],['🔑','الجلسات',stats.sessions]].map(([ic,l,n])=>(
+            <div key={l} className="card" style={{padding:16,textAlign:'center'}}>
+              <div style={{fontSize:32}}>{ic}</div>
+              <div style={{fontSize:28,fontWeight:800,color:'var(--g)'}}>{n}</div>
+              <div style={{fontSize:12,color:'var(--tm)'}}>{l}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {tab==='users' && (
+        <div>
+          {users.map(u=>(
+            <div key={u.id} className="card" style={{padding:12,marginBottom:8,display:'flex',alignItems:'center',gap:10}}>
+              <div style={{flex:1}}>
+                <div style={{fontWeight:700,color:'var(--g)'}}>{u.nickname}</div>
+                <div style={{fontSize:11,color:'var(--tm)'}}>{u.email}</div>
+                <div style={{fontSize:11,color:'var(--tm)'}}>{u.membership}</div>
+              </div>
+              <button className={`btn ${u.is_active?'btn-o':'btn-g'}`} style={{fontSize:11}} onClick={()=>toggleUser(u.id)}>
+                {u.is_active?'تعطيل':'تفعيل'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ── MAIN APP ──────────────────────────────────────────────
 export default function App() {
   const [screen, setScreen] = useState('landing');
   const [page, setPage] = useState('feed');
   const [user, setUser] = useState(()=>storage.getUser());
-  const [lang, setLang] = useState('ar');
+  const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState(DEMO_POSTS);
   const [notifsList, setNotifsList] = useState([]);
@@ -1178,6 +1247,7 @@ export default function App() {
         <div style={{ minHeight:'calc(100vh - 52px)', borderLeft:'1px solid var(--bb)', borderRight:'1px solid var(--bb)' }}>
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
+          {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
