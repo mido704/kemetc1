@@ -969,12 +969,12 @@ function NotificationsPage({ lang, user, onToast, notifsList }) {
       return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
-      {notifs.length === 0 ? (
+      {(notifsList||notifs).length === 0 ? (
         <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
           <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
           <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
         </div>
-      ) : notifs.map(n=>(
+      ) : (notifsList||notifs).map(n=>(
         <div key={n.id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center' }}>
           <Avatar emoji={n.actor_avatar||icons[n.type]||'🔔'} size={40} url={n.actor_url||null} />
           <div style={{ flex:1, textAlign:'right' }}>
@@ -1251,7 +1251,7 @@ export default function App() {
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
           {page==='search'        && <SearchPage        lang={lang} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
