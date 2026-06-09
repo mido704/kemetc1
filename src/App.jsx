@@ -952,14 +952,14 @@ async function uploadToCloudinary(file) {
   );
 }
 
-  function NotificationsPage({ lang, user, onToast }) {
-  const [notifs, setNotifs] = useState([]);
-  const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
+    function NotificationsPage({ lang, user, onToast }) {
+      const [notifs, setNotifs] = useState([]);
+      const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
-  useEffect(()=>{
-    const token = localStorage.getItem('kemet_token');
-    if (!token || !user) return;
-    fetch('https://kemetc1-production.up.railway.app/api/notifications', {
+   useEffect(()=>{
+     const token = localStorage.getItem('kemet_token');
+      if (!token || !user) return;
+      fetch('https://kemetc1-production.up.railway.app/api/notifications', {
       headers:{'Authorization': 'Bearer ' + token}
     }).then(r=>r.json()).then(d=>{
       if(d.ok && d.data?.length > 0) setNotifs(d.data);
