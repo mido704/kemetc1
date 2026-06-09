@@ -872,7 +872,7 @@ async function uploadToCloudinary(file) {
   return d.secure_url;
 }
 
-function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
+function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onStartChat }) {
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
@@ -972,11 +972,10 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
       {tab==='friends' && (
         <div>
           {loadingFriends && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>⏳</div>}
-          {!loadingFriends && friends.length===0 && <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>👥 {t('لا يوجد أصدقاء بعد','No friends yet',lang)}</div>}
           {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:12,alignItems:'center'}}>
             <Avatar emoji={f.avatar_emoji||'👑'} size={44} url={f.avatar_url} />
             <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
-            <button className='btn btn-g' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>onToast&&onToast('قريباً!')}>💬 {t('رسالة','Message',lang)}</button>
+            <button className='btn btn-g' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>onStartChat&&onStartChat(f)}>💬 {t('رسالة','Message',lang)}</button>
           </div>))}
         </div>
       )}
@@ -1273,7 +1272,7 @@ export default function App() {
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
-          {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} />}
+          {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setPage('messages'); }} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
           {page==='search'        && <SearchPage        lang={lang} />}
