@@ -901,6 +901,17 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
 
   };
   const [tab, setTab] = useState('posts');
+  const [friends, setFriends] = useState([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
+  const loadFriends = async () => {
+    if (friends.length > 0) return;
+    setLoadingFriends(true);
+    const token = storage.getToken();
+    const r = await fetch('https://kemetc1-production.up.railway.app/api/users/following', { headers:{'Authorization':'Bearer '+token} });
+    const d = await r.json();
+    if (d.ok) setFriends(d.data||[]);
+    setLoadingFriends(false);
+  };
 
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'0 14px 14px' }}>
@@ -948,8 +959,8 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
         </div>
       </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
-        {[['posts',t('المنشورات','Posts',lang)],['media',t('الوسائط','Media',lang)],['likes',t('الإعجابات','Likes',lang)]].map(([k,l])=>(
-          <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>setTab(k)}>{l}</button>
+        {[['posts',t('المنشورات','Posts',lang)],['media',t('الوسائط','Media',lang)],['likes',t('الإعجابات','Likes',lang)],['friends',t('الأصدقاء','Friends',lang)]].map(([k,l])=>(
+          <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>{ setTab(k); if(k==="friends") loadFriends(); }}>{l}</button>
         ))}
       </div>
       {myPosts.length===0 ? (
@@ -958,6 +969,17 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
           <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول تغريدة!','No posts yet. Start with your first tweet!',lang)}</div>
         </div>
       ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />)}
+      {tab==='friends' && (
+        <div>
+          {loadingFriends && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>⏳</div>}
+          {!loadingFriends && friends.length===0 && <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>👥 {t('لا يوجد أصدقاء بعد','No friends yet',lang)}</div>}
+          {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:12,alignItems:'center'}}>
+            <Avatar emoji={f.avatar_emoji||'👑'} size={44} url={f.avatar_url} />
+            <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
+            <button className='btn btn-g' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>onToast&&onToast('قريباً!')}>💬 {t('رسالة','Message',lang)}</button>
+          </div>))}
+        </div>
+      )}
     </div>
   );
 }
