@@ -954,7 +954,7 @@ async function uploadToCloudinary(file) {
 
 function NotificationsPage({ lang, user }) {
   const [notifs, setNotifs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
   useEffect(()=>{
