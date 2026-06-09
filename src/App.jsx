@@ -1209,6 +1209,7 @@ export default function App() {
 };
       
   const handleLogout = async () => { await authAPI.logout(); setUser(null); setScreen('landing'); setPage('feed'); showToast(t('تم تسجيل الخروج','Logged out',lang)); };
+  const handleLogin = (u) => { setUser(u); setModal(null); setScreen('app'); showToast(t('ahlan ' + u.nickname, 'Welcome back ' + u.nickname, lang)); };
 
   const navIcons = [['feed','🏠'],['store','🏛️'],['notifications','🔔'],['messages','💬']];
 
