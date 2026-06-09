@@ -1120,11 +1120,11 @@ export default function App() {
 
   const showToast = (msg) => { setToast(msg); };
 
- const handleLogin = (u) => { 
+ const handleReg = (u) => { 
   setUser(u); 
   setModal(null); 
   setScreen('app'); 
-  showToast(t(`مرحباً بعودتك يا ${u.nickname} 👑`,`Welcome back, ${u.nickname} 👑`,lang));
+  showToast(t(`أهلاً بك في مملكة كيمت يا ${u.nickname} 🔺`,`Welcome to the Kingdom of Kemet, ${u.nickname} 🔺`,lang));
   const token = localStorage.getItem('kemet_token');
   if (token) {
     fetch('https://kemetc1-production.up.railway.app/api/notifications', {
