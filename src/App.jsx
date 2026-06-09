@@ -963,13 +963,12 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
           <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>{ setTab(k); if(k==="friends") loadFriends(); }}>{l}</button>
         ))}
       </div>
-      {myPosts.length===0 ? (
+      {tab==='posts' && (myPosts.length===0 ? (
         <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
           <div style={{ fontSize:48, marginBottom:10 }}>📝</div>
           <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول تغريدة!','No posts yet. Start with your first tweet!',lang)}</div>
         </div>
-      ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />)}
-      {tab==='friends' && (
+      ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />))}
         <div>
           {loadingFriends && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>⏳</div>}
           {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:12,alignItems:'center'}}>
