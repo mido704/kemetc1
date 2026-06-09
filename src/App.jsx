@@ -1130,7 +1130,9 @@ export default function App() {
     fetch('https://kemetc1-production.up.railway.app/api/notifications', {
       headers:{'Authorization': 'Bearer ' + token}
     }).then(r=>r.json()).then(d=>{
-      if(d.ok) setNotifsList(d.data || []);
+      if(d.ok) { 
+        console.log('Setting notifs:', d.data?.length, d.data?.[0]?.actor_name); 
+        setNotifsList(d.data || []); 
     });
   }
 };
