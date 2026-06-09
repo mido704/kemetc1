@@ -956,16 +956,15 @@ async function uploadToCloudinary(file) {
      const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
 useEffect(()=>{
-  const token = localStorage.getItem('kemet_token');
-  console.log('token:', token);
-  console.log('user:', user?.id);
-  if (!token || !user) return;
-  fetch('https://kemetc1-production.up.railway.app/api/notifications', {
-    headers:{'Authorization': 'Bearer ' + token}
-  }).then(r=>r.json()).then(d=>{
-    console.log('notifs response:', d.ok, d.data?.length, d.data?.[0]?.actor_name);
-    if(d.ok && d.data?.length > 0) setNotifsList(d.data);
-  });
+  setTimeout(()=>{
+    const token = localStorage.getItem('kemet_token');
+    if (!token || !user) return;
+    fetch('https://kemetc1-production.up.railway.app/api/notifications', {
+      headers:{'Authorization': 'Bearer ' + token}
+    }).then(r=>r.json()).then(d=>{
+      if(d.ok && d.data?.length > 0) setNotifsList(d.data);
+    });
+  }, 800);
 },[user]);
       
   return (
