@@ -1111,17 +1111,12 @@ export default function App() {
   const [notifsList, setNotifsList] = useState([]);
   const [toast, setToast] = useState(null);
 
-  // useEffect(()=>{
+ useEffect(()=>{
     const u = storage.getUser();
     const tk = storage.getToken();
     if (u && tk) { 
       setUser(u); 
       setScreen('app');
-      setTimeout(()=>{
-        notificationsAPI.get().then(r=>{
-          if(r.ok) setNotifsList(r.data || []);
-        });
-      }, 500);
     }
   },[]);
       
