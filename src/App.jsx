@@ -955,12 +955,15 @@ async function uploadToCloudinary(file) {
   function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
      const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
- useEffect(()=>{
+useEffect(()=>{
   const token = localStorage.getItem('kemet_token');
+  console.log('token:', token);
+  console.log('user:', user?.id);
   if (!token || !user) return;
   fetch('https://kemetc1-production.up.railway.app/api/notifications', {
     headers:{'Authorization': 'Bearer ' + token}
   }).then(r=>r.json()).then(d=>{
+    console.log('notifs response:', d.ok, d.data?.length, d.data?.[0]?.actor_name);
     if(d.ok && d.data?.length > 0) setNotifsList(d.data);
   });
 },[user]);
