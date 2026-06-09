@@ -955,7 +955,7 @@ async function uploadToCloudinary(file) {
   function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
      const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
-  useEffect(()=>{
+ useEffect(()=>{
   if (screen==='app' && user) {
     const token = localStorage.getItem('kemet_token');
     if (!token) return;
@@ -966,7 +966,6 @@ async function uploadToCloudinary(file) {
     });
   }
 },[screen, user]);
-
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
