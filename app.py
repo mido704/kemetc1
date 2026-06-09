@@ -371,7 +371,55 @@ with app.app_context():
     conn = init_db()
     seed_data(conn)
     conn.close()
+@app.route('/api/admin/stats', methods=['GET'])
+@require_auth
+def admin_stats():
+    uid = request.current_user['id']
+    # Check if admin
+    if request.current_user.get('email') not in ['mido704@gmail.com']:
+        return err('غير مصرح'), 403
+    db = get_db()
+    cur = db.conn.cursor()
+    cur.execute("SELECT COUNT(*) as c FROM users")
+    users_count = cur.fetchone()['c']
+    cur.execute("SELECT COUNT(*) as c FROM posts WHERE is_deleted=0")
+    posts_count = cur.fetchone()['c']
+    cur.execute("SELECT COUNT(*) as c FROM likes")
+    likes_count = cur.fetchone()['c']
+    cur.execute("SELECT COUNT(*) as c FROM follows")
+    follows_count = cur.fetchone()['c']
+    cur.execute("SELECT COUNT(*) as c FROM sessions")
+    sessions_count = cur.fetchone()['c']
+    return ok({
+        'users': users_count,
+        'posts': posts_count,
+        'likes': likes_count,
+        'follows': follows_count,
+        'sessions': sessions_count
+    })
 
+@app.route('/api/admin/users', methods=['GET'])
+@require_auth
+def admin_users():
+    if request.current_user.get('email') not in ['mido704@gmail.com']:
+        return err('غير مصرح'), 403
+    db = get_db()
+    cur = db.conn.cursor()
+    cur.execute("SELECT id, email, name, nickname, membership, is_verified, is_active, created_at FROM users ORDER BY created_at DESC")
+    users = [dict(r) for r in cur.fetchall()]
+    return ok(users)
+
+@app.route('/api/admin/users/<user_id>/toggle', methods=['POST'])
+@require_auth
+def admin_toggle_user(user_id):
+    if request.current_user.get('email') not in ['mido704@gmail.com']:
+        return err('غير مصرح'), 403
+    db = get_db()
+    cur = db.conn.cursor()
+    cur.execute("UPDATE users SET is_active = CASE WHEN is_active=1 THEN 0 ELSE 1 END WHERE id=%s", (user_id,))
+    db.conn.commit()
+    return ok({'toggled': True})
+    
 if __name__ == '__main__':
     init_app()
     print("\nظ‹ع؛â€‌ط› Kemet Social API starting on http://localhost:5000")
