@@ -952,30 +952,29 @@ async function uploadToCloudinary(file) {
   );
 }
 
-  function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
-     const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
+  function NotificationsPage({ lang, user, onToast }) {
+  const [notifs, setNotifs] = useState([]);
+  const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
-useEffect(()=>{
-  setTimeout(()=>{
+  useEffect(()=>{
     const token = localStorage.getItem('kemet_token');
     if (!token || !user) return;
     fetch('https://kemetc1-production.up.railway.app/api/notifications', {
       headers:{'Authorization': 'Bearer ' + token}
     }).then(r=>r.json()).then(d=>{
-      if(d.ok && d.data?.length > 0) setNotifsList(d.data);
+      if(d.ok && d.data?.length > 0) setNotifs(d.data);
     });
-  }, 800);
-},[user]);
-      
+  },[]);
+
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
-      {notifsList.length === 0 ? (
+      {notifs.length === 0 ? (
         <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
           <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
           <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
         </div>
-      ) : notifsList.map(n=>(
+      ) : notifs.map(n=>(
         <div key={n.id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center' }}>
           <Avatar emoji={n.actor_avatar||icons[n.type]||'🔔'} size={40} url={n.actor_url||null} />
           <div style={{ flex:1, textAlign:'right' }}>
@@ -1174,7 +1173,7 @@ export default function App() {
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} setNotifsList={setNotifsList} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} />}
           {page==='search'        && <SearchPage        lang={lang} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
