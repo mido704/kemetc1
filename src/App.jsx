@@ -951,16 +951,13 @@ async function uploadToCloudinary(file) {
     </div>
   );
 }
-
 function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
-  const [loading, setLoading] = useState(notifsList.length === 0);
   const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
   useEffect(()=>{
-    if (user && notifsList.length === 0) {
+    if (user) {
       notificationsAPI.get().then(r=>{
         if(r.ok) setNotifsList(r.data || []);
-        setLoading(false);
       });
     }
   },[user]);
@@ -968,20 +965,18 @@ function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
-      {loading ? (
-        <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>⏳</div>
-      ) : notifs.length === 0 ? (
+      {notifsList.length === 0 ? (
         <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
           <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
           <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
         </div>
-      ) : notifs.map(n=>(
+      ) : notifsList.map(n=>(
         <div key={n.id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center' }}>
           <Avatar emoji={n.actor_avatar||icons[n.type]||'🔔'} size={40} url={n.actor_url||null} />
           <div style={{ flex:1, textAlign:'right' }}>
-           <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'🔔'}</div>
-           <div style={{ fontSize:13, color:'var(--gl)', marginTop:2 }}>{n.content}</div>
-           <div style={{ fontSize:11, color:'var(--tm)', marginTop:2 }}>{timeAgo(n.created_at, lang)}</div>
+            <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'🔔'}</div>
+            <div style={{ fontSize:13, color:'var(--gl)', marginTop:2 }}>{n.content}</div>
+            <div style={{ fontSize:11, color:'var(--tm)', marginTop:2 }}>{timeAgo(n.created_at, lang)}</div>
           </div>
         </div>
       ))}
