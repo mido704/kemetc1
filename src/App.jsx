@@ -951,13 +951,16 @@ async function uploadToCloudinary(file) {
     </div>
   );
 }
-function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
-  const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
+
+  function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
+     const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
   useEffect(()=>{
     if (user) {
+      const token = storage.getToken();
+      if (!token) return;
       notificationsAPI.get().then(r=>{
-        if(r.ok) setNotifsList(r.data || []);
+        if(r.ok && r.data?.length > 0) setNotifsList(r.data);
       });
     }
   },[user]);
