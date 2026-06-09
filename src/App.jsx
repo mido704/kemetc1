@@ -952,21 +952,11 @@ async function uploadToCloudinary(file) {
   );
 }
 
-    function NotificationsPage({ lang, user, onToast }) {
+    function NotificationsPage({ lang, user, onToast, notifsList }) {
       const [notifs, setNotifs] = useState([]);
       const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
-   useEffect(()=>{
-     const token = localStorage.getItem('kemet_token');
-      if (!token || !user) return;
-      fetch('https://kemetc1-production.up.railway.app/api/notifications', {
-      headers:{'Authorization': 'Bearer ' + token}
-    }).then(r=>r.json()).then(d=>{
-      if(d.ok && d.data?.length > 0) setNotifs(d.data);
-    });
-  },[]);
-
-  return (
+      return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
       {notifs.length === 0 ? (
@@ -1130,7 +1120,21 @@ export default function App() {
 
   const showToast = (msg) => { setToast(msg); };
 
-  const handleLogin  = (u) => { setUser(u); setModal(null); setScreen('app'); showToast(t(`مرحباً بعودتك يا ${u.nickname} 👑`,`Welcome back, ${u.nickname} 👑`,lang)); };
+ const handleLogin = (u) => { 
+  setUser(u); 
+  setModal(null); 
+  setScreen('app'); 
+  showToast(t(`مرحباً بعودتك يا ${u.nickname} 👑`,`Welcome back, ${u.nickname} 👑`,lang));
+  const token = localStorage.getItem('kemet_token');
+  if (token) {
+    fetch('https://kemetc1-production.up.railway.app/api/notifications', {
+      headers:{'Authorization': 'Bearer ' + token}
+    }).then(r=>r.json()).then(d=>{
+      if(d.ok) setNotifsList(d.data || []);
+    });
+  }
+};
+      
   const handleReg    = (u) => { setUser(u); setModal(null); setScreen('app'); showToast(t(`أهلاً بك في مملكة كيمت يا ${u.nickname} 🔺`,`Welcome to the Kingdom of Kemet, ${u.nickname} 🔺`,lang)); };
   const handleLogout = async () => { await authAPI.logout(); setUser(null); setScreen('landing'); setPage('feed'); showToast(t('تم تسجيل الخروج','Logged out',lang)); };
 
