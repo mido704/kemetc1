@@ -476,6 +476,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
       🔁 {t('مشاركة','Share',lang)}
     </button>
 
+      </div>
       {showComments && (
         <div className="fi" style={{ marginTop:11, borderTop:'1px solid var(--bb)', paddingTop:11 }}>
           {comments.map(c=>(
@@ -498,7 +499,6 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     </div>
   );
 }
-
 // ── CREATE POST BOX ───────────────────────────────────────
 function CreatePost({ user, lang, onPosted }) {
   const [text, setText] = useState('');
@@ -872,7 +872,7 @@ async function uploadToCloudinary(file) {
   return d.secure_url;
 }
 
-  function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
+function ProfilePage({ user, lang, posts, onToast, onUpdateUser }) {
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
@@ -957,12 +957,12 @@ async function uploadToCloudinary(file) {
           <div style={{ fontSize:48, marginBottom:10 }}>📝</div>
           <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول تغريدة!','No posts yet. Start with your first tweet!',lang)}</div>
         </div>
-      ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />{}} />)}
+      ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />)}
     </div>
   );
 }
 
-    function NotificationsPage({ lang, user, onToast, notifsList }) {
+function NotificationsPage({ lang, user, onToast, notifsList }) {
       const [notifs, setNotifs] = useState([]);
       const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
@@ -1203,11 +1203,11 @@ export default function App() {
       if(d.ok) { 
         console.log('Setting notifs:', d.data?.length, d.data?.[0]?.actor_name); 
         setNotifsList(d.data || []); 
+      }
     });
   }
 };
       
-  const handleReg    = (u) => { setUser(u); setModal(null); setScreen('app'); showToast(t(`أهلاً بك في مملكة كيمت يا ${u.nickname} 🔺`,`Welcome to the Kingdom of Kemet, ${u.nickname} 🔺`,lang)); };
   const handleLogout = async () => { await authAPI.logout(); setUser(null); setScreen('landing'); setPage('feed'); showToast(t('تم تسجيل الخروج','Logged out',lang)); };
 
   const navIcons = [['feed','🏠'],['store','🏛️'],['notifications','🔔'],['messages','💬']];
