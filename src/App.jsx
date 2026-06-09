@@ -737,12 +737,6 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
         <div className="logo" style={{ fontSize:18 }}>KEMET</div>
         <div style={{ fontSize:10, color:'var(--tm)', marginTop:1 }}>سوشيال</div>
       </div>
-      {isAdmin && (
-        <div className={`si ${page==='admin'?'on':''}`} onClick={()=>setPage('admin')}>
-          <span style={{ fontSize:17, width:22, textAlign:'center' }}>🛡️</span>
-          <span>{t('الإدارة','Admin',lang)}</span>
-        </div>
-      )}
       {user && (
         <div className={`si ${page==='admin'?'on':''}`} onClick={()=>setPage('admin')}>
           <span style={{ fontSize:17, width:22, textAlign:'center' }}>🛡️</span>
