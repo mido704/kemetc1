@@ -952,7 +952,7 @@ async function uploadToCloudinary(file) {
   );
 }
 
-ffunction NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
+function NotificationsPage({ lang, user, onToast, notifsList, setNotifsList }) {
   const [loading, setLoading] = useState(notifsList.length === 0);
   const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
 
