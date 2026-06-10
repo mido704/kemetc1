@@ -1016,7 +1016,7 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
   const [showEmoji, setShowEmoji] = useState(false);
   const [uploading, setUploading] = useState(false);
   const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆','🤩','😂','🥰','😎','🙏'];
-  const msgRef = React.useRef(null);
+  const msgRef = null;
   const uploadImage = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
