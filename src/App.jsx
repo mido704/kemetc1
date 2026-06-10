@@ -709,7 +709,6 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'💬', ar:'الرسائل',   en:'Messages',      key:'messages' },
     { icon:'🔍', ar:'البحث',      en:'Search',        key:'search' },
     { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
-    { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
   ];
   const isAdmin = user?.email === 'mido704@gmail.com';
   const isStoreManager = user?.role === 'store_manager' || isAdmin;
@@ -1471,6 +1470,7 @@ export default function App() {
 
         <div style={{ minHeight:'calc(100vh - 52px)', borderLeft:'1px solid var(--bb)', borderRight:'1px solid var(--bb)' }}>
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
+          {page==='profile'        && <ProfilePage        user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
