@@ -761,7 +761,7 @@ function RightSidebar({ lang }) {
       {HASHTAGS.map(h=>(
         <div key={h.tag} style={{ padding:'7px 0', borderBottom:'1px solid var(--bb)', cursor:'pointer' }}>
           <div style={{ color:'var(--g)', fontWeight:600, fontSize:13 }}>{h.tag}</div>
-          <div style={{ fontSize:11, color:'var(--tm)' }}>{h.count} {t('منشور','posts',lang)}</div>
+          <div style={{ color:'var(--g)', fontWeight:600, fontSize:13 }}>{lang==='ar'?h.tag:h.tag_en}</div>
         </div>
       ))}
       <div className="card" style={{ padding:13, textAlign:'center', marginTop:16 }}>
