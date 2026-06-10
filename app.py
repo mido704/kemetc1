@@ -440,6 +440,72 @@ def admin_toggle_user(user_id):
     db.conn.commit()
     return ok({'toggled': True})
     
+
+# STORE MANAGER ROUTES
+def is_store_manager(user):
+    return user.get('role') in ['store_manager', 'admin'] or user.get('email') in ['mido704@gmail.com']
+
+@app.route('/api/admin/users/<user_id>/role', methods=['POST'])
+@require_auth
+def set_user_role(user_id):
+    if request.current_user.get('email') not in ['mido704@gmail.com']:
+        return err('غير مصرح'), 403
+    b = request.get_json() or {}
+    role = b.get('role', 'user')
+    if role not in ['user', 'store_manager', 'admin']:
+        return err('role غير صحيح')
+    db = get_db()
+    cur = db.conn.cursor()
+    cur.execute('UPDATE users SET role = %s WHERE id = %s', (role, user_id))
+    db.conn.commit()
+    return ok({'role': role})
+
+@app.route('/api/store/tours', methods=['POST'])
+@require_auth
+def create_tour():
+    if not is_store_manager(request.current_user):
+        return err('غير مصرح'), 403
+    b = request.get_json() or {}
+    import uuid
+    tour_id = 'tour_' + str(uuid.uuid4())[:8]
+    db = get_db()
+    cur = db.conn.cursor()
+    cur.execute('''INSERT INTO tours (id,category_id,title_ar,title_en,description_ar,description_en,price,duration_days,image_emoji,image_url,badge_ar,badge_en,includes_ar,includes_en,is_featured,is_active)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)''',
+        (tour_id, b.get('category_id','cat_tours'), b.get('title_ar',''), b.get('title_en',''),
+         b.get('description_ar',''), b.get('description_en',''), b.get('price',0),
+         b.get('duration_days',1), b.get('image_emoji','🏛️'), b.get('image_url',''),
+         b.get('badge_ar',''), b.get('badge_en',''), b.get('includes_ar','[]'), b.get('includes_en','[]'),
+         b.get('is_featured',0)))
+    db.conn.commit()
+    return ok({'id': tour_id}), 201
+
+@app.route('/api/store/tours/<tour_id>', methods=['PUT'])
+@require_auth
+def update_tour(tour_id):
+    if not is_store_manager(request.current_user):
+        return err('غير مصرح'), 403
+    b = request.get_json() or {}
+    allowed = ['title_ar','title_en','description_ar','description_en','price','duration_days','image_emoji','image_url','badge_ar','badge_en','includes_ar','includes_en','is_featured','category_id']
+    updates = {k: v for k, v in b.items() if k in allowed}
+    if not updates: return err('لا توجد بيانات')
+    db = get_db()
+    cur = db.conn.cursor()
+    set_clause = ', '.join([f'{k} = %s' for k in updates.keys()])
+    cur.execute(f'UPDATE tours SET {set_clause} WHERE id = %s', list(updates.values()) + [tour_id])
+    db.conn.commit()
+    return ok({'updated': True})
+
+@app.route('/api/store/tours/<tour_id>', methods=['DELETE'])
+@require_auth
+def delete_tour(tour_id):
+    if not is_store_manager(request.current_user):
+        return err('غير مصرح'), 403
+    db = get_db()
+    cur = db.conn.cursor()
+    cur.execute('UPDATE tours SET is_active = 0 WHERE id = %s', (tour_id,))
+    db.conn.commit()
+    return ok({'deleted': True})
 if __name__ == '__main__':
     init_app()
     print("\nظ‹ع؛â€‌ط› Kemet Social API starting on http://localhost:5000")

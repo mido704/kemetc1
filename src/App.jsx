@@ -1222,7 +1222,10 @@ function AdminDashboard({ lang, user, onBack }) {
     await fetch(`${API}/admin/users/${uid}/toggle`, {method:'POST', headers:{'Authorization':'Bearer '+token}});
     setUsers(u=>u.map(x=>x.id===uid?{...x,is_active:x.is_active?0:1}:x));
   };
-
+  const setRole = async (uid, role) => {
+    await fetch(API+'/admin/users/'+uid+'/role', {method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body:JSON.stringify({role})});
+    setUsers(u=>u.map(x=>x.id===uid?{...x,role}:x));
+  };
   return (
     <div style={{maxWidth:700,margin:'0 auto',padding:14,direction:'rtl'}}>
       <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
@@ -1254,9 +1257,14 @@ function AdminDashboard({ lang, user, onBack }) {
                 <div style={{fontSize:11,color:'var(--tm)'}}>{u.email}</div>
                 <div style={{fontSize:11,color:'var(--tm)'}}>{u.membership}</div>
               </div>
-              <button className={`btn ${u.is_active?'btn-o':'btn-g'}`} style={{fontSize:11}} onClick={()=>toggleUser(u.id)}>
-                {u.is_active?'تعطيل':'تفعيل'}
-              </button>
+              <div style={{display:'flex',gap:6}}>
+                <button className='btn btn-gh' style={{fontSize:10,padding:'4px 8px',border:'1px solid var(--gd)',color:'var(--g)'}} onClick={()=>setRole(u.id, u.role==='store_manager'?'user':'store_manager')}>
+                  {u.role==='store_manager'?'❌ مدير متجر':'🏛️ مدير متجر'}
+                </button>
+                <button className={`btn ${u.is_active?'btn-o':'btn-g'}`} style={{fontSize:11}} onClick={()=>toggleUser(u.id)}>
+                  {u.is_active?'تعطيل':'تفعيل'}
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -1299,7 +1307,7 @@ export default function App() {
   setUser(u); 
   setModal(null); 
   setScreen('app'); 
-  showToast(t(`أهلاً بك في مملكة كيمت يا ${u.nickname} 🔺`,`Welcome to the Kingdom of Kemet, ${u.nickname} 🔺`,lang));
+  showToast(t('ahlan ' + u.nickname, 'Welcome ' + u.nickname, lang));
   const token = localStorage.getItem('kemet_token');
   if (token) {
     fetch('https://kemetc1-production.up.railway.app/api/notifications', {
