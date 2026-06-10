@@ -426,33 +426,29 @@ with app.app_context():
         pass
     try:
         cur = init_db().cursor()
-        cats = [('cat_tours','رحلات','Tours','🏛',1),('cat_nile','كروز','Cruise','🛳',2),('cat_consult','استشارات','Consult','💬',3),('cat_medical','علاجية','Medical','🏥',4),('cat_desert','صحراء','Desert','🌅',5)]
-    if request.current_user.get('email') not in ['mido704@gmail.com']:
+        cur.execute("INSERT INTO categories (id,name_ar,name_en,icon,sort_order) VALUES ('cat_tours','رحلات','Tours','🏛',1) ON CONFLICT (id) DO NOTHING")
+        cur.execute("INSERT INTO categories (id,name_ar,name_en,icon,sort_order) VALUES ('cat_nile','كروز','Cruise','🛳',2) ON CONFLICT (id) DO NOTHING")
+        cur.execute("INSERT INTO categories (id,name_ar,name_en,icon,sort_order) VALUES ('cat_consult','استشارات','Consult','💬',3) ON CONFLICT (id) DO NOTHING")
+        cur.execute("INSERT INTO categories (id,name_ar,name_en,icon,sort_order) VALUES ('cat_medical','علاجية','Medical','🏥',4) ON CONFLICT (id) DO NOTHING")
         cur.connection.commit()
     except Exception as e: print('cats error:', e)
     conn = init_db()
     seed_data(conn)
     conn.close()
-        return err('غير مصرح'), 403
-    db = get_db()
-    cur = db.conn.cursor()
-    cur.execute("SELECT COUNT(*) as c FROM users")
-    users_count = cur.fetchone()['c']
-    cur.execute("SELECT COUNT(*) as c FROM posts WHERE is_deleted=0")
-    posts_count = cur.fetchone()['c']
-    cur.execute("SELECT COUNT(*) as c FROM likes")
-    likes_count = cur.fetchone()['c']
-    cur.execute("SELECT COUNT(*) as c FROM follows")
-    follows_count = cur.fetchone()['c']
-    cur.execute("SELECT COUNT(*) as c FROM sessions")
-    sessions_count = cur.fetchone()['c']
-    return ok({
-        'users': users_count,
-        'posts': posts_count,
-        'likes': likes_count,
-        'follows': follows_count,
-        'sessions': sessions_count
-    })
+
+@app.route('/api/admin/stats', methods=['GET'])
+@require_auth
+def admin_stats():
+    if request.current_user.get('email') not in ['mido704@gmail.com']: return err('غير مصرح'), 403
+    try:
+        cur = get_db().conn.cursor()
+        cur.execute('SELECT COUNT(*) as c FROM users'); users_count = cur.fetchone()['c']
+        cur.execute('SELECT COUNT(*) as c FROM posts WHERE is_deleted=0'); posts_count = cur.fetchone()['c']
+        cur.execute('SELECT COUNT(*) as c FROM likes'); likes_count = cur.fetchone()['c']
+        cur.execute('SELECT COUNT(*) as c FROM follows'); follows_count = cur.fetchone()['c']
+        cur.execute('SELECT COUNT(*) as c FROM sessions'); sessions_count = cur.fetchone()['c']
+        return ok({'users':users_count,'posts':posts_count,'likes':likes_count,'follows':follows_count,'sessions':sessions_count})
+    except Exception as e: return err(str(e))
 
 @app.route('/api/admin/users', methods=['GET'])
 @require_auth
