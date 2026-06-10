@@ -477,16 +477,18 @@ def create_tour():
     tour_id = 'tour_' + str(uuid.uuid4())[:8]
     db = get_db()
     cur = db.conn.cursor()
-    cur.execute('''INSERT INTO tours (id,category_id,title_ar,title_en,description_ar,description_en,price,duration_days,image_emoji,image_url,badge_ar,badge_en,includes_ar,includes_en,is_featured,is_active)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)''',
+    try:
+        cur = db.conn.cursor()
         (tour_id, b.get('category_id','cat_tours'), b.get('title_ar',''), b.get('title_en',''),
          b.get('description_ar',''), b.get('description_en',''), b.get('price',0),
          b.get('duration_days',1), b.get('image_emoji','🏛️'), b.get('image_url',''),
          b.get('badge_ar',''), b.get('badge_en',''), b.get('includes_ar','[]'), b.get('includes_en','[]'),
          b.get('is_featured',0)))
     db.conn.commit()
-    return ok({'id': tour_id}), 201
-
+        db.conn.commit()
+        return ok({'id': tour_id}), 201
+    except Exception as e:
+        return err(str(e))
 @app.route('/api/store/tours/<tour_id>', methods=['PUT'])
 @require_auth
 def update_tour(tour_id):
