@@ -557,43 +557,24 @@ function CreatePost({ user, lang, onPosted }) {
 }
 // ── TOUR CARD ─────────────────────────────────────────────
 function TourCard({ tour, lang, onBuy }) {
-  const [open, setOpen] = useState(false);
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
   return (
-    <div className="tour-card" onClick={()=>setOpen(v=>!v)}>
+    <div className='tour-card' onClick={()=>onBuy(tour)} style={{cursor:'pointer'}}>
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative' }}>
-        <span className="badge" style={{ position:'absolute', top:10, right:10, fontSize:10 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>
+        <span className='badge' style={{ position:'absolute', top:10, right:10, fontSize:10 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>
         <div style={{ fontSize:58, marginBottom:6 }}>{tour.image_emoji}</div>
         <div style={{ color:'var(--g)', fontSize:12 }}>{'⭐'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count})</div>
       </div>
       <div style={{ padding:14 }}>
-        <h3 style={{ color:'var(--g)', fontSize:15, fontWeight:700, lineHeight:1.4, marginBottom:4 }}>
-          {t(tour.title_ar,tour.title_en,lang)}
-        </h3>
+        <h3 style={{ color:'var(--g)', fontSize:15, fontWeight:700, lineHeight:1.4, marginBottom:4 }}>{t(tour.title_ar,tour.title_en,lang)}</h3>
         {tour.duration_days && <div style={{ fontSize:12, color:'var(--tm)', marginBottom:8 }}>📅 {tour.duration_days} {t('أيام','days',lang)}</div>}
-        {open && (
-          <div className="fi">
-            <p style={{ fontSize:13, color:'#999', lineHeight:1.7, marginBottom:10 }}>
-              {t(tour.description_ar,tour.description_en,lang)}
-            </p>
-            {incl.length>0 && (
-              <div style={{ marginBottom:10 }}>
-                <div style={{ fontSize:12, color:'var(--gd)', marginBottom:6, fontWeight:600 }}>{t('يشمل:','Includes:',lang)}</div>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
-                  {incl.map(i=><span key={i} style={{ fontSize:11, background:'rgba(201,168,76,.07)', border:'1px solid var(--bb)', padding:'3px 9px', borderRadius:20, color:'var(--gl)' }}>✓ {i}</span>)}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
         <GoldDivider />
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div>
-            <span style={{ fontSize:22, fontWeight:800, color:'var(--g)', fontFamily:'Cinzel,serif' }}>${tour.price}</span>
+            <span style={{ fontSize:22, fontWeight:800, color:'var(--g)', fontFamily:'Cinzel,serif' }}>\</span>
             <span style={{ fontSize:11, color:'var(--tm)', marginRight:4 }}>{t('/ شخص','/ person',lang)}</span>
           </div>
-          <button className="btn btn-g" style={{ padding:'8px 14px', fontSize:13 }}
-            onClick={e=>{e.stopPropagation();onBuy(tour);}}>
+          <button className='btn btn-g' style={{ padding:'8px 14px', fontSize:13 }} onClick={e=>{e.stopPropagation();onBuy(tour);}}>
             {t('احجز الآن','Book Now',lang)}
           </button>
         </div>
