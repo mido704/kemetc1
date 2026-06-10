@@ -826,9 +826,71 @@ function FeedPage({ user, lang, posts, setPosts, onToast }) {
   );
 }
 
+function TourDetailPage({ tour, lang, user, onBack, onToast }) {
+  const [guests, setGuests] = useState(1);
+  const [buyTour, setBuyTour] = useState(null);
+  const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
+  const total = tour.price * guests;
+  return (
+    <div style={{ maxWidth:700, margin:'0 auto', padding:'14px 14px' }}>
+      <button className="btn btn-gh" onClick={onBack} style={{ marginBottom:14 }}>← {t('رجوع','Back',lang)}</button>
+      <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', borderRadius:14, overflow:'hidden', marginBottom:16 }}>
+        {tour.image_url ? (
+          <img src={tour.image_url} style={{ width:'100%', maxHeight:280, objectFit:'cover' }} />
+        ) : (
+          <div style={{ textAlign:'center', padding:'40px 0', fontSize:80 }}>{tour.image_emoji||'🏛️'}</div>
+        )}
+      </div>
+      <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20, marginBottom:14 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10 }}>
+          <div>
+            <h2 style={{ color:'var(--g)', fontSize:20, fontWeight:800, marginBottom:6 }}>{t(tour.title_ar,tour.title_en,lang)}</h2>
+            <div style={{ color:'var(--g)', fontSize:13 }}>{'⭐'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count} {t('تقييم','reviews',lang)})</div>
+          </div>
+          <span className="badge" style={{ fontSize:11 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>
+        </div>
+        <GoldDivider />
+        {tour.duration_days && <div style={{ fontSize:13, color:'var(--tm)', marginBottom:10 }}>📅 {tour.duration_days} {t('أيام','days',lang)}</div>}
+        <p style={{ fontSize:14, color:'#aaa', lineHeight:1.8, marginBottom:14 }}>{t(tour.description_ar,tour.description_en,lang)}</p>
+        {incl.length>0 && (
+          <div style={{ marginBottom:14 }}>
+            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:8 }}>✦ {t('يشمل البرنامج:','Program Includes:',lang)}</div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+              {incl.map(i=><span key={i} style={{ fontSize:12, background:'rgba(201,168,76,.08)', border:'1px solid var(--bb)', padding:'4px 12px', borderRadius:20, color:'var(--gl)' }}>✓ {i}</span>)}
+            </div>
+          </div>
+        )}
+      </div>
+      <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20 }}>
+        <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>🎫 {t('تفاصيل الحجز','Booking Details',lang)}</div>
+        <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
+          <div style={{ color:'var(--tm)', fontSize:13 }}>{t('عدد الأفراد:','Number of guests:',lang)}</div>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <button className="btn btn-gh" style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.max(1,g-1))}>−</button>
+            <span style={{ fontWeight:800, fontSize:20, color:'var(--g)', minWidth:30, textAlign:'center' }}>{guests}</span>
+            <button className="btn btn-gh" style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.min(9,g+1))}>+</button>
+          </div>
+          <div style={{ fontSize:12, color:'var(--tm)' }}>{t('(حد أقصى 9)','(max 9)',lang)}</div>
+        </div>
+        <GoldDivider />
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:12 }}>
+          <div>
+            <div style={{ fontSize:13, color:'var(--tm)' }}>{guests} × ${tour.price}</div>
+            <div style={{ fontSize:26, fontWeight:800, color:'var(--g)', fontFamily:'Cinzel,serif' }}>${total}</div>
+          </div>
+          <button className="btn btn-g" style={{ padding:'12px 28px', fontSize:15 }} onClick={()=>setBuyTour({...tour, guests_count:guests, total_price:total})}>
+            🔺 {t('احجز الآن','Book Now',lang)}
+          </button>
+        </div>
+      </div>
+      {buyTour && <PaymentModal tour={buyTour} lang={lang} user={user} onClose={()=>setBuyTour(null)} onSuccess={()=>{ setBuyTour(null); onToast(t('تم تأكيد حجزك! 🔺','Booking confirmed! 🔺',lang)); onBack(); }} />}
+    </div>
+  );
+}
 function StorePage({ lang, user, onToast }) {
   const [tours, setTours] = useState(DEMO_TOURS);
   const [tab, setTab] = useState('all');
+  const [selectedTour, setSelectedTour] = useState(null);
   const [buyTour, setBuyTour] = useState(null);
 
   useEffect(()=>{
@@ -852,10 +914,13 @@ function StorePage({ lang, user, onToast }) {
           <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>setTab(k)}>{l}</button>
         ))}
       </div>
-      <div className="store-grid">
-        {filtered.map(tour=><TourCard key={tour.id} tour={tour} lang={lang} onBuy={setBuyTour} />)}
-      </div>
-      {buyTour && <PaymentModal tour={buyTour} lang={lang} user={user} onClose={()=>setBuyTour(null)} onSuccess={()=>{ setBuyTour(null); onToast(t('تم تأكيد حجزك! سنتواصل معك قريباً 🔺','Booking confirmed! We will contact you soon 🔺',lang)); }} />}
+      {selectedTour ? (
+        <TourDetailPage tour={selectedTour} lang={lang} user={user} onBack={()=>setSelectedTour(null)} onToast={onToast} />
+      ) : (
+        <div className='store-grid'>
+          {filtered.map(tour=><TourCard key={tour.id} tour={tour} lang={lang} onBuy={()=>setSelectedTour(tour)} />)}
+        </div>
+      )}
     </div>
   );
 }
@@ -1208,7 +1273,7 @@ function AdminDashboard({ lang, user, onBack }) {
   );
 }
 
-// ── MAIN APP ──────────────────────────────────────────────
+// -- MAIN APP --
 export default function App() {
   const [screen, setScreen] = useState('landing');
   const [page, setPage] = useState('feed');
