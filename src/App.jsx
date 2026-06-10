@@ -155,7 +155,7 @@ function Toast({ msg, onDone }) {
 function Avatar({ emoji = '👑', size = 44, onClick, url }) {
   return (
     <div className="av" style={{ width: size, height: size, fontSize: size * 0.45, overflow:'hidden', padding: url ? 0 : undefined }} onClick={onClick}>
-      {url ? <img src={url} style={{width:'100%',height:'100%',objectFit:'cover',borderRadius:'50%'}} /> : emoji}
+      {url ? <img src={url} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'top center',borderRadius:'50%'}} /> : emoji}
     </div>
   );
 }
