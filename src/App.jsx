@@ -47,7 +47,7 @@ const DEMO_POSTS = [
 ];
 
 const DEMO_TOURS = [
-  { id:"tour_luxor",   category_id:"cat_tours",   title_ar:"رحلة الأقصر والأسوان الملكية",     title_en:"Royal Luxor & Aswan Tour",            price:1200, duration_days:7,  image_emoji:"🏛️", badge_ar:"الأكثر مبيعاً", badge_en:"Best Seller", rating:4.9, reviews_count:128, is_featured:1, includes_ar:'["فندق 5 نجوم","جولات مع مرشد","وجبات","نقل"]',          includes_en:'["5-Star Hotel","Guided Tours","Meals","Transport"]',             description_ar:"اكتشف روعة المعابد والمقابر الملكية على ضفاف النيل", description_en:"Discover the grandeur of temples and royal tombs along the Nile" },
+  { id:'tour_luxor', category_id:'cat_tours', title_ar:'رحلة الأقصر والأسوان الملكية', title_en:'Royal Luxor & Aswan Tour', price:1200, duration_days:7, image_emoji:'🏛️', image_url:'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800', gallery:['https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600','https://images.unsplash.com/photo-1539768942893-daf53e448371?w=600','https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=600'], badge_ar:'الأكثر مبيعاً', badge_en:'Best Seller', rating:4.9, reviews_count:128, is_featured:1, includes_ar:'["فندق 5 نجوم","جولات مع مرشد","وجبات","نقل"]', includes_en:'["5-Star Hotel","Guided Tours","Meals","Transport"]', description_ar:'اكتشف روعة المعابد والمقابر الملكية على ضفاف النيل في رحلة لا تُنسى تجمع بين التاريخ والفخامة', description_en:'Discover the grandeur of temples and royal tombs along the Nile in an unforgettable journey combining history and luxury', itinerary_en:['Day 1: Arrive Luxor, Check-in 5-Star Hotel','Day 2: Karnak & Luxor Temples','Day 3: Valley of the Kings & Queens','Day 4: Edfu & Kom Ombo Temples','Day 5: Aswan High Dam & Philae Temple','Day 6: Abu Simbel Day Trip','Day 7: Departure'], itinerary_ar:['اليوم 1: الوصول للأقصر والإقامة','اليوم 2: معابد الكرنك والأقصر','اليوم 3: وادي الملوك والملكات','اليوم 4: معبدا إدفو وكوم أمبو','اليوم 5: السد العالي ومعبد فيلة','اليوم 6: رحلة أبو سمبل','اليوم 7: المغادرة'] },
   { id:"tour_pyramids",category_id:"cat_tours",   title_ar:"باقة الأهرامات والقاهرة الخديوية", title_en:"Pyramids & Khedival Cairo Package",    price:850,  duration_days:5,  image_emoji:"🔺", badge_ar:"عرض محدود",    badge_en:"Limited Offer", rating:4.8, reviews_count:95,  is_featured:1, includes_ar:'["فندق 5 نجوم","المتحف المصري","أبو الهول","جيزة"]',        includes_en:'["5-Star Hotel","Egyptian Museum","Sphinx","Giza"]',               description_ar:"رحلة شاملة لأعجوبة العالم القديمة وعاصمة الألف مئذنة",     description_en:"A comprehensive trip to the wonder of the ancient world" },
   { id:"tour_nile",    category_id:"cat_nile",    title_ar:"جولة النيل الفاخرة على كروز",       title_en:"Luxury Nile Cruise Tour",             price:1800, duration_days:10, image_emoji:"🛳️", badge_ar:"فاخر",         badge_en:"Luxury",        rating:5.0, reviews_count:64,  is_featured:1, includes_ar:'["كروز 5 نجوم","جميع الوجبات","مرشد خاص","نقل VIP"]',       includes_en:'["5-Star Cruise","All Meals","Private Guide","VIP Transfers"]',    description_ar:"رحلة بحرية فاخرة على النيل من الأقصر حتى أسوان",          description_en:"A luxurious Nile cruise from Luxor to Aswan" },
   { id:"tour_consult", category_id:"cat_consult", title_ar:"استشارة سياحية شخصية",             title_en:"Personal Tourism Consultation",        price:150,  duration_days:null,image_emoji:"💬", badge_ar:"خدمة",         badge_en:"Service",       rating:4.9, reviews_count:210, is_featured:0, includes_ar:'["جلسة ساعتين","خطة مخصصة","دعم واتساب","توصيات"]',         includes_en:'["2-Hour Session","Custom Plan","WhatsApp Support","Recommendations"]', description_ar:"استشارة سياحية مخصصة من خبراء مصريين معتمدين",           description_en:"Personalized consultation from certified Egyptian experts" },
@@ -822,6 +822,11 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
           <div style={{ textAlign:'center', padding:'40px 0', fontSize:80 }}>{tour.image_emoji||'🏛️'}</div>
         )}
       </div>
+      {tour.gallery && tour.gallery.length>0 && (
+        <div style={{ display:'flex', gap:8, overflowX:'auto', padding:'8px 0', marginBottom:16 }}>
+          {tour.gallery.map((img,idx)=>(<img key={idx} src={img} style={{ height:120, minWidth:160, objectFit:'cover', borderRadius:10, border:'1px solid var(--bb)', cursor:'pointer', flexShrink:0 }} onClick={()=>window.open(img,'_blank')} />))}
+        </div>
+      )}
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20, marginBottom:14 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10 }}>
           <div>
@@ -846,6 +851,12 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
         <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>🎫 {t('تفاصيل الحجز','Booking Details',lang)}</div>
         <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
           <div style={{ color:'var(--tm)', fontSize:13 }}>{t('عدد الأفراد:','Number of guests:',lang)}</div>
+        {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en) && (
+          <div style={{ marginTop:14 }}>
+            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:10 }}>🗓️ {t('البرنامج اليومي:','Daily Itinerary:',lang)}</div>
+            {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en).map((day,i)=>(<div key={i} style={{ display:'flex', gap:10, marginBottom:8, alignItems:'flex-start' }}><span style={{ background:'var(--gd)', color:'#000', borderRadius:'50%', width:22, height:22, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{i+1}</span><span style={{ fontSize:13, color:'var(--gl)', lineHeight:1.6 }}>{day}</span></div>))}
+          </div>
+        )}
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
             <button className="btn btn-gh" style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.max(1,g-1))}>−</button>
             <span style={{ fontWeight:800, fontSize:20, color:'var(--g)', minWidth:30, textAlign:'center' }}>{guests}</span>
