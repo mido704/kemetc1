@@ -453,18 +453,12 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
 
       <GoldDivider />
 
-      <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6, fontSize:12, color:'var(--tm)' }}>
-        <span>❤️ {likesCount}</span>
-        <span>💬 {post.comments_count+(comments.length>0?comments.length:0)}</span>
-        <span>🔁 {post.shares_count}</span>
-      </div>
-
       <div style={{ display:'flex', gap:4 }}>
-        <button className="btn btn-gh" onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:13, className:likeAnim?'liked-anim':'' }}>
-          {liked?'❤️':'🤍'} {t('إعجاب','Like',lang)}
+        <button className='btn btn-gh' onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:13 }}>
+          {liked?'❤️':'🤍'} {t('إعجاب','Like',lang)} {likesCount>0&&<span style={{fontSize:11,opacity:.7}}>({likesCount})</span>}
         </button>
-        <button className="btn btn-gh" onClick={loadComments} style={{ flex:1, fontSize:13 }}>
-          💬 {t('تعليق','Comment',lang)}
+        <button className='btn btn-gh' onClick={loadComments} style={{ flex:1, fontSize:13 }}>
+          💬 {t('تعليق','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
         </button>
       <button className="btn btn-gh" style={{ flex:1, fontSize:13 }} onClick={async()=>{
         const r = await postsAPI.createPost({
