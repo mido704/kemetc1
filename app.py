@@ -425,11 +425,16 @@ with app.app_context():
     except:
         pass
     conn = init_db()
+    try:
+        cur = init_db().cursor()
     seed_data(conn)
     conn.close()
 def admin_stats():
     uid = request.current_user['id']
     # Check if admin
+        cur.connection.commit()
+    except Exception as e:
+        print('Categories migration error:', e)
     if request.current_user.get('email') not in ['mido704@gmail.com']:
         return err('غير مصرح'), 403
     db = get_db()
