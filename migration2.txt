@@ -1,0 +1,6 @@
+    try:
+        cur2 = init_db().cursor()
+        cur2.execute("INSERT INTO categories (id,name_ar,name_en,icon,sort_order) VALUES ('cat_desert','\u0635\u062d\u0631\u0627\u0621','Desert','\U0001f305',5) ON CONFLICT (id) DO NOTHING")
+        cur2.connection.commit()
+    except Exception as e:
+        print('Desert cat error:', e)

@@ -424,18 +424,15 @@ with app.app_context():
         conn2.close()
     except:
         pass
-    conn = init_db()
     try:
         cur = init_db().cursor()
+        cats = [('cat_tours','رحلات','Tours','🏛',1),('cat_nile','كروز','Cruise','🛳',2),('cat_consult','استشارات','Consult','💬',3),('cat_medical','علاجية','Medical','🏥',4),('cat_desert','صحراء','Desert','🌅',5)]
+    if request.current_user.get('email') not in ['mido704@gmail.com']:
+        cur.connection.commit()
+    except Exception as e: print('cats error:', e)
+    conn = init_db()
     seed_data(conn)
     conn.close()
-def admin_stats():
-    uid = request.current_user['id']
-    # Check if admin
-        cur.connection.commit()
-    except Exception as e:
-        print('Categories migration error:', e)
-    if request.current_user.get('email') not in ['mido704@gmail.com']:
         return err('غير مصرح'), 403
     db = get_db()
     cur = db.conn.cursor()
