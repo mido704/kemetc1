@@ -411,14 +411,13 @@ with app.app_context():
         conn.execute("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'")
         conn.commit()
         conn.close()
-    except:
+    except: pass
     try:
         conn3 = init_db()
         conn3.execute("ALTER TABLE users ADD COLUMN cover_url TEXT DEFAULT ''")
         conn3.commit()
         conn3.close()
     except: pass
-        pass
     try:
         conn2 = init_db()
         conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS image_url TEXT DEFAULT ''")
