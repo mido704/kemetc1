@@ -409,9 +409,6 @@ with app.app_context():
     conn = init_db()
     seed_data(conn)
     conn.close()
-        conn2.close()
-    except:
-        pass
 def admin_stats():
     uid = request.current_user['id']
     # Check if admin
