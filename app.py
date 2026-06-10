@@ -397,6 +397,17 @@ with app.app_context():
         pass
     try:
         conn2 = init_db()
+        conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS image_url TEXT DEFAULT ''")
+        conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS badge_ar TEXT DEFAULT ''")
+        conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS badge_en TEXT DEFAULT ''")
+        conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_ar TEXT DEFAULT '[]'")
+        conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_en TEXT DEFAULT '[]'")
+        conn2.commit()
+        conn2.close()
+    except:
+        pass
+    try:
+        conn2 = init_db()
     conn = init_db()
     seed_data(conn)
     conn.close()
