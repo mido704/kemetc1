@@ -932,7 +932,7 @@ async function uploadToCloudinary(file) {
 function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onStartChat }) {
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
-  const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'' });
+  const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'', cover_url: user?.cover_url||'' });
   const [uploading, setUploading] = useState(false);
   const uploadAvatar = async (e) => {
     const file = e.target.files[0];
@@ -943,11 +943,19 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
     setUploading(false);
     onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
   };
+  const uploadCover = async (e) => {
+    const file = e.target.files[0]; if(!file) return;
+    setUploading(true);
+    const url = await uploadToCloudinary(file);
+    setEditForm(f=>({...f, cover_url:url}));
+    setUploading(false);
+    onToast && onToast(t('تم رفع البنر','Cover uploaded',lang));
+  };
   const saveProfile = async () => {
     const token = storage.getToken();
     const payload = { name: editForm.name, nickname: editForm.nickname, bio: editForm.bio };
     if (editForm.avatar_url) payload.avatar_url = editForm.avatar_url;
-    const r = await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(payload) });
+    if (editForm.cover_url) payload.cover_url = editForm.cover_url;
     const data = await r.json();
    if (data.ok) {
       const updatedUser = {...user, ...payload};
@@ -983,6 +991,11 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
                   <input type='file' accept='image/*' onChange={uploadAvatar} style={{display:'none'}} />
                 </label>
                 {editForm.avatar_url && <img src={editForm.avatar_url} style={{width:60,height:60,borderRadius:'50%',marginTop:8,display:'block',margin:'8px auto 0'}} />}
+                <label style={{cursor:'pointer',display:'inline-block',background:'rgba(201,168,76,.1)',border:'1px solid var(--gd)',borderRadius:8,padding:'8px 16px',color:'var(--g)',fontSize:13,marginTop:8}}>
+                  {uploading ? '⏳' : t('رفع صورة البنر','Upload Cover',lang)}
+                  <input type='file' accept='image/*' onChange={uploadCover} style={{display:'none'}} />
+                </label>
+                {editForm.cover_url && <img src={editForm.cover_url} style={{width:'100%',height:60,objectFit:'cover',borderRadius:8,marginTop:8}} />}
               </div>
               <input className='inp' placeholder={t('الاسم','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
               <input className='inp' placeholder={t('النيكنيم','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
@@ -995,8 +1008,9 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
           </div>
         </div>
       )}
-      <div className="pcover" style={{ marginBottom:0 }}><div className="hiero">𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div></div>
-      <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
+      <div className='pcover' style={{ marginBottom:0, position:'relative' }}>
+        {user?.cover_url ? <img src={user.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',top:0,left:0}} /> : <div className='hiero'>𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div>}
+      </div>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:10 }}>
           <Avatar emoji={user?.avatar_emoji||'👑'} size={90} url={user?.avatar_url} />
           <button className="btn btn-o" style={{ marginBottom:8 }} onClick={()=>setEditMode(true)}>{t('تعديل البروفايل','Edit Profile',lang)}</button>
@@ -1014,7 +1028,6 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
             ))}
           </div>
         </div>
-      </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
         {[['posts',t('المنشورات','Posts',lang)],['media',t('الوسائط','Media',lang)],['likes',t('الإعجابات','Likes',lang)],['friends',t('الأصدقاء','Friends',lang)]].map(([k,l])=>(
           <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>{ setTab(k); if(k==="friends") loadFriends(); }}>{l}</button>

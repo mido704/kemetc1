@@ -412,6 +412,12 @@ with app.app_context():
         conn.commit()
         conn.close()
     except:
+    try:
+        conn3 = init_db()
+        conn3.execute("ALTER TABLE users ADD COLUMN cover_url TEXT DEFAULT ''")
+        conn3.commit()
+        conn3.close()
+    except: pass
         pass
     try:
         conn2 = init_db()
