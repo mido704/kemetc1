@@ -712,6 +712,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'🛡️', ar:'الإدارة', en:'Admin', key:'admin' },
   ];
   const isAdmin = user?.email === 'mido704@gmail.com';
+  const isStoreManager = user?.role === 'store_manager' || isAdmin;
        
   return (
     <div style={{ borderLeft:'1px solid var(--bb)', padding:'18px 10px', position:'sticky', top:52, height:'calc(100vh - 52px)', overflowY:'auto', background:'var(--b)', display:'flex', flexDirection:'column' }}>
@@ -723,6 +724,12 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
         <div className={`si ${page==='admin'?'on':''}`} onClick={()=>setPage('admin')}>
           <span style={{ fontSize:17, width:22, textAlign:'center' }}>🛡️</span>
           <span>{t('الإدارة','Admin',lang)}</span>
+        </div>
+      )}
+      {isStoreManager && (
+        <div className={`si ${page===('store_manager')?'on':''}`} onClick={()=>setPage('store_manager')}>
+          <span style={{ fontSize:17, width:22, textAlign:'center' }}>🏛️</span>
+          <span>{t('إدارة المتجر','Store Mgr',lang)}</span>
         </div>
       )}
       
@@ -1204,6 +1211,109 @@ function SettingsPage({ lang, setLang, onLogout }) {
     </div>
   );
 }
+function StoreManagerPage({ lang, user, onBack, onToast }) {
+  const [tours, setTours] = useState([]);
+  const [editing, setEditing] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', is_featured:0 });
+  const token = storage.getToken();
+  const API = 'https://kemetc1-production.up.railway.app/api';
+  useEffect(()=>{ loadTours(); },[]);
+  const loadTours = () => { storeAPI.getTours().then(r=>{ if(r.ok) setTours(r.data||[]); }); };
+  const uploadImg = async (e) => {
+    const file = e.target.files[0]; if(!file) return;
+    setUploading(true);
+    const url = await uploadToCloudinary(file);
+    setForm(f=>({...f, image_url:url}));
+    setUploading(false);
+    onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
+  };
+  const saveTour = async () => {
+    const body = {...form, price:Number(form.price), duration_days:Number(form.duration_days),
+      includes_ar: JSON.stringify(form.includes_ar.split(',').map(s=>s.trim()).filter(Boolean)),
+      includes_en: JSON.stringify(form.includes_en.split(',').map(s=>s.trim()).filter(Boolean))
+    };
+    if(editing) {
+      await fetch(API+'/store/tours/'+editing.id, {method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body:JSON.stringify(body)});
+      onToast && onToast(t('تم التحديث','Updated',lang));
+    } else {
+      await fetch(API+'/store/tours', {method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body:JSON.stringify(body)});
+      onToast && onToast(t('تمت الاضافة','Added',lang));
+    }
+    setEditing(null); setAdding(false); loadTours();
+  };
+  const deleteTour = async (id) => {
+    await fetch(API+'/store/tours/'+id, {method:'DELETE', headers:{'Authorization':'Bearer '+token}});
+    onToast && onToast(t('تم الحذف','Deleted',lang));
+    loadTours();
+  };
+  const startEdit = (tour) => {
+    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:'', includes_en:'', is_featured:tour.is_featured||0 });
+    setEditing(tour); setAdding(true);
+  };
+  return (
+    <div style={{maxWidth:800,margin:'0 auto',padding:14}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
+        <button className='btn btn-gh' onClick={onBack}>← {t('رجوع','Back',lang)}</button>
+        <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>🏛 {t('ادارة المتجر','Store Manager',lang)}</div>
+        <button className='btn btn-g' style={{marginRight:'auto'}} onClick={()=>{setEditing(null);setForm({title_ar:'',title_en:'',description_ar:'',description_en:'',price:0,duration_days:1,image_emoji:'🏛',image_url:'',badge_ar:'',badge_en:'',category_id:'cat_tours',includes_ar:'',includes_en:'',is_featured:0});setAdding(true);}}>+ {t('اضافة رحلة','Add Tour',lang)}</button>
+      </div>
+      {adding && (
+        <div className='card' style={{padding:20,marginBottom:20}}>
+          <div style={{fontWeight:700,color:'var(--g)',marginBottom:14}}>{editing?t('تعديل رحلة','Edit Tour',lang):t('رحلة جديدة','New Tour',lang)}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+            <input className='inp' placeholder='العنوان بالعربي' value={form.title_ar} onChange={e=>setForm(f=>({...f,title_ar:e.target.value}))} />
+            <input className='inp' placeholder='Title EN' value={form.title_en} onChange={e=>setForm(f=>({...f,title_en:e.target.value}))} />
+            <textarea className='inp' placeholder='الوصف بالعربي' value={form.description_ar} onChange={e=>setForm(f=>({...f,description_ar:e.target.value}))} rows={3} />
+            <textarea className='inp' placeholder='Description EN' value={form.description_en} onChange={e=>setForm(f=>({...f,description_en:e.target.value}))} rows={3} />
+            <input className='inp' placeholder='السعر' type='number' value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} />
+            <input className='inp' placeholder='عدد الايام' type='number' value={form.duration_days} onChange={e=>setForm(f=>({...f,duration_days:e.target.value}))} />
+            <input className='inp' placeholder='الشارة عربي' value={form.badge_ar} onChange={e=>setForm(f=>({...f,badge_ar:e.target.value}))} />
+            <input className='inp' placeholder='Badge EN' value={form.badge_en} onChange={e=>setForm(f=>({...f,badge_en:e.target.value}))} />
+            <input className='inp' placeholder='يشمل عربي (مفصول بفواصل)' value={form.includes_ar} onChange={e=>setForm(f=>({...f,includes_ar:e.target.value}))} />
+            <input className='inp' placeholder='Includes EN (comma separated)' value={form.includes_en} onChange={e=>setForm(f=>({...f,includes_en:e.target.value}))} />
+            <select className='inp' value={form.category_id} onChange={e=>setForm(f=>({...f,category_id:e.target.value}))}>
+              <option value='cat_tours'>رحلات</option>
+              <option value='cat_nile'>كروز</option>
+              <option value='cat_consult'>استشارات</option>
+              <option value='cat_medical'>علاجية</option>
+            </select>
+            <input className='inp' placeholder='Emoji' value={form.image_emoji} onChange={e=>setForm(f=>({...f,image_emoji:e.target.value}))} />
+          </div>
+          <div style={{marginTop:10,display:'flex',gap:10,alignItems:'center'}}>
+            <label className='btn btn-gh' style={{cursor:'pointer',border:'1px solid var(--gd)'}}>
+              {uploading?'...':t('رفع صورة','Upload Image',lang)}
+              <input type='file' accept='image/*' onChange={uploadImg} style={{display:'none'}} />
+            </label>
+            {form.image_url && <img src={form.image_url} style={{height:50,borderRadius:8}} />}
+            <label style={{display:'flex',alignItems:'center',gap:6,color:'var(--tm)',fontSize:13}}>
+              <input type='checkbox' checked={form.is_featured===1} onChange={e=>setForm(f=>({...f,is_featured:e.target.checked?1:0}))} />
+              {t('مميز','Featured',lang)}
+            </label>
+          </div>
+          <div style={{display:'flex',gap:10,marginTop:14}}>
+            <button className='btn btn-o' onClick={()=>{setAdding(false);setEditing(null);}} style={{flex:1}}>{t('الغاء','Cancel',lang)}</button>
+            <button className='btn btn-g' onClick={saveTour} style={{flex:1}}>🔺 {t('حفظ','Save',lang)}</button>
+          </div>
+        </div>
+      )}
+      <div>
+        {tours.map(tour=>(
+          <div key={tour.id} className='card' style={{padding:14,marginBottom:10,display:'flex',gap:12,alignItems:'center'}}>
+            <div style={{fontSize:36}}>{tour.image_emoji||'🏛'}</div>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:700,color:'var(--g)'}}>{t(tour.title_ar,tour.title_en,lang)}</div>
+              <div style={{fontSize:12,color:'var(--tm)'}}>{tour.price} dollar - {tour.duration_days} {t('ايام','days',lang)}</div>
+            </div>
+            <button className='btn btn-gh' style={{fontSize:12}} onClick={()=>startEdit(tour)}>✏️ {t('تعديل','Edit',lang)}</button>
+            <button className='btn btn-o' style={{fontSize:12,borderColor:'var(--red)',color:'var(--red)'}} onClick={()=>deleteTour(tour.id)}>🗑 {t('حذف','Delete',lang)}</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 function AdminDashboard({ lang, user, onBack }) {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
@@ -1363,8 +1473,7 @@ export default function App() {
           {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
-          {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
-          {page==='profile' && <ProfilePage user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
+          {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='search'        && <SearchPage        lang={lang} />}
