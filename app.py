@@ -379,7 +379,15 @@ def init_app():
     seed_data(conn)
     conn.close()
 
+# Migration: add role column if not exists
 with app.app_context():
+    try:
+        conn = init_db()
+        conn.execute("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'")
+        conn.commit()
+        conn.close()
+    except:
+        pass
     conn = init_db()
     seed_data(conn)
     conn.close()

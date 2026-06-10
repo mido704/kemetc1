@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS users (
   is_verified   INTEGER DEFAULT 0,
   is_active     INTEGER DEFAULT 1,
   membership    TEXT DEFAULT 'free',
+    role          TEXT DEFAULT 'user',
   followers_count INTEGER DEFAULT 0,
   following_count INTEGER DEFAULT 0,
   posts_count   INTEGER DEFAULT 0,
