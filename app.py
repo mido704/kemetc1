@@ -264,11 +264,18 @@ def get_categories():
 def get_tours():
     cat = request.args.get('category')
     featured = request.args.get('featured') == 'true'
-    tours = get_db().get_tours(category_id=cat, featured_only=featured)
-    return ok(tours)
-
-@app.route('/api/store/tours/<tour_id>', methods=['GET'])
-def get_tour(tour_id):
+    try:
+        cur = get_db().conn.cursor()
+        q = 'SELECT * FROM tours WHERE is_active=1'
+        params = []
+        if cat: q += ' AND category_id=%s'; params.append(cat)
+        if featured: q += ' AND is_featured=1'
+        q += ' ORDER BY is_featured DESC, rating DESC'
+        cur.execute(q, params)
+        tours = [dict(r) for r in cur.fetchall()]
+        return ok(tours)
+    except Exception as e:
+        return err(str(e))
     tour = get_db().get_tour(tour_id)
     if not tour:
         return err('ط·آ§ط¸â€‍ط·آ±ط·آ­ط¸â€‍ط·آ© ط·ط›ط¸ظ¹ط·آ± ط¸â€¦ط¸ث†ط·آ¬ط¸ث†ط·آ¯ط·آ©', 404)
