@@ -395,11 +395,17 @@ with app.app_context():
         conn.close()
     except:
         pass
+    try:
+        conn2 = init_db()
     conn = init_db()
     seed_data(conn)
     conn.close()
 @app.route('/api/admin/stats', methods=['GET'])
 @require_auth
+        conn2.commit()
+        conn2.close()
+    except:
+        pass
 def admin_stats():
     uid = request.current_user['id']
     # Check if admin
