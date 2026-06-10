@@ -956,14 +956,11 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
     const payload = { name: editForm.name, nickname: editForm.nickname, bio: editForm.bio };
     if (editForm.avatar_url) payload.avatar_url = editForm.avatar_url;
     if (editForm.cover_url) payload.cover_url = editForm.cover_url;
+    const r = await fetch('https://kemetc1-production.up.railway.app/api/users/profile', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(payload) });
     const data = await r.json();
-   if (data.ok) {
-      const updatedUser = {...user, ...payload};
-      onUpdateUser && onUpdateUser(updatedUser);
-    }
+    if (data.ok) { const updatedUser = {...user, ...payload}; onUpdateUser && onUpdateUser(updatedUser); }
     setEditMode(false);
     onToast && onToast(t('تم تحديث البروفايل','Profile updated',lang));
-
   };
   const [tab, setTab] = useState('posts');
   const [friends, setFriends] = useState([]);
