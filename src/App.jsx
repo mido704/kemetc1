@@ -1006,10 +1006,10 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
         </div>
       )}
       <div className='pcover' style={{ marginBottom:0, position:'relative' }}>
-        {user?.cover_url ? <img src={user.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',top:0,left:0}} /> : <div className='hiero'>𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div>}
+        {user?.cover_url ? <img src={user.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center',position:'absolute',top:0,left:0}} /> : <div className='hiero'>𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div>}
       </div>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginTop:10 }}>
-          <Avatar emoji={user?.avatar_emoji||'👑'} size={90} url={user?.avatar_url} />
+          <Avatar emoji={user?.avatar_emoji||'👑'} size={72} url={user?.avatar_url} />
           <button className="btn btn-o" style={{ marginBottom:8 }} onClick={()=>setEditMode(true)}>{t('تعديل البروفايل','Edit Profile',lang)}</button>
         </div>
         <div style={{ marginTop:10 }}>
