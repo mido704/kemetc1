@@ -1013,6 +1013,17 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
   const [active, setActive] = useState(null);
   const [conv, setConv] = useState([]);
   const [msg, setMsg] = useState('');
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆','🤩','😂','🥰','😎','🙏'];
+  const msgRef = React.useRef(null);
+  const uploadImage = async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    setUploading(true);
+    const url = await uploadToCloudinary(file);
+    setUploading(false);
+    if (url) { const r = await messagesAPI.sendMessage(active.other_id, url); setConv(c=>[...c, { id:r.data?.message_id||Date.now(), sender_id:user?.id, content:url, created_at:new Date().toISOString() }]); }
+  };
   useEffect(()=>{ if(initialChat){ openChat({other_id:initialChat.id, other_name:initialChat.nickname, avatar_emoji:initialChat.avatar_emoji||'👑'}); onChatOpened&&onChatOpened(); } },[initialChat]);
 
  useEffect(()=>{
@@ -1061,15 +1072,30 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
           </div>
           <div style={{ height:360, overflowY:'auto', marginBottom:12, display:'flex', flexDirection:'column' }}>
             {conv.map(m=>(
-              <div key={m.id} className={`msg-bubble ${m.sender_id===user?.id?'msg-me':'msg-other'}`}>
-                {m.content}
+              <div key={m.id} className={`msg-bubble ${m.sender_id===user?.id?"msg-me":"msg-other"}`}>
+                {m.content?.startsWith('http') && (m.content?.includes('cloudinary') || m.content?.includes('.jpg') || m.content?.includes('.png') || m.content?.includes('.webp')) ?
+                  <img src={m.content} style={{ maxWidth:200, borderRadius:8, display:'block' }} /> :
+                  m.content}
               </div>
             ))}
           </div>
-          <div style={{ display:'flex', gap:8 }}>
-            <input className="inp" placeholder={t('اكتب رسالة...','Type a message...',lang)} value={msg} onChange={e=>setMsg(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{ flex:1 }} />
-            <button className="btn btn-g" onClick={send} style={{ padding:'10px 16px' }}>{t('إرسال','Send',lang)}</button>
+          {showEmoji && (
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6, padding:10, background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:10, marginBottom:8 }}>
+              {emojis.map(e=>(<span key={e} style={{ fontSize:22, cursor:'pointer' }} onClick={()=>{ setMsg(m=>m+e); setShowEmoji(false); }}>{e}</span>))}
+            </div>
+          )}
+          <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+            <button className='btn btn-gh' style={{ fontSize:18, padding:'8px 10px' }} onClick={()=>setShowEmoji(v=>!v)}>😊</button>
+            <label className='btn btn-gh' style={{ fontSize:18, padding:'8px 10px', cursor:'pointer' }}>
+              {uploading ? '⏳' : '📎'}
+              <input type='file' accept='image/*' onChange={uploadImage} style={{ display:'none' }} />
+            </label>
+            <input className='inp' placeholder={t('اكتب رسالة...','Type a message...',lang)} value={msg} onChange={e=>setMsg(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{ flex:1 }} />
+            <button className='btn btn-g' onClick={send} style={{ padding:'10px 16px' }}>{t('إرسال','Send',lang)}</button>
           </div>
+
+
+
         </div>
       )}
     </div>
