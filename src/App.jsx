@@ -1027,7 +1027,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
         </div>
       </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
-        {[['posts',t('المنشورات','Posts',lang)],['media',t('الوسائط','Media',lang)],['likes',t('الإعجابات','Likes',lang)],['friends',t('الأصدقاء','Friends',lang)]].map(([k,l])=>(
+        {[['posts',t('المنشورات','Posts',lang)],['friends',t('الأصدقاء','Friends',lang)],['inbox',t('صندوق الوارد','Inbox',lang)]].map(([k,l])=>(
           <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>{ setTab(k); if(k==="friends") loadFriends(); }}>{l}</button>
         ))}
       </div>
@@ -1037,15 +1037,23 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
           <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول تغريدة!','No posts yet. Start with your first tweet!',lang)}</div>
         </div>
       ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />))}
+      ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />))}
+      {tab==='friends' && (
         <div>
           {loadingFriends && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>⏳</div>}
-          {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:8,alignItems:'center',justifyContent:'space-between'}}>
-            <div style={{display:'flex',gap:8,alignItems:'center',flex:1,minWidth:0}}>
-              <Avatar emoji={f.avatar_emoji||'👑'} size={40} url={f.avatar_url} />
-              <div style={{minWidth:0}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
-            </div>
-            <button className='btn btn-g' style={{fontSize:11,padding:'6px 10px',flexShrink:0,whiteSpace:'nowrap'}} onClick={()=>onStartChat&&onStartChat(f)}>💬 {t('رسالة','Msg',lang)}</button>
+          {friends.length===0 && !loadingFriends && <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>👥 {t('لا يوجد أصدقاء','No friends yet',lang)}</div>}
+          {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:10,alignItems:'center',cursor:'pointer'}} onClick={()=>onStartChat&&onStartChat(f)}>
+            <Avatar emoji={f.avatar_emoji||'👑'} size={44} url={f.avatar_url} />
+            <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
+            <span style={{color:'var(--gd)',fontSize:20}}>›</span>
           </div>))}
+        </div>
+      )}
+      {tab==='inbox' && (
+        <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>
+          <div style={{fontSize:48,marginBottom:10}}>💬</div>
+          <div>{t('اضغط على صديق للمراسلة','Tap a friend to message',lang)}</div>
+          <button className='btn btn-g' style={{marginTop:14}} onClick={()=>onSetPage&&onSetPage('messages')}>{t('فتح الرسائل','Open Messages',lang)}</button>
         </div>
       )}
     </div>
@@ -1053,10 +1061,9 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
 }
 
 function NotificationsPage({ lang, user, onToast, notifsList }) {
-      const [notifs, setNotifs] = useState([]);
-      const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
-
-      return (
+  const [notifs, setNotifs] = useState([]);
+  const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
+  return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
       {(notifsList||notifs).length === 0 ? (
