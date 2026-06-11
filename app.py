@@ -177,7 +177,6 @@ def get_feed():
         posts = [dict(r) for r in cur.fetchall()]
         return ok(posts)
     except Exception as e: return ok(get_db().get_feed(uid, limit, offset))
-        return err('ط¸â€¦ط·آ­ط·ع¾ط¸ث†ط¸â€° ط·آ§ط¸â€‍ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ± ط¸â€¦ط·آ·ط¸â€‍ط¸ث†ط·آ¨')
     if len(b['content']) > 500:
         return err('ط·آ§ط¸â€‍ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ± ط¸â€‍ط·آ§ ط¸ظ¹ط·ع¾ط·آ¬ط·آ§ط¸ث†ط·آ² 500 ط·آ­ط·آ±ط¸ظ¾')
     uid = request.current_user['id']
