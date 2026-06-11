@@ -1314,7 +1314,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
     loadTours();
   };
   const startEdit = (tour) => {
-    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:'', includes_en:'', is_featured:tour.is_featured||0 });
+    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:(tour.includes_ar?JSON.parse(tour.includes_ar):[]).join(','), includes_en:(tour.includes_en?JSON.parse(tour.includes_en):[]).join(','), itinerary_ar:(tour.itinerary_ar?JSON.parse(tour.itinerary_ar):[]).join('\n'), itinerary_en:(tour.itinerary_en?JSON.parse(tour.itinerary_en):[]).join('\n'), is_featured:tour.is_featured||0 });
     setEditing(tour); setAdding(true);
   };
   return (
