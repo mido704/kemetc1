@@ -188,9 +188,9 @@ def create_post():
         content_en=b.get('content_en', ''),
         image_emoji=b.get('image_emoji', ''),
         image_url=b.get('image_url', ''),
+        image_url=b.get('image_url', ''),
+        video_url=b.get('video_url', ''),
         hashtags=b.get('hashtags', []),
-        language=b.get('language', 'ar')
-    )
     return ok(result), 201
 
 @app.route('/api/posts/<post_id>', methods=['DELETE'])
@@ -426,6 +426,12 @@ with app.app_context():
         conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_ar TEXT DEFAULT '[]'")
         conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_en TEXT DEFAULT '[]'")
         conn2.commit()
+    try:
+        conn4 = init_db()
+        conn4.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS video_url TEXT DEFAULT ''")
+        conn4.commit()
+        conn4.close()
+    except: pass
         conn2.close()
     except:
         pass
