@@ -170,13 +170,12 @@ def get_following():
 def get_feed():
     limit = min(int(request.args.get('limit', 20)), 50)
     offset = int(request.args.get('offset', 0))
-    posts = get_db().get_feed(request.current_user['id'], limit, offset)
-    return ok(posts)
-
-@app.route('/api/posts', methods=['POST'])
-@require_auth
-def create_post():
-    b = request.get_json() or {}
+    uid = request.current_user['id']
+    try:
+        cur = get_db().conn.cursor()
+        cur.execute('''SELECT p.id, p.content, p.content_en, p.image_emoji, p.image_url, COALESCE(p.video_url,'') as video_url, p.hashtags, p.likes_count, p.comments_count, p.shares_count, p.created_at, u.id as user_id, u.nickname, u.avatar_emoji, u.avatar_url, CASE WHEN l.id IS NOT NULL THEN 1 ELSE 0 END as liked FROM posts p JOIN users u ON p.user_id=u.id LEFT JOIN likes l ON l.post_id=p.id AND l.user_id=%s WHERE p.is_deleted=0 ORDER BY p.created_at DESC LIMIT %s OFFSET %s''', (uid, limit, offset))
+        posts = [dict(r) for r in cur.fetchall()]
+        return ok(posts)
     if not b.get('content', '').strip():
         return err('ط¸â€¦ط·آ­ط·ع¾ط¸ث†ط¸â€° ط·آ§ط¸â€‍ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ± ط¸â€¦ط·آ·ط¸â€‍ط¸ث†ط·آ¨')
     if len(b['content']) > 500:
