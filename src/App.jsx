@@ -569,8 +569,8 @@ function TourCard({ tour, lang, onBuy }) {
         <GoldDivider />
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div>
-            <span style={{ fontSize:22, fontWeight:800, color:'var(--g)', fontFamily:'Cinzel,serif' }}>\</span>
-            <span style={{ fontSize:11, color:'var(--tm)', marginRight:4 }}>{t('/ شخص','/ person',lang)}</span>
+            <span style={{ fontSize:18, fontWeight:800, color:'var(--g)' }}>{tour.price}</span>
+            <span style={{ fontSize:11, color:'var(--tm)', marginRight:4 }}> {t('ج.م / شخص','EGP / person',lang)}</span>
           </div>
           <button className='btn btn-g' style={{ padding:'8px 14px', fontSize:13 }} onClick={e=>{e.stopPropagation();onBuy(tour);}}>
             {t('احجز الآن','Book Now',lang)}
