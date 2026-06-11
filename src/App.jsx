@@ -559,10 +559,11 @@ function TourCard({ tour, lang, onBuy }) {
   return (
     <div className='tour-card' onClick={()=>onBuy(tour)} style={{cursor:'pointer'}}>
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative' }}>
-        {(tour.badge_ar||tour.badge_en) && <span className='badge' style={{ position:'absolute', top:10, right:10, fontSize:10 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>}
-        <div style={{ fontSize:58, marginBottom:6 }}>{tour.image_emoji}</div>
-        <div style={{ color:'var(--g)', fontSize:12 }}>{'⭐'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count})</div>
-      </div>
+      <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative', minHeight:160, overflow:'hidden' }}>
+        {tour.image_url && <img src={tour.image_url} style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',objectFit:'cover',opacity:0.4}} />}
+        {(tour.badge_ar||tour.badge_en) && <span className='badge' style={{position:'absolute',top:10,right:10,fontSize:10,zIndex:2}}>{t(tour.badge_ar,tour.badge_en,lang)}</span>}
+        <div style={{fontSize:58,marginBottom:6,position:'relative',zIndex:1}}>{tour.image_emoji||'🏛️'}</div>
+        <div style={{color:'var(--g)',fontSize:12,position:'relative',zIndex:1}}>{'⭐'.repeat(Math.floor(tour.rating||0))} {tour.rating||0} ({tour.reviews_count||0})</div>
       <div style={{ padding:14 }}>
         <h3 style={{ color:'var(--g)', fontSize:15, fontWeight:700, lineHeight:1.4, marginBottom:4 }}>{t(tour.title_ar,tour.title_en,lang)}</h3>
         {tour.duration_days && <div style={{ fontSize:12, color:'var(--tm)', marginBottom:8 }}>📅 {tour.duration_days} {t('أيام','days',lang)}</div>}
@@ -570,12 +571,14 @@ function TourCard({ tour, lang, onBuy }) {
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div>
             <span style={{ fontSize:20, fontWeight:800, color:'var(--g)' }}>{tour.price||0}</span>
-            <span style={{ fontSize:11, color:'var(--tm)' }}> {t('ج.م','EGP',lang)}</span>
+            <span style={{ fontSize:11, color:'var(--tm)' }}> $ / person</span>
           </div>
           <button className='btn btn-g' style={{ padding:'8px 14px', fontSize:13 }} onClick={e=>{e.stopPropagation();onBuy(tour);}}>
             {t('احجز الآن','Book Now',lang)}
           </button>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );
@@ -1328,7 +1331,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
             <input className='inp' placeholder='Title EN' value={form.title_en} onChange={e=>setForm(f=>({...f,title_en:e.target.value}))} />
             <textarea className='inp' placeholder='الوصف بالعربي' value={form.description_ar} onChange={e=>setForm(f=>({...f,description_ar:e.target.value}))} rows={3} />
             <textarea className='inp' placeholder='Description EN' value={form.description_en} onChange={e=>setForm(f=>({...f,description_en:e.target.value}))} rows={3} />
-            <input className='inp' placeholder='السعر' type='number' value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} />
+            <input className='inp' placeholder='السعر بالدولار $' type='number' value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} />
             <input className='inp' placeholder='عدد الايام' type='number' value={form.duration_days} onChange={e=>setForm(f=>({...f,duration_days:e.target.value}))} />
             <input className='inp' placeholder='الشارة عربي' value={form.badge_ar} onChange={e=>setForm(f=>({...f,badge_ar:e.target.value}))} />
             <input className='inp' placeholder='Badge EN' value={form.badge_en} onChange={e=>setForm(f=>({...f,badge_en:e.target.value}))} />
