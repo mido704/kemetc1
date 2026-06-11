@@ -1296,7 +1296,9 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
   const saveTour = async () => {
     const body = {...form, price:Number(form.price), duration_days:Number(form.duration_days),
       includes_ar: JSON.stringify(form.includes_ar.split(',').map(s=>s.trim()).filter(Boolean)),
-      includes_en: JSON.stringify(form.includes_en.split(',').map(s=>s.trim()).filter(Boolean))
+      includes_en: JSON.stringify(form.includes_en.split(',').map(s=>s.trim()).filter(Boolean)),
+      itinerary_ar: JSON.stringify((form.itinerary_ar||'').split('\n').map(s=>s.trim()).filter(Boolean)),
+      itinerary_en: JSON.stringify((form.itinerary_en||'').split('\n').map(s=>s.trim()).filter(Boolean))
     };
     if(editing) {
       await fetch(API+'/store/tours/'+editing.id, {method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body:JSON.stringify(body)});
