@@ -117,8 +117,8 @@ textarea.inp{resize:none}
 .tour-card:hover{border-color:var(--gd);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .app-layout{display:grid;grid-template-columns:230px 1fr 210px;min-height:calc(100vh - 52px);max-width:1180px;margin:0 auto}
 @media(max-width:1100px){.app-layout{grid-template-columns:220px 1fr}.rs{display:none}}
-@media(max-width:800px){.app-layout{grid-template-columns:1fr}.ls{display:none}.bottom-nav{display:flex!important}}
 @media(max-width:800px){.app-layout{grid-template-columns:1fr}.ls{display:none}.bottom-nav{display:flex!important}.hide-mobile{display:none!important}}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.97);border-top:1px solid var(--bb);padding:6px 0 10px;z-index:999;justify-content:space-around;align-items:center;backdrop-filter:blur(10px)}
 .bottom-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--tm);font-size:10px;padding:4px 12px;cursor:pointer;border:none;background:transparent;font-family:'Cairo',sans-serif}
 .bottom-nav-btn.on{color:var(--g)}
 .liked-anim{animation:heartPop .3s ease}
