@@ -1414,6 +1414,7 @@ export default function App() {
       if(token) fetch('https://kemetc1-production.up.railway.app/api/notifications',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()).then(d=>{ if(d.ok) setNotifsList(d.data||[]); });
     }
   },[screen]);
+  const showToast = (msg) => { setToast(msg); };
  const handleReg = (u) => { 
   setUser(u); 
   setModal(null); 
