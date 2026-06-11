@@ -559,7 +559,7 @@ function TourCard({ tour, lang, onBuy }) {
   return (
     <div className='tour-card' onClick={()=>onBuy(tour)} style={{cursor:'pointer'}}>
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative' }}>
-        <span className='badge' style={{ position:'absolute', top:10, right:10, fontSize:10 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>
+        {(tour.badge_ar||tour.badge_en) && <span className='badge' style={{ position:'absolute', top:10, right:10, fontSize:10 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>}
         <div style={{ fontSize:58, marginBottom:6 }}>{tour.image_emoji}</div>
         <div style={{ color:'var(--g)', fontSize:12 }}>{'⭐'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count})</div>
       </div>
@@ -569,8 +569,8 @@ function TourCard({ tour, lang, onBuy }) {
         <GoldDivider />
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div>
-            <span style={{ fontSize:18, fontWeight:800, color:'var(--g)' }}>{tour.price}</span>
-            <span style={{ fontSize:11, color:'var(--tm)', marginRight:4 }}> {t('ج.م / شخص','EGP / person',lang)}</span>
+            <span style={{ fontSize:20, fontWeight:800, color:'var(--g)' }}>{tour.price||0}</span>
+            <span style={{ fontSize:11, color:'var(--tm)' }}> {t('ج.م','EGP',lang)}</span>
           </div>
           <button className='btn btn-g' style={{ padding:'8px 14px', fontSize:13 }} onClick={e=>{e.stopPropagation();onBuy(tour);}}>
             {t('احجز الآن','Book Now',lang)}
@@ -580,7 +580,6 @@ function TourCard({ tour, lang, onBuy }) {
     </div>
   );
 }
-
 // ── PAYMENT MODAL ─────────────────────────────────────────
 function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
   const [step, setStep] = useState(1);
