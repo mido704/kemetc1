@@ -425,15 +425,14 @@ with app.app_context():
         conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_ar TEXT DEFAULT '[]'")
         conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_en TEXT DEFAULT '[]'")
         conn2.commit()
+        conn2.close()
+    except: pass
     try:
         conn4 = init_db()
         conn4.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS video_url TEXT DEFAULT ''")
         conn4.commit()
         conn4.close()
     except: pass
-        conn2.close()
-    except:
-        pass
     try:
         cur = init_db().cursor()
         cur.execute("INSERT INTO categories (id,name_ar,name_en,icon,sort_order) VALUES ('cat_tours','رحلات','Tours','🏛',1) ON CONFLICT (id) DO NOTHING")
