@@ -511,11 +511,12 @@ function CreatePost({ user, lang, onPosted }) {
     setUploading(false);
   };
   const submit = async () => {
-    if (!text.trim()) return;
+    if (!text.trim() && !imageUrl) return;
     setPosting(true);
-    const r = await postsAPI.createPost({ content:text, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'' });
+    const content = text.trim() || (isVideo ? '🎥' : '📷');
+    const r = await postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'' });
     setPosting(false);
-    if (r.ok) { onPosted(text, r.data?.post_id); setText(''); setImageUrl(''); setShowEmoji(false); }
+    if (r.ok) { onPosted(content, r.data?.post_id); setText(''); setImageUrl(''); setIsVideo(false); setShowEmoji(false); }
   };
 
   return (
@@ -525,7 +526,8 @@ function CreatePost({ user, lang, onPosted }) {
         <div style={{ flex:1 }}>
           <textarea className="inp" placeholder={t('ما الذي تفكر فيه ؟ 🔺','What are you thinking? 🔺',lang)}
             value={text} onChange={e=>setText(e.target.value)} rows={3} />
-          {imageUrl && <img src={imageUrl} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:8}} />}
+          {imageUrl && !isVideo && <img src={imageUrl} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:8}} />}
+          {imageUrl && isVideo && <video src={imageUrl} controls style={{width:'100%',maxHeight:200,borderRadius:8,marginTop:8}} />}
           {showEmoji && (
             <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:8,background:'var(--bb)',padding:10,borderRadius:8}}>
               {emojis.map(em=><span key={em} style={{cursor:'pointer',fontSize:22}} onClick={()=>{setText(t=>t+em);setShowEmoji(false)}}>{em}</span>)}
@@ -542,7 +544,7 @@ function CreatePost({ user, lang, onPosted }) {
                 <input type='file' accept='video/*' onChange={uploadImage} style={{display:'none'}} />
               </label>
             </div>
-            <button className="btn btn-g" onClick={submit} disabled={posting||!text.trim()} style={{ padding:'8px 20px' }}>
+            <button className='btn btn-g' onClick={submit} disabled={posting||(!text.trim()&&!imageUrl)} style={{ padding:'8px 20px' }}>
               {posting?'⏳':t('نشر','Post',lang)}
             </button>
           </div>
