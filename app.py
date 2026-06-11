@@ -182,16 +182,15 @@ def create_post():
     if len(b['content']) > 500:
         return err('ط·آ§ط¸â€‍ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ± ط¸â€‍ط·آ§ ط¸ظ¹ط·ع¾ط·آ¬ط·آ§ط¸ث†ط·آ² 500 ط·آ­ط·آ±ط¸ظ¾')
     uid = request.current_user['id']
-    result = get_db().create_post(
-        user_id=uid,
-        content=b['content'],
-        content_en=b.get('content_en', ''),
-        image_emoji=b.get('image_emoji', ''),
-        image_url=b.get('image_url', ''),
-        video_url=b.get('video_url', ''),
-        language=b.get('language', 'ar')
-    )
-    return ok(result), 201
+    uid = request.current_user['id']
+    try:
+        import uuid
+        pid = str(uuid.uuid4())
+        cur = get_db().conn.cursor()
+        cur.execute('INSERT INTO posts (id,user_id,content,content_en,image_emoji,image_url,video_url,hashtags,language) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)',
+            (pid, uid, b['content'], b.get('content_en',''), b.get('image_emoji',''), b.get('image_url',''), b.get('video_url',''), '[]', b.get('language','ar')))
+        get_db().conn.commit()
+        return ok({'post_id': pid}), 201
 @app.route('/api/posts/<post_id>', methods=['DELETE'])
 @require_auth
 def delete_post(post_id):
