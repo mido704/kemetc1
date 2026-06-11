@@ -118,7 +118,7 @@ textarea.inp{resize:none}
 .app-layout{display:grid;grid-template-columns:230px 1fr 210px;min-height:calc(100vh - 52px);max-width:1180px;margin:0 auto}
 @media(max-width:1100px){.app-layout{grid-template-columns:220px 1fr}.rs{display:none}}
 @media(max-width:800px){.app-layout{grid-template-columns:1fr}.ls{display:none}.bottom-nav{display:flex!important}}
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.96);border-top:1px solid var(--bb);padding:8px 0;z-index:200;justify-content:space-around;align-items:center;backdrop-filter:blur(10px)}
+@media(max-width:800px){.app-layout{grid-template-columns:1fr}.ls{display:none}.bottom-nav{display:flex!important}.hide-mobile{display:none!important}}
 .bottom-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--tm);font-size:10px;padding:4px 12px;cursor:pointer;border:none;background:transparent;font-family:'Cairo',sans-serif}
 .bottom-nav-btn.on{color:var(--g)}
 .liked-anim{animation:heartPop .3s ease}
@@ -1456,10 +1456,9 @@ export default function App() {
       <div className="nav">
         <div className="logo" style={{ fontSize:18 }}>KEMET</div>
         <div style={{ display:'flex', gap:6, alignItems:'center' }}>
-          {navIcons.map(([k,ic])=>(
-            <button key={k} className="btn btn-gh" style={{ color:page===k?'var(--g)':'var(--tm)', fontSize:18, padding:'4px 10px' }} onClick={()=>setPage(k)}>{ic}</button>
-          ))}
-          <button className="lang" onClick={()=>setLang(l=>l==='ar'?'en':'ar')}>{lang==='ar'?'EN':'عربي'}</button>
+          <div className='hide-mobile' style={{display:'flex',gap:6}}>
+            {navIcons.map(([k,ic])=>(<button key={k} className='btn btn-gh' style={{ color:page===k?'var(--g)':'var(--tm)', fontSize:18, padding:'4px 10px' }} onClick={()=>setPage(k)}>{ic}</button>))}
+          </div>
          <Avatar emoji={user?.avatar_emoji||'👑'} size={34} url={user?.avatar_url} onClick={()=>setPage('profile')} />
          <button className="btn btn-gh" onClick={handleLogout} style={{fontSize:12,color:'var(--red)',padding:'4px 8px'}}>خروج</button>
         </div>
