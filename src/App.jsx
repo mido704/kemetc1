@@ -855,22 +855,22 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
       </div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20 }}>
         <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>🎫 {t('تفاصيل الحجز','Booking Details',lang)}</div>
+        <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>🎫 {t('تفاصيل الحجز','Booking Details',lang)}</div>
         <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
           <div style={{ color:'var(--tm)', fontSize:13 }}>{t('عدد الأفراد:','Number of guests:',lang)}</div>
-        {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en) && (
-          <div style={{ marginTop:14 }}>
-            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:10 }}>🗓️ {t('البرنامج اليومي:','Daily Itinerary:',lang)}</div>
-            {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en).map((day,i)=>(<div key={i} style={{ display:'flex', gap:10, marginBottom:8, alignItems:'flex-start' }}><span style={{ background:'var(--gd)', color:'#000', borderRadius:'50%', width:22, height:22, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{i+1}</span><span style={{ fontSize:13, color:'var(--gl)', lineHeight:1.6 }}>{day}</span></div>))}
-          </div>
-        )}
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <button className="btn btn-gh" style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.max(1,g-1))}>−</button>
+            <button className='btn btn-gh' style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.max(1,g-1))}>−</button>
             <span style={{ fontWeight:800, fontSize:20, color:'var(--g)', minWidth:30, textAlign:'center' }}>{guests}</span>
-            <button className="btn btn-gh" style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.min(9,g+1))}>+</button>
+            <button className='btn btn-gh' style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.min(9,g+1))}>+</button>
           </div>
           <div style={{ fontSize:12, color:'var(--tm)' }}>{t('(حد أقصى 9)','(max 9)',lang)}</div>
         </div>
-        <GoldDivider />
+        {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en) && (
+          <div style={{ marginBottom:14 }}>
+            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:10 }}>🗓️ {t('البرنامج اليومي:','Daily Itinerary:',lang)}</div>
+            {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en).map((day,i)=>(<div key={i} style={{ display:'flex', gap:10, marginBottom:8 }}><span style={{ background:'var(--gd)', color:'#000', borderRadius:'50%', width:22, height:22, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{i+1}</span><span style={{ fontSize:13, color:'var(--gl)', lineHeight:1.6 }}>{day}</span></div>))}
+          </div>
+        )}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:12 }}>
           <div>
             <div style={{ fontSize:13, color:'var(--tm)' }}>{guests} × ${tour.price}</div>
