@@ -118,10 +118,10 @@ textarea.inp{resize:none}
 .app-layout{display:grid;grid-template-columns:230px 1fr 210px;min-height:calc(100vh - 52px);max-width:1180px;margin:0 auto}
 @media(max-width:1100px){.app-layout{grid-template-columns:220px 1fr}.rs{display:none}}
 @media(max-width:800px){.app-layout{grid-template-columns:1fr}.ls{display:none}}
-.nav{background:rgba(0,0,0,.96);border-bottom:1px solid var(--bb);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
-.notif-dot{width:7px;height:7px;background:var(--g);border-radius:50%;animation:pulse 2s infinite}
-.post-card{background:var(--bc);border:1px solid var(--bb);border-radius:12px;padding:14px;margin-bottom:11px;transition:border-color .2s;animation:fadeIn .35s ease}
-.post-card:hover{border-color:rgba(201,168,76,.18)}
+@media(max-width:800px){.app-layout{grid-template-columns:1fr}.ls{display:none}.bottom-nav{display:flex!important}}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.96);border-top:1px solid var(--bb);padding:8px 0;z-index:200;justify-content:space-around;align-items:center;backdrop-filter:blur(10px)}
+.bottom-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--tm);font-size:10px;padding:4px 12px;cursor:pointer;border:none;background:transparent;font-family:'Cairo',sans-serif}
+.bottom-nav-btn.on{color:var(--g)}
 .liked-anim{animation:heartPop .3s ease}
 .pay-opt{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:8px;cursor:pointer;border:1px solid var(--bb);margin-bottom:8px;transition:all .2s}
 .pay-opt:hover,.pay-opt.sel{border-color:var(--g);background:rgba(201,168,76,.06)}
@@ -1487,6 +1487,14 @@ export default function App() {
       </div>
 
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
+      <div className='bottom-nav'>
+        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
+          <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>setPage(k)}>
+            <span style={{fontSize:22}}>{ic}</span>
+            <span>{lang==='ar'?ar:en}</span>
+          </button>
+        ))}
+      </div>
     </>
   );
 }
