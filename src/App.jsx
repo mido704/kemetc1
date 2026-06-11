@@ -1411,11 +1411,10 @@ export default function App() {
   useEffect(()=>{
     if (screen==='app') {
       postsAPI.getFeed().then(r=>{ if(r.ok && r.data?.length) setPosts(r.data); });
+      const token = localStorage.getItem('kemet_token');
+      if(token) fetch('https://kemetc1-production.up.railway.app/api/notifications',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()).then(d=>{ if(d.ok) setNotifsList(d.data||[]); });
     }
   },[screen]);
-
-  const showToast = (msg) => { setToast(msg); };
-
  const handleReg = (u) => { 
   setUser(u); 
   setModal(null); 
