@@ -533,11 +533,14 @@ function CreatePost({ user, lang, onPosted }) {
           )}
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:9 }}>
             <div style={{ display:'flex', gap:6, alignItems:'center' }}>
-              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>
-                {uploading ? '⏳' : '📷'}
-                <input type='file' accept='image/*,video/*' onChange={uploadImage} style={{display:'none'}} />
+              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)',title:'صورة'}}>
+                {uploading ? '⏳' : '🖼️'}
+                <input type='file' accept='image/*' onChange={uploadImage} style={{display:'none'}} />
               </label>
-              <button className="btn btn-gh" style={{padding:'3px 8px',fontSize:16}} onClick={()=>setShowEmoji(v=>!v)}>😊</button>
+              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>
+                🎥
+                <input type='file' accept='video/*' onChange={uploadImage} style={{display:'none'}} />
+              </label>
             </div>
             <button className="btn btn-g" onClick={submit} disabled={posting||!text.trim()} style={{ padding:'8px 20px' }}>
               {posting?'⏳':t('نشر','Post',lang)}
