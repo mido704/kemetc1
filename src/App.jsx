@@ -919,7 +919,7 @@ function StorePage({ lang, user, onToast }) {
   );
 }
 
-const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnrfsmtbi/image/upload';
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnrfsmtbi/auto/upload';
 const CLOUDINARY_PRESET = 'kemet_upload';
 
 async function uploadToCloudinary(file) {
