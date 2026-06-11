@@ -520,7 +520,7 @@ def update_tour(tour_id):
     if not is_store_manager(request.current_user):
         return err('غير مصرح'), 403
     b = request.get_json() or {}
-    allowed = ['title_ar','title_en','description_ar','description_en','price','duration_days','image_emoji','image_url','badge_ar','badge_en','includes_ar','includes_en','is_featured','category_id']
+    allowed = ['title_ar','title_en','description_ar','description_en','price','duration_days','image_emoji','image_url','badge_ar','badge_en','includes_ar','includes_en','itinerary_ar','itinerary_en','is_featured','category_id']
     updates = {k: v for k, v in b.items() if k in allowed}
     if not updates: return err('لا توجد بيانات')
     db = get_db()
