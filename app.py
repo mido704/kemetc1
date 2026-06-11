@@ -191,6 +191,7 @@ def create_post():
             (pid, uid, b['content'], b.get('content_en',''), b.get('image_emoji',''), b.get('image_url',''), b.get('video_url',''), '[]', b.get('language','ar')))
         get_db().conn.commit()
         return ok({'post_id': pid}), 201
+    except Exception as e: return err(str(e))
 @app.route('/api/posts/<post_id>', methods=['DELETE'])
 @require_auth
 def delete_post(post_id):
