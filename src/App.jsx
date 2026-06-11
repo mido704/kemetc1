@@ -1279,8 +1279,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
   const [tours, setTours] = useState([]);
   const [editing, setEditing] = useState(null);
   const [adding, setAdding] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', is_featured:0 });
+  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', is_featured:0 });
   const token = storage.getToken();
   const API = 'https://kemetc1-production.up.railway.app/api';
   useEffect(()=>{ loadTours(); },[]);
@@ -1345,6 +1344,8 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
             </select>
             <input className='inp' placeholder='Emoji' value={form.image_emoji} onChange={e=>setForm(f=>({...f,image_emoji:e.target.value}))} />
           </div>
+            <textarea className='inp' placeholder='البرنامج اليومي بالعربي (كل يوم في سطر)&#10;اليوم 1: ...&#10;اليوم 2: ...' value={form.itinerary_ar||''} onChange={e=>setForm(f=>({...f,itinerary_ar:e.target.value}))} rows={4} />
+            <textarea className='inp' placeholder='Daily Itinerary EN (one day per line)&#10;Day 1: ...&#10;Day 2: ...' value={form.itinerary_en||''} onChange={e=>setForm(f=>({...f,itinerary_en:e.target.value}))} rows={4} />
           <div style={{marginTop:10,display:'flex',gap:10,alignItems:'center'}}>
             <label className='btn btn-gh' style={{cursor:'pointer',border:'1px solid var(--gd)'}}>
               {uploading?'...':t('رفع صورة','Upload Image',lang)}
