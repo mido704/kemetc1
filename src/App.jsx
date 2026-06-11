@@ -855,7 +855,6 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
       </div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20 }}>
         <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>🎫 {t('تفاصيل الحجز','Booking Details',lang)}</div>
-        <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>🎫 {t('تفاصيل الحجز','Booking Details',lang)}</div>
         <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
           <div style={{ color:'var(--tm)', fontSize:13 }}>{t('عدد الأفراد:','Number of guests:',lang)}</div>
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
