@@ -440,9 +440,9 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
         {lang==='ar' ? post.content : (post.content_en||post.content)}
       </div>
 
-      {post.image_url && (
-         <img src={post.image_url} style={{width:'100%',maxHeight:300,objectFit:'cover',borderRadius:10,marginBottom:10}} />
-         )}
+      {post.image_url && <img src={post.image_url} style={{width:'100%',maxHeight:300,objectFit:'cover',borderRadius:10,marginBottom:10}} />}
+      {post.video_url && <video src={post.video_url} controls style={{width:'100%',maxHeight:300,borderRadius:10,marginBottom:10}} />}
+
 
       {tags.length>0 && (
         <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
@@ -499,21 +499,21 @@ function CreatePost({ user, lang, onPosted }) {
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [isVideo, setIsVideo] = useState(false);
   const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆'];
-
   const uploadImage = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
+    setIsVideo(file.type.startsWith('video/'));
     const url = await uploadToCloudinary(file);
     setImageUrl(url);
     setUploading(false);
   };
-
   const submit = async () => {
     if (!text.trim()) return;
     setPosting(true);
-    const r = await postsAPI.createPost({ content:text, language:'ar', image_url: imageUrl });
+    const r = await postsAPI.createPost({ content:text, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'' });
     setPosting(false);
     if (r.ok) { onPosted(text, r.data?.post_id); setText(''); setImageUrl(''); setShowEmoji(false); }
   };
