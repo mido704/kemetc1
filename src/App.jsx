@@ -1281,6 +1281,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', is_featured:0 });
   const token = storage.getToken();
+  const [uploading, setUploading] = useState(false);
   const API = 'https://kemetc1-production.up.railway.app/api';
   useEffect(()=>{ loadTours(); },[]);
   const loadTours = () => { storeAPI.getTours().then(r=>{ if(r.ok) setTours(r.data||[]); }); };
