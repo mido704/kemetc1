@@ -1039,10 +1039,12 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
       ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />))}
         <div>
           {loadingFriends && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>⏳</div>}
-          {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:8,alignItems:'center'}}>
-            <Avatar emoji={f.avatar_emoji||'👑'} size={44} url={f.avatar_url} />
-            <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
-            <button className='btn btn-g' style={{fontSize:11,padding:'5px 8px',minWidth:60}} onClick={()=>onStartChat&&onStartChat(f)}>💬</button>
+          {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:8,alignItems:'center',justifyContent:'space-between'}}>
+            <div style={{display:'flex',gap:8,alignItems:'center',flex:1,minWidth:0}}>
+              <Avatar emoji={f.avatar_emoji||'👑'} size={40} url={f.avatar_url} />
+              <div style={{minWidth:0}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
+            </div>
+            <button className='btn btn-g' style={{fontSize:11,padding:'6px 10px',flexShrink:0,whiteSpace:'nowrap'}} onClick={()=>onStartChat&&onStartChat(f)}>💬 {t('رسالة','Msg',lang)}</button>
           </div>))}
         </div>
       )}
