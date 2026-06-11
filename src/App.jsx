@@ -1009,9 +1009,9 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
       </div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
         <div style={{ marginTop:10 }}>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10, flexWrap:'wrap', gap:8 }}>
+          <div style={{ marginBottom:10 }}>
             <Avatar emoji={user?.avatar_emoji||'👑'} size={72} url={user?.avatar_url} />
-            <button className='btn btn-o' style={{ fontSize:13 }} onClick={()=>setEditMode(true)}>✏️ {t('تعديل البروفايل','Edit Profile',lang)}</button>
+            <button className='btn btn-o' style={{ fontSize:12, marginTop:8, display:'block' }} onClick={()=>setEditMode(true)}>✏️ {t('تعديل البروفايل','Edit Profile',lang)}</button>
           </div>
           <div style={{ fontWeight:800, fontSize:20, color:'var(--g)' }}>{user?.nickname}</div>
           <div style={{ fontSize:13, color:'var(--tm)', marginTop:2 }}>{user?.name} · {user?.email}</div>
