@@ -188,11 +188,10 @@ def create_post():
         content_en=b.get('content_en', ''),
         image_emoji=b.get('image_emoji', ''),
         image_url=b.get('image_url', ''),
-        image_url=b.get('image_url', ''),
         video_url=b.get('video_url', ''),
-        hashtags=b.get('hashtags', []),
+        language=b.get('language', 'ar')
+    )
     return ok(result), 201
-
 @app.route('/api/posts/<post_id>', methods=['DELETE'])
 @require_auth
 def delete_post(post_id):
