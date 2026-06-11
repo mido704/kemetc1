@@ -774,7 +774,7 @@ function RightSidebar({ lang }) {
 }
 
 // ── PAGES ─────────────────────────────────────────────────
-function FeedPage({ user, lang, posts, setPosts, onToast }) {
+function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   const handlePosted = (text, postId) => {
     const newPost = {
       id: postId || `p_${Date.now()}`,
@@ -801,7 +801,7 @@ function FeedPage({ user, lang, posts, setPosts, onToast }) {
         <button className="tab">{t('مصر','Egypt',lang)}</button>
       </div>
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
-      {posts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} />)}
+      {posts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
     </div>
   );
 }
@@ -928,6 +928,51 @@ async function uploadToCloudinary(file) {
   return d.secure_url;
 }
 
+function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
+  const [profile, setProfile] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = storage.getToken();
+  const API = 'https://kemetc1-production.up.railway.app/api';
+  useEffect(()=>{
+    setLoading(true);
+    fetch(API+'/users/'+userId, {headers:{'Authorization':'Bearer '+token}})
+      .then(r=>r.json()).then(d=>{ if(d.ok) setProfile(d.data); setLoading(false); });
+  },[userId]);
+  if(loading) return <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>⏳</div>;
+  if(!profile) return <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>مش موجود</div>;
+  return (
+    <div style={{maxWidth:600,margin:'0 auto',padding:'0 14px 14px'}}>
+      <button className='btn btn-gh' onClick={onBack} style={{marginBottom:14}}>← {t('رجوع','Back',lang)}</button>
+      <div className='pcover' style={{marginBottom:0,position:'relative'}}>
+        {profile.cover_url ? <img src={profile.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',top:0,left:0}} /> : <div className='hiero'>𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div>}
+      </div>
+      <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderTop:'none',borderRadius:'0 0 12px 12px',padding:'0 16px 16px',marginBottom:14}}>
+        <div style={{marginTop:10}}>
+          <Avatar emoji={profile.avatar_emoji||'👑'} size={72} url={profile.avatar_url} />
+        </div>
+        <div style={{marginTop:10}}>
+          <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>{profile.nickname}</div>
+          <div style={{fontSize:13,color:'var(--tm)',marginTop:2}}>{profile.name}</div>
+          {profile.bio && <div style={{fontSize:13,color:'var(--gl)',marginTop:6,lineHeight:1.6}}>{profile.bio}</div>}
+          <div style={{display:'flex',gap:24,marginTop:14}}>
+            <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.followers_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('متابعون','Followers',lang)}</div></div>
+            <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.following_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('متابَعون','Following',lang)}</div></div>
+          </div>
+        </div>
+      </div>
+      {userId !== user?.id && (
+        <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:12,padding:20,textAlign:'center'}}>
+          <div style={{fontSize:32,marginBottom:8}}>💬</div>
+          <div style={{color:'var(--tm)',fontSize:13,marginBottom:14}}>{t('ابعت رسالة خاصة','Send a private message',lang)}</div>
+          <button className='btn btn-g' style={{padding:'10px 28px'}} onClick={()=>onStartChat&&onStartChat({id:profile.id,nickname:profile.nickname,avatar_emoji:profile.avatar_emoji,avatar_url:profile.avatar_url})}>
+            💬 {t('ارسل رسالة','Send Message',lang)}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onStartChat }) {
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
@@ -1401,6 +1446,7 @@ export default function App() {
   const [page, setPage] = useState('feed');
   const [activeChatUser, setActiveChatUser] = useState(null);
   const [user, setUser] = useState(()=>storage.getUser());
+  const [viewUserId, setViewUserId] = useState(null);
   const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState(DEMO_POSTS);
@@ -1481,8 +1527,9 @@ export default function App() {
         </div>
 
         <div style={{ minHeight:'calc(100vh - 52px)', borderLeft:'1px solid var(--bb)', borderRight:'1px solid var(--bb)' }}>
-          {page==='feed'          && <FeedPage          user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} />}
+          {page==='feed' && <FeedPage user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} onViewProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} />}
           {page==='profile'        && <ProfilePage        user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
+          {page==='view_profile' && viewUserId && <ViewProfilePage userId={viewUserId} lang={lang} user={user} onBack={()=>setPage('feed')} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
