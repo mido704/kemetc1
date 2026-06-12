@@ -1155,7 +1155,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
   );
 }
 
-function NotificationsPage({ lang, user, onToast, notifsList }) {
+function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost }) {
   const [notifs, setNotifs] = useState([]);
   const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
   return (
@@ -1167,7 +1167,7 @@ function NotificationsPage({ lang, user, onToast, notifsList }) {
           <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
         </div>
       ) : (notifsList||notifs).map(n=>(
-        <div key={n.id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center' }}>
+        <div key={n.id} className='post-card' style={{ display:'flex', gap:12, alignItems:'center', cursor:n.post_id?'pointer':'default' }} onClick={()=>n.post_id&&onGoToPost&&onGoToPost(n.post_id)}>
           <Avatar emoji={n.actor_avatar||icons[n.type]||'🔔'} size={40} url={n.actor_url||null} />
           <div style={{ flex:1, textAlign:'right' }}>
             <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'🔔'}</div>
@@ -1590,7 +1590,7 @@ export default function App() {
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); }} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='search'        && <SearchPage        lang={lang} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
