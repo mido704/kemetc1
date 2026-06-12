@@ -885,6 +885,52 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
   );
 }
 function StorePage({ lang, user, onToast }) {
+function FlightSearch({ lang }) {
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [date, setDate] = useState('');
+  const search = () => {
+    const url = `https://www.skyscanner.net/transport/flights/${from}/${to}/${date.replace(/-/g,'')}/?affilid=kemet`;
+    window.open(url, '_blank');
+  };
+  return (
+    <div className='card' style={{padding:24,maxWidth:500,margin:'0 auto',textAlign:'center'}}>
+      <div style={{fontSize:48,marginBottom:10}}>✈️</div>
+      <div style={{fontWeight:800,fontSize:20,color:'var(--g)',marginBottom:6}}>{lang==='ar'?'ابحث عن رحلات الطيران':'Search Flights'}</div>
+      <div style={{fontSize:12,color:'var(--tm)',marginBottom:20}}>{lang==='ar'?'بالتعاون مع Skyscanner':'Powered by Skyscanner'}</div>
+      <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:16}}>
+        <input className='inp' placeholder={lang==='ar'?'من (مثال: CAI)':'From (e.g. CAI)'} value={from} onChange={e=>setFrom(e.target.value)} />
+        <input className='inp' placeholder={lang==='ar'?'إلى (مثال: DXB)':'To (e.g. DXB)'} value={to} onChange={e=>setTo(e.target.value)} />
+        <input className='inp' type='date' value={date} onChange={e=>setDate(e.target.value)} />
+      </div>
+      <button className='btn btn-g' style={{width:'100%',padding:'12px 0',fontSize:15}} onClick={search}>🔍 {lang==='ar'?'ابحث الآن':'Search Now'}</button>
+      <div style={{marginTop:12,fontSize:11,color:'var(--tm)'}}>{lang==='ar'?'ستنتقل لموقع Skyscanner للحجز':'You will be redirected to Skyscanner to book'}</div>
+    </div>
+  );
+}
+function HotelSearch({ lang }) {
+  const [city, setCity] = useState('');
+  const [checkin, setCheckin] = useState('');
+  const [checkout, setCheckout] = useState('');
+  const search = () => {
+    const url = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}&checkin=${checkin}&checkout=${checkout}&aid=kemet`;
+    window.open(url, '_blank');
+  };
+  return (
+    <div className='card' style={{padding:24,maxWidth:500,margin:'0 auto',textAlign:'center'}}>
+      <div style={{fontSize:48,marginBottom:10}}>🏨</div>
+      <div style={{fontWeight:800,fontSize:20,color:'var(--g)',marginBottom:6}}>{lang==='ar'?'ابحث عن فنادق':'Search Hotels'}</div>
+      <div style={{fontSize:12,color:'var(--tm)',marginBottom:20}}>{lang==='ar'?'بالتعاون مع Booking.com':'Powered by Booking.com'}</div>
+      <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:16}}>
+        <input className='inp' placeholder={lang==='ar'?'المدينة (مثال: القاهرة)':'City (e.g. Cairo)'} value={city} onChange={e=>setCity(e.target.value)} />
+        <input className='inp' type='date' placeholder={lang==='ar'?'تاريخ الوصول':'Check-in'} value={checkin} onChange={e=>setCheckin(e.target.value)} />
+        <input className='inp' type='date' placeholder={lang==='ar'?'تاريخ المغادرة':'Check-out'} value={checkout} onChange={e=>setCheckout(e.target.value)} />
+      </div>
+      <button className='btn btn-g' style={{width:'100%',padding:'12px 0',fontSize:15}} onClick={search}>🔍 {lang==='ar'?'ابحث الآن':'Search Now'}</button>
+      <div style={{marginTop:12,fontSize:11,color:'var(--tm)'}}>{lang==='ar'?'ستنتقل لموقع Booking.com للحجز':'You will be redirected to Booking.com to book'}</div>
+    </div>
+  );
+}
   const [tours, setTours] = useState(DEMO_TOURS);
   const [tab, setTab] = useState('all');
   const [selectedTour, setSelectedTour] = useState(null);
@@ -907,8 +953,8 @@ function StorePage({ lang, user, onToast }) {
         </div>
       </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:18, gap:0 }}>
-        {[['all',t('الكل','All',lang)],['tours',t('رحلات','Tours',lang)],['nile',t('كروز','Cruises',lang)],['consult',t('استشارات','Consult',lang)],['medical',t('علاجية','Medical',lang)]].map(([k,l])=>(
-          <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>setTab(k)}>{l}</button>
+      <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:18, gap:0, flexWrap:'wrap' }}>
+        {[['all',t('الكل','All',lang)],['tours',t('رحلات','Tours',lang)],['nile',t('كروز','Cruises',lang)],['consult',t('استشارات','Consult',lang)],['medical',t('علاجية','Medical',lang)],['flights','✈️ '+t('طيران','Flights',lang)],['hotels','🏨 '+t('فنادق','Hotels',lang)]].map(([k,l])=>(
         ))}
       </div>
       {selectedTour ? (
@@ -917,8 +963,10 @@ function StorePage({ lang, user, onToast }) {
         <div className='store-grid'>
           {filtered.map(tour=><TourCard key={tour.id} tour={tour} lang={lang} onBuy={()=>setSelectedTour(tour)} />)}
         </div>
-      )}
-    </div>
+        <div className='store-grid'>
+          {tab!=='flights' && tab!=='hotels' && filtered.map(tour=><TourCard key={tour.id} tour={tour} lang={lang} onBuy={()=>setSelectedTour(tour)} />)}
+          {tab==='flights' && <FlightSearch lang={lang} />}
+          {tab==='hotels' && <HotelSearch lang={lang} />}
   );
 }
 
