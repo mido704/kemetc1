@@ -177,6 +177,11 @@ def get_feed():
         posts = [dict(r) for r in cur.fetchall()]
         return ok(posts)
     except Exception as e: return ok(get_db().get_feed(uid, limit, offset))
+@app.route('/api/posts', methods=['POST'])
+@require_auth
+def create_post():
+    b = request.get_json() or {}
+    if not b.get('content', '').strip(): return err('محتوى مطلوب')
     if len(b['content']) > 500:
         return err('ط·آ§ط¸â€‍ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ± ط¸â€‍ط·آ§ ط¸ظ¹ط·ع¾ط·آ¬ط·آ§ط¸ث†ط·آ² 500 ط·آ­ط·آ±ط¸ظ¾')
     uid = request.current_user['id']
