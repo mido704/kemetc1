@@ -423,6 +423,8 @@ with app.app_context():
         conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_ar TEXT DEFAULT '[]'")
         conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS includes_en TEXT DEFAULT '[]'")
         conn2.commit()
+        conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS itinerary_ar TEXT DEFAULT '[]'")
+        conn2.execute("ALTER TABLE tours ADD COLUMN IF NOT EXISTS itinerary_en TEXT DEFAULT '[]'")
         conn2.close()
     except: pass
     try:
