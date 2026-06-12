@@ -206,10 +206,20 @@ def delete_post(post_id):
 @require_auth
 def like_post(post_id):
     uid = request.current_user['id']
+    uid = request.current_user['id']
     result = get_db().toggle_like(uid, post_id)
+    if result.get('liked'):
+        try:
+            cur = get_db().conn.cursor()
+            cur.execute('SELECT user_id FROM posts WHERE id=%s', (post_id,))
+            row = cur.fetchone()
+            if row and row['user_id'] != uid:
+                import uuid as _uuid
+                nid = str(_uuid.uuid4())
+                cur.execute('INSERT INTO notifications (id,user_id,actor_id,type,post_id) VALUES (%s,%s,%s,%s,%s)', (nid, row['user_id'], uid, 'like', post_id))
+                get_db().conn.commit()
+        except: pass
     return ok(result)
-
-@app.route('/api/posts/<post_id>/comments', methods=['GET'])
 @require_auth
 def get_comments(post_id):
     comments = get_db().get_comments(post_id)
@@ -227,6 +237,16 @@ def add_comment(post_id):
         parent_id=b.get('parent_id')
     )
     return ok(result), 201
+    try:
+        cur = get_db().conn.cursor()
+        cur.execute('SELECT user_id FROM posts WHERE id=%s', (post_id,))
+        row = cur.fetchone()
+        if row and row['user_id'] != uid:
+            import uuid as _uuid
+            nid = str(_uuid.uuid4())
+            cur.execute('INSERT INTO notifications (id,user_id,actor_id,type,post_id,content) VALUES (%s,%s,%s,%s,%s,%s)', (nid, row['user_id'], uid, 'comment', post_id, b['content'][:100]))
+            get_db().conn.commit()
+    except: pass
 
 # أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯
 # MESSAGES ROUTES
