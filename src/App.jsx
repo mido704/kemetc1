@@ -932,6 +932,7 @@ function HotelSearch({ lang }) {
 }
 function StorePage({ lang, user, onToast }) {
   const [tours, setTours] = useState(DEMO_TOURS);
+  const [tab, setTab] = useState('all');
   const [selectedTour, setSelectedTour] = useState(null);
   const [buyTour, setBuyTour] = useState(null);
 
