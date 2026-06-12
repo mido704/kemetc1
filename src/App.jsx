@@ -380,6 +380,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [replyTo, setReplyTo] = useState(null);
   const [liked, setLiked] = useState(post.liked||false);
   const [likesCount, setLikesCount] = useState(post.likes_count||0);
   const [likeAnim, setLikeAnim] = useState(false);
@@ -402,13 +403,12 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
 
   const submitComment = async () => {
     if (!newComment.trim()) return;
-    const r = await postsAPI.addComment(post.id, newComment);
+    const r = await postsAPI.addComment(post.id, newComment, replyTo?.id);
     if (r.ok) {
-      setComments(c=>[...c, { id:r.data.comment_id, content:newComment, nickname:t('أنت','You',lang), avatar_emoji:'👑', created_at:new Date().toISOString() }]);
-      setNewComment('');
+      setComments(c=>[...c, { id:r.data.comment_id, content:newComment, nickname:t('أنت','You',lang), avatar_emoji:'👑', created_at:new Date().toISOString(), parent_id:replyTo?.id }]);
+      setNewComment(''); setReplyTo(null);
     }
   };
-
   const tags = ts(post.hashtags);
 
   return (
@@ -471,28 +471,28 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
 
       </div>
       {showComments && (
-        <div className="fi" style={{ marginTop:11, borderTop:'1px solid var(--bb)', paddingTop:11 }}>
-          {comments.map(c=>(
-            <div key={c.id} className="comment-box">
-              <span style={{ color:'var(--g)', fontWeight:700, fontSize:12 }}>{c.nickname} </span>
-              <span style={{ color:'var(--gl)' }}>{c.content}</span>
+        <div className='fi' style={{marginTop:11,borderTop:'1px solid var(--bb)',paddingTop:11}}>
+          {replyTo && (<div style={{fontSize:12,color:'var(--gd)',marginBottom:6,padding:'4px 8px',background:'rgba(201,168,76,.1)',borderRadius:8}}>↩ {t('ردًا على','Replying to',lang)} {replyTo.nickname} <button onClick={()=>setReplyTo(null)} style={{marginRight:6,color:'var(--tm)',background:'none',border:'none',cursor:'pointer'}}>x</button></div>)}
+          {comments.map(c=>(<div key={c.id} style={{marginBottom:8,padding:'6px 0',borderBottom:'1px solid var(--bb)'}}>
+              <Avatar emoji={c.avatar_emoji||'👑'} size={26} url={c.avatar_url} />
+            <div style={{display:'flex',alignItems:'flex-start',gap:6}}>
+              <div style={{flex:1}}>
+                <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
+                <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
+                <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',marginTop:4,display:'block'}} onClick={()=>setReplyTo(c)}>↩ {t('رد','Reply',lang)}</button>
+              </div>
             </div>
-          ))}
-          <div style={{ display:'flex', gap:8, marginTop:8 }}>
-            <input className="inp" placeholder={t('اكتب تعليقاً...','Write a comment...',lang)}
-              value={newComment} onChange={e=>setNewComment(e.target.value)}
-              onKeyDown={e=>e.key==='Enter'&&submitComment()}
-              style={{ flex:1, padding:'8px 12px', fontSize:13 }} />
-            <button className="btn btn-g" onClick={submitComment} style={{ padding:'8px 14px', fontSize:13 }}>
-              {t('إرسال','Send',lang)}
-            </button>
+          </div>))}
+          <div style={{display:'flex',gap:8,marginTop:8}}>
+            <input className='inp' placeholder={t('اكتب تعليقاً...','Write a comment...',lang)} value={newComment} onChange={e=>setNewComment(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submitComment()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
+            <button className='btn btn-g' onClick={submitComment} style={{padding:'8px 14px',fontSize:13}}>{t('إرسال','Send',lang)}</button>
           </div>
         </div>
       )}
     </div>
   );
 }
-// ── CREATE POST BOX ───────────────────────────────────────
+
 function CreatePost({ user, lang, onPosted }) {
   const [text, setText] = useState('');
   const [posting, setPosting] = useState(false);
@@ -558,12 +558,12 @@ function TourCard({ tour, lang, onBuy }) {
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
   return (
     <div className='tour-card' onClick={()=>onBuy(tour)} style={{cursor:'pointer'}}>
-      <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative' }}>
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative', minHeight:160, overflow:'hidden' }}>
         {tour.image_url && <img src={tour.image_url} style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',objectFit:'cover',opacity:0.4}} />}
         {(tour.badge_ar||tour.badge_en) && <span className='badge' style={{position:'absolute',top:10,right:10,fontSize:10,zIndex:2}}>{t(tour.badge_ar,tour.badge_en,lang)}</span>}
         <div style={{fontSize:58,marginBottom:6,position:'relative',zIndex:1}}>{tour.image_emoji||'🏛️'}</div>
         <div style={{color:'var(--g)',fontSize:12,position:'relative',zIndex:1}}>{'⭐'.repeat(Math.floor(tour.rating||0))} {tour.rating||0} ({tour.reviews_count||0})</div>
+      </div>
       <div style={{ padding:14 }}>
         <h3 style={{ color:'var(--g)', fontSize:15, fontWeight:700, lineHeight:1.4, marginBottom:4 }}>{t(tour.title_ar,tour.title_en,lang)}</h3>
         {tour.duration_days && <div style={{ fontSize:12, color:'var(--tm)', marginBottom:8 }}>📅 {tour.duration_days} {t('أيام','days',lang)}</div>}
@@ -577,8 +577,6 @@ function TourCard({ tour, lang, onBuy }) {
             {t('احجز الآن','Book Now',lang)}
           </button>
         </div>
-      </div>
-      </div>
       </div>
     </div>
   );
