@@ -240,7 +240,6 @@ def add_comment(post_id):
         cur2.execute('UPDATE posts SET comments_count=comments_count+1 WHERE id=%s', (post_id,))
         get_db().conn.commit()
         result = {'ok': True, 'comment_id': cid}
-    except Exception as e:
     except Exception as e: return err(str(e))
     try:
         cur = get_db().conn.cursor()
