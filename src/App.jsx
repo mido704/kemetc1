@@ -1528,6 +1528,8 @@ export default function App() {
     }
   },[screen]);
   const showToast = (msg) => { setToast(msg); };
+  const loadNotifs = () => { const token = localStorage.getItem('kemet_token'); if(token) fetch('https://kemetc1-production.up.railway.app/api/notifications',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()).then(d=>{ if(d.ok) setNotifsList(d.data||[]); }); };
+  useEffect(()=>{ if(screen==='app'){ loadNotifs(); const interval = setInterval(loadNotifs, 30000); return ()=>clearInterval(interval); } },[screen]);
  const handleReg = (u) => { 
   setUser(u); 
   setModal(null); 
