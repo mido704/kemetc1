@@ -954,7 +954,7 @@ function StorePage({ lang, user, onToast }) {
       </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:18, gap:0 }}>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:18, gap:0, flexWrap:'wrap' }}>
-        {[['all',t('الكل','All',lang)],['tours',t('رحلات','Tours',lang)],['nile',t('كروز','Cruises',lang)],['consult',t('استشارات','Consult',lang)],['medical',t('علاجية','Medical',lang)],['flights','flights'],['hotels','hotels']].map(([k,l])=>(<button key={k} className={'tab '+(tab===k?'on':'')} onClick={()=>setTab(k)}>{l}</button>))}
+        {[['all',t('الكل','All',lang)],['tours',t('رحلات','Tours',lang)],['nile',t('كروز','Cruises',lang)],['consult',t('استشارات','Consult',lang)],['medical',t('علاجية','Medical',lang)],['flights','✈️ '+t('طيران','Flights',lang)],['hotels','🏨 '+t('فنادق','Hotels',lang)]].map(([k,l])=>(<button key={k} className={'tab '+(tab===k?'on':'')} onClick={()=>setTab(k)}>{l}</button>))}
 
       </div>
       {selectedTour ? (
