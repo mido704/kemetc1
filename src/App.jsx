@@ -1274,7 +1274,7 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
   );
 }
 
-function SearchPage({ lang }) {
+function SearchPage({ lang, onViewProfile, onStartChat }) {
   const [q, setQ] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -1295,9 +1295,10 @@ function SearchPage({ lang }) {
         <button className='btn btn-g' onClick={search}>{loading?'⏳':'🔍'}</button>
       </div>
       {results.length>0 && results.map(u=>(
-        <div key={u.id} className='post-card' style={{display:'flex',gap:12,alignItems:'center'}}>
+        <div key={u.id} className='post-card' style={{display:'flex',gap:12,alignItems:'center',cursor:'pointer'}} onClick={()=>onViewProfile&&onViewProfile(u.id)}>
           <Avatar emoji={u.avatar_emoji||'👑'} size={44} url={u.avatar_url} />
           <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)'}}>{u.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{u.name}</div></div>
+          <span style={{color:'var(--gd)',fontSize:18}}>›</span>
         </div>
       ))}
     </div>
@@ -1602,7 +1603,7 @@ export default function App() {
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); }} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
-          {page==='search'        && <SearchPage        lang={lang} />}
+          {page==='search' && <SearchPage lang={lang} onViewProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onStartChat={(u)=>{ setActiveChatUser(u); setPage('messages'); }} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
         </div>
 
