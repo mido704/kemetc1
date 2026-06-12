@@ -1276,28 +1276,38 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
 
 function SearchPage({ lang }) {
   const [q, setQ] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const search = async () => {
+    if (!q.trim()) return;
+    setLoading(true);
+    const token = localStorage.getItem('kemet_token');
+    const r = await fetch('https://kemetc1-production.up.railway.app/api/users/search?q='+encodeURIComponent(q), {headers:{'Authorization':'Bearer '+token}});
+    const d = await r.json();
+    if (d.ok) setResults(d.data||[]);
+    setLoading(false);
+  };
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔍 {t('البحث','Search',lang)}</div>
-      <input className="inp" placeholder={t('ابحث عن أشخاص أو محتوى أو رحلات...','Search people, content or tours...',lang)} value={q} onChange={e=>setQ(e.target.value)} style={{ marginBottom:20 }} />
-      <div style={{ fontWeight:700, color:'var(--g)', fontSize:13, marginBottom:10 }}>🔥 {t('الهاشتاجات الرائجة','Trending Hashtags',lang)}</div>
-      {HASHTAGS.map(h=>(
-        <div key={h.tag} className="post-card" style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <span style={{ color:'var(--g)', fontWeight:600, cursor:'pointer' }}>{h.tag}</span>
-          <span style={{ fontSize:12, color:'var(--tm)' }}>{h.count}</span>
+      <div style={{display:'flex',gap:8,marginBottom:20}}>
+        <input className='inp' placeholder={t('ابحث بالاسم أو النيكنيم...','Search by name or nickname...',lang)} value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} style={{flex:1}} />
+        <button className='btn btn-g' onClick={search}>{loading?'⏳':'🔍'}</button>
+      </div>
+      {results.length>0 && results.map(u=>(
+        <div key={u.id} className='post-card' style={{display:'flex',gap:12,alignItems:'center'}}>
+          <Avatar emoji={u.avatar_emoji||'👑'} size={44} url={u.avatar_url} />
+          <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)'}}>{u.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{u.name}</div></div>
         </div>
       ))}
     </div>
   );
 }
-
 function SettingsPage({ lang, setLang, onLogout }) {
   const items = [
-    { icon:'🌐', ar:'اللغة',       en:'Language',     val:lang==='ar'?'العربية':'English', action:()=>setLang(l=>l==='ar'?'en':'ar') },
-    { icon:'🔔', ar:'الإشعارات',   en:'Notifications',val:t('مفعّلة','Enabled',lang),      action:null },
-    { icon:'🔒', ar:'الخصوصية',    en:'Privacy',       val:t('عام','Public',lang),          action:null },
-    { icon:'🎨', ar:'المظهر',       en:'Appearance',   val:t('أسود / ذهبي','Black / Gold',lang), action:null },
-    { icon:'💬', ar:'دعم العملاء', en:'Support',       val:'WhatsApp',                      action:null },
+    { icon:'🌐', ar:'اللغة', en:'Language', val:lang==='ar'?'العربية':'English', action:()=>setLang(l=>l==='ar'?'en':'ar') },
+    { icon:'🔔', ar:'الإشعارات', en:'Notifications', val:t('مفعّلة','Enabled',lang), action:null },
+    { icon:'🔒', ar:'الخصوصية', en:'Privacy', val:t('عام','Public',lang), action:null },
   ];
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
