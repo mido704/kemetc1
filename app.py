@@ -232,16 +232,16 @@ def add_comment(post_id):
     if not b.get('content', '').strip():
         return err('ط¸â€¦ط·آ­ط·ع¾ط¸ث†ط¸â€° ط·آ§ط¸â€‍ط·ع¾ط·آ¹ط¸â€‍ط¸ظ¹ط¸â€ڑ ط¸â€¦ط·آ·ط¸â€‍ط¸ث†ط·آ¨')
     uid = request.current_user['id']
-    result = get_db().add_comment(
-        uid, post_id, b['content'],
-        parent_id=b.get('parent_id')
-    )
     try:
-        cur = get_db().conn.cursor()
-        cur.execute('SELECT user_id FROM posts WHERE id=%s', (post_id,))
-        row = cur.fetchone()
-        if row and row['user_id'] != uid:
-            import uuid as _uuid
+        import uuid as _uuid2
+        cid = str(_uuid2.uuid4())
+        cur2 = get_db().conn.cursor()
+        cur2.execute('INSERT INTO comments (id,user_id,post_id,parent_id,content) VALUES (%s,%s,%s,%s,%s)', (cid, uid, post_id, b.get('parent_id'), b['content']))
+        cur2.execute('UPDATE posts SET comments_count=comments_count+1 WHERE id=%s', (post_id,))
+        get_db().conn.commit()
+        result = {'ok': True, 'comment_id': cid}
+    except Exception as e:
+        return err(str(e))
             nid = str(_uuid.uuid4())
             cur.execute('INSERT INTO notifications (id,user_id,actor_id,type,post_id,content) VALUES (%s,%s,%s,%s,%s,%s)', (nid, row['user_id'], uid, 'comment', post_id, b['content'][:100]))
             get_db().conn.commit()
