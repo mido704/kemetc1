@@ -228,6 +228,7 @@ def get_comments(post_id):
         cur = get_db().conn.cursor()
         cur.execute('''SELECT c.id, c.content, c.created_at, c.parent_id, u.nickname, u.avatar_emoji, u.avatar_url, u.id as user_id FROM comments c JOIN users u ON c.user_id=u.id WHERE c.post_id=%s AND c.is_deleted=0 ORDER BY c.created_at ASC''', (post_id,))
         return ok([dict(r) for r in cur.fetchall()])
+    except Exception as e: return ok([])
     b = request.get_json() or {}
     if not b.get('content', '').strip():
         return err('ط¸â€¦ط·آ­ط·ع¾ط¸ث†ط¸â€° ط·آ§ط¸â€‍ط·ع¾ط·آ¹ط¸â€‍ط¸ظ¹ط¸â€ڑ ط¸â€¦ط·آ·ط¸â€‍ط¸ث†ط·آ¨')
