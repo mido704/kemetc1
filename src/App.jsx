@@ -474,12 +474,12 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
         <div className='fi' style={{marginTop:11,borderTop:'1px solid var(--bb)',paddingTop:11}}>
           {replyTo && (<div style={{fontSize:12,color:'var(--gd)',marginBottom:6,padding:'4px 8px',background:'rgba(201,168,76,.1)',borderRadius:8}}>↩ {t('ردًا على','Replying to',lang)} {replyTo.nickname} <button onClick={()=>setReplyTo(null)} style={{marginRight:6,color:'var(--tm)',background:'none',border:'none',cursor:'pointer'}}>x</button></div>)}
           {comments.map(c=>(<div key={c.id} style={{marginBottom:8,padding:'6px 0',borderBottom:'1px solid var(--bb)'}}>
-              <Avatar emoji={c.avatar_emoji||'👑'} size={26} url={c.avatar_url} />
             <div style={{display:'flex',alignItems:'flex-start',gap:6}}>
+              <Avatar emoji={c.avatar_emoji||'👑'} size={26} url={c.avatar_url} />
               <div style={{flex:1}}>
                 <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
-                <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',marginTop:4,display:'block'}} onClick={()=>setReplyTo(c)}>↩ {t('رد','Reply',lang)}</button>
+                <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',marginTop:4,display:'block'}} onClick={()=>{setReplyTo(c);setShowComments(true);}}>↩ {t('رد','Reply',lang)}</button>
               </div>
             </div>
           </div>))}
