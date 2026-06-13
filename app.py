@@ -255,12 +255,12 @@ def add_comment(post_id):
     b = request.get_json() or {}
     if not b.get('content', '').strip() and not b.get('image_url', '').strip():
         return err('محتوى مطلوب')
+    uid = request.current_user['id']
     try:
         import uuid as _uuid2
         cid = str(_uuid2.uuid4())
         cur2 = get_db().conn.cursor()
-        cur2.execute('INSERT INTO comments (id,user_id,post_id,parent_id,content) VALUES (%s,%s,%s,%s,%s)', (cid, uid, post_id, b.get('parent_id'), b['content']))
-        cur2.execute('UPDATE posts SET comments_count=comments_count+1 WHERE id=%s', (post_id,))
+        cur2.execute('INSERT INTO comments (id,user_id,post_id,parent_id,content,image_url) VALUES (%s,%s,%s,%s,%s,%s)', (cid, uid, post_id, b.get('parent_id'), b.get('content',''), b.get('image_url','')))
         get_db().conn.commit()
         result = {'ok': True, 'comment_id': cid}
     except Exception as e: return err(str(e))
