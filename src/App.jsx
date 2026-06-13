@@ -531,7 +531,7 @@ function CreatePost({ user, lang, onPosted }) {
     const content = text.trim() || (isVideo ? '🎥' : '📷');
     const r = await postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'' });
     setPosting(false);
-    if (r.ok) { onPosted(content, r.data?.post_id); setText(''); setImageUrl(''); setIsVideo(false); setShowEmoji(false); }
+    if (r.ok) { onPosted(content, r.data?.post_id, isVideo?'':imageUrl, isVideo?imageUrl:''); setText(''); setImageUrl(''); setIsVideo(false); setShowEmoji(false); }
   };
 
   return (
@@ -795,15 +795,15 @@ function RightSidebar({ lang }) {
 
 // ── PAGES ─────────────────────────────────────────────────
 function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
-  const handlePosted = (text, postId) => {
+  const handlePosted = (text, postId, imageUrl, videoUrl) => {
     const newPost = {
       id: postId || `p_${Date.now()}`,
       user_id: user.id, nickname: user.nickname,
       avatar_emoji: user.avatar_emoji, is_verified: user.is_verified||0,
       membership: user.membership||'free',
+      membership: user.membership||'free',
       content: text, content_en: text, image_emoji:'',
-      hashtags:'[]', likes_count:0, comments_count:0, shares_count:0, liked:false,
-      created_at: new Date().toISOString()
+      image_url: imageUrl||'', video_url: videoUrl||'', hashtags:'[]', likes_count:0, comments_count:0, shares_count:0, liked:false,
     };
     setPosts(p => [newPost, ...p]);
     onToast(t('تم نشر المنشور! 🔺','Post published! 🔺',lang));
