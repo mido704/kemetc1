@@ -180,11 +180,11 @@ function Landing({ onLogin, onRegister, lang, setLang }) {
       
       {/* Floating pyramid */}
       {/* Pharaoh Animation */}
-      {phase>0 && phase<3 && (<div style={{position:'fixed',inset:0,zIndex:100,background:'#000',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',transition:'opacity 1s',opacity:phase===2?0:1}}>
-        <div style={{fontSize:phase===1?'40px':'180px',transition:'font-size 2.5s cubic-bezier(.17,.67,.35,1.2)',filter:'drop-shadow(0 0 40px rgba(201,168,76,.8))'}}>𓀭</div>
-        <div style={{color:'var(--gl)',fontSize:phase===1?0:22,transition:'font-size 1s, opacity 1s',opacity:phase===1?0:1,textAlign:'center',marginTop:20,padding:'0 30px',fontWeight:700,lineHeight:1.8}}>
+      {phase<3 && (<div style={{position:'fixed',inset:0,zIndex:100,background:'radial-gradient(ellipse at center,#0a0500 0%,#000 100%)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
+        <div style={{fontSize:phase===0?'8px':phase===1?'60px':phase===2?'280px':'280px',transition:phase===1?'font-size 2s ease-in':phase===2?'font-size 2s ease-in':'none',filter:'drop-shadow(0 0 '+(phase===2?'80':'20')+'px rgba(201,168,76,.9))',transform:phase===2?'scale(1.1)':'scale(1)',lineHeight:1}}>𓀭</div>
+        <div style={{color:'var(--gl)',fontSize:phase===2?24:0,transition:'font-size 1.5s ease',textAlign:'center',marginTop:24,padding:'0 40px',fontWeight:800,lineHeight:2,maxWidth:600}}>
           {lang==='ar'?'مرحباً بك في أرض الحضارة':'Welcome to the Land of Civilization'}<br/>
-          <span style={{fontSize:14,color:'var(--tm)',fontWeight:400}}>{lang==='ar'?'ادخل لتكتشف التاريخ بنفسك':'Enter to discover history yourself'}</span>
+          <span style={{fontSize:phase===2?15:0,color:'var(--tm)',fontWeight:400,transition:'font-size 1.5s ease 0.5s'}}>{lang==='ar'?'ادخل لتكتشف التاريخ بنفسك':'Enter to discover history yourself'}</span>
         </div>
       </div>)}
       <div style={{ position:'absolute', fontSize:420, opacity:.015, bottom:-80, left:'50%', transform:'translateX(-50%)', pointerEvents:'none', lineHeight:1 }}>🔺</div>
