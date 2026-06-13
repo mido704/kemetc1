@@ -493,7 +493,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
                 <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
-                {c.image_url && <img src={c.image_url} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:6}} />}
+                {c.image_url && <img src={c.image_url} style={{width:'100%',maxHeight:400,objectFit:'contain',borderRadius:8,marginTop:6,background:'var(--bi)'}} />}
               </div>
             </div>
             {comments.filter(r=>r.parent_id===c.id).map(r=>(<div key={r.id} style={{marginRight:32,marginTop:6,padding:'6px 8px',background:'var(--bi)',borderRadius:8,borderRight:'2px solid var(--gd)'}}><span style={{color:'var(--g)',fontWeight:700,fontSize:11}}>{r.nickname} </span><span style={{color:'var(--gl)',fontSize:12}}>{r.content}</span></div>))}
