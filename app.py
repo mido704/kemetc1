@@ -248,7 +248,7 @@ def create_post():
         pid = str(uuid.uuid4())
         cur = get_db().conn.cursor()
         cur.execute('INSERT INTO posts (id,user_id,content,content_en,image_emoji,image_url,video_url,hashtags,language) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)',
-            (pid, uid, b['content'], b.get('content_en',''), b.get('image_emoji',''), b.get('image_url',''), b.get('video_url',''), '[]', b.get('language','ar')))
+            (pid, uid, b['content'], b.get('content_en',''), b.get('image_emoji',''), b.get('image_url',''), b.get('video_url',''), b.get('hashtags','[]'), b.get('language','ar')))
         get_db().conn.commit()
         return ok({'post_id': pid}), 201
     except Exception as e: return err(str(e))
