@@ -388,8 +388,9 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const [showReplyEmoji, setShowReplyEmoji] = useState(false);
   const submitReply = async () => {
     if (!replyText.trim() && !replyImage) return;
-    const r = await postsAPI.addComment(post.id, replyText, replyTo?.id);
-    if (r.ok) { setComments(c=>[...c, {id:r.data.comment_id,content:replyText,nickname:t('أنت','You',lang),avatar_emoji:'👑',created_at:new Date().toISOString(),parent_id:replyTo?.id}]); setReplyText(''); setReplyImage(''); setReplyTo(null); }
+    const imgUrl = replyImage;
+    const r = await postsAPI.addComment(post.id, replyText, replyTo?.id, imgUrl);
+    if (r.ok) { setComments(c=>[...c, {id:r.data.comment_id,content:replyText,image_url:imgUrl,nickname:user?.nickname||t('أنت','You',lang),avatar_emoji:user?.avatar_emoji||'👑',avatar_url:user?.avatar_url,created_at:new Date().toISOString(),parent_id:replyTo?.id}]); setReplyText(''); setReplyImage(''); setReplyTo(null); }
   };
   const uploadReplyImg = async (e) => { const file=e.target.files[0]; if(!file) return; setReplyUploading(true); const url=await uploadToCloudinary(file); setReplyImage(url); setReplyUploading(false); };
   const [likesCount, setLikesCount] = useState(post.likes_count||0);
