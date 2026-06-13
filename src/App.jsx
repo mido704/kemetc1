@@ -1230,6 +1230,7 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
       { id:'m1', sender_id:item.other_id, sender_name:item.other_name, content:item.last_message, created_at:new Date(Date.now()-3600000).toISOString() }
     ]);
   };
+  useEffect(()=>{ if(!active) return; const interval=setInterval(async()=>{ const r=await messagesAPI.getConversation(active.other_id); if(r.ok) setConv((r.data||[]).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))); },5000); return ()=>clearInterval(interval); },[active]);
 
   const send = async () => {
     if (!msg.trim()||!active) return;
