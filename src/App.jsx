@@ -416,7 +416,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const uploadCommentImg = async (e) => { const file=e.target.files[0]; if(!file) return; setCommentUploading(true); const url=await uploadToCloudinary(file); setCommentImage(url); setCommentUploading(false); };
   const submitComment = async () => {
     if (!newComment.trim() && !commentImage) return;
-    const r = await postsAPI.addComment(post.id, newComment);
+    const r = await postsAPI.addComment(post.id, newComment, null, commentImage);
     if (r.ok) {
       setComments(c=>[...c, { id:r.data.comment_id, content:newComment, image_url:commentImage, nickname:user?.nickname||t('أنت','You',lang), avatar_emoji:user?.avatar_emoji||'👑', avatar_url:user?.avatar_url, created_at:new Date().toISOString() }]);
       setNewComment(''); setCommentImage('');

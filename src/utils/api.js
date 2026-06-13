@@ -4,13 +4,13 @@
  * Falls back to demo mode when API is offline
  */
 
-// ── IMPORTANT: Railway backend URL ───────────────────────
-// Priority: env variable → Railway production → localhost fallback
+// â”€â”€ IMPORTANT: Railway backend URL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Priority: env variable â†’ Railway production â†’ localhost fallback
 const API_BASE =
   import.meta.env.VITE_API_URL ||
   'https://kemetc1-production.up.railway.app/api';
 
-// ── Token management ──────────────────────────────────────
+// â”€â”€ Token management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TOKEN_KEY = 'kemet_token';
 const USER_KEY  = 'kemet_user';
 
@@ -38,7 +38,7 @@ export const storage = {
   },
 };
 
-// ── Core fetch wrapper ────────────────────────────────────
+// â”€â”€ Core fetch wrapper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function apiFetch(path, options = {}) {
   const token = storage.getToken();
   const headers = {
@@ -54,7 +54,7 @@ async function apiFetch(path, options = {}) {
       body: options.body ? JSON.stringify(options.body) : undefined,
     });
 
-    // Auto-clear token on 401 (expired/invalid) — except logout itself
+    // Auto-clear token on 401 (expired/invalid) â€” except logout itself
     if (res.status === 401 && !path.includes('/auth/logout')) {
       storage.clear();
     }
@@ -62,11 +62,11 @@ async function apiFetch(path, options = {}) {
     const data = await res.json();
     return { status: res.status, ...data };
   } catch (e) {
-    return { ok: false, error: 'الخادم غير متاح حالياً - وضع تجريبي', offline: true };
+    return { ok: false, error: 'ط§ظ„ط®ط§ط¯ظ… ط؛ظٹط± ظ…طھط§ط­ ط­ط§ظ„ظٹط§ظ‹ - ظˆط¶ط¹ طھط¬ط±ظٹط¨ظٹ', offline: true };
   }
 }
 
-// ── AUTH API ──────────────────────────────────────────────
+// â”€â”€ AUTH API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const authAPI = {
   async register(payload) {
     const r = await apiFetch('/auth/register', { method: 'POST', body: payload });
@@ -87,7 +87,7 @@ export const authAPI = {
   },
 
   async logout() {
-    // Always clear local storage first — don't wait for API
+    // Always clear local storage first â€” don't wait for API
     // 401 on logout is harmless (token already expired/invalid)
     storage.clear();
     try { await apiFetch('/auth/logout', { method: 'POST' }); } catch {}
@@ -101,7 +101,7 @@ export const authAPI = {
   },
 };
 
-// ── USERS API ─────────────────────────────────────────────
+// â”€â”€ USERS API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const usersAPI = {
   getUser: (id) => apiFetch(`/users/${id}`),
 
@@ -111,7 +111,7 @@ export const usersAPI = {
   follow: (id) => apiFetch(`/users/${id}/follow`, { method: 'POST' }),
 };
 
-// ── POSTS API ─────────────────────────────────────────────
+// â”€â”€ POSTS API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const postsAPI = {
   getFeed: (limit = 20, offset = 0) =>
     apiFetch(`/posts?limit=${limit}&offset=${offset}`),
@@ -126,14 +126,14 @@ export const postsAPI = {
 
   getComments: (id) => apiFetch(`/posts/${id}/comments`),
 
-  addComment: (id, content, parentId = null) =>
+  addComment: (id, content, parentId = null, imageUrl = "") =>
     apiFetch(`/posts/${id}/comments`, {
       method: 'POST',
-      body: { content, parent_id: parentId },
+      body: { content, parent_id: parentId, image_url: imageUrl },
     }),
 };
 
-// ── STORE API ─────────────────────────────────────────────
+// â”€â”€ STORE API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const storeAPI = {
   getCategories: () => apiFetch('/store/categories'),
 
@@ -147,7 +147,7 @@ export const storeAPI = {
   getNicknames: () => apiFetch('/store/nicknames'),
 };
 
-// ── BOOKINGS API ──────────────────────────────────────────
+// â”€â”€ BOOKINGS API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const bookingsAPI = {
   getMyBookings: () => apiFetch('/bookings'),
 
@@ -160,7 +160,7 @@ export const bookingsAPI = {
     }),
 };
 
-// ── MESSAGES API ──────────────────────────────────────────
+// â”€â”€ MESSAGES API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const messagesAPI = {
   getInbox: () => apiFetch('/messages/inbox'),
 
@@ -171,13 +171,13 @@ export const messagesAPI = {
     apiFetch(`/messages/${userId}`, { method: 'POST', body: { content } }),
 };
 
-// ── NOTIFICATIONS API ─────────────────────────────────────
+// â”€â”€ NOTIFICATIONS API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const notificationsAPI = {
   get: (limit = 20) => apiFetch(`/notifications?limit=${limit}`),
   markRead: () => apiFetch('/notifications/read', { method: 'POST' }),
 };
 
-// ── REVIEWS API ───────────────────────────────────────────
+// â”€â”€ REVIEWS API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const reviewsAPI = {
   add: (tourId, rating, comment, bookingId = null) =>
     apiFetch(`/reviews/${tourId}`, {
@@ -186,7 +186,7 @@ export const reviewsAPI = {
     }),
 };
 
-// ── STATS & HEALTH ────────────────────────────────────────
+// â”€â”€ STATS & HEALTH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const statsAPI = {
   get: () => apiFetch('/stats'),
 };
