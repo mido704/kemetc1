@@ -411,16 +411,18 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     setShowComments(v=>!v);
   };
 
+  const [commentImage, setCommentImage] = useState('');
+  const [commentUploading, setCommentUploading] = useState(false);
+  const uploadCommentImg = async (e) => { const file=e.target.files[0]; if(!file) return; setCommentUploading(true); const url=await uploadToCloudinary(file); setCommentImage(url); setCommentUploading(false); };
   const submitComment = async () => {
-    if (!newComment.trim()) return;
-    const r = await postsAPI.addComment(post.id, newComment, replyTo?.id);
+    if (!newComment.trim() && !commentImage) return;
+    const r = await postsAPI.addComment(post.id, newComment);
     if (r.ok) {
-      setComments(c=>[...c, { id:r.data.comment_id, content:newComment, nickname:t('أنت','You',lang), avatar_emoji:'👑', created_at:new Date().toISOString(), parent_id:replyTo?.id }]);
-      setNewComment(''); setReplyTo(null);
+      setComments(c=>[...c, { id:r.data.comment_id, content:newComment, image_url:commentImage, nickname:user?.nickname||t('أنت','You',lang), avatar_emoji:user?.avatar_emoji||'👑', avatar_url:user?.avatar_url, created_at:new Date().toISOString() }]);
+      setNewComment(''); setCommentImage('');
     }
   };
   const tags = ts(post.hashtags);
-
   return (
     <div className="post-card">
       <div style={{ display:'flex', gap:11, alignItems:'flex-start', marginBottom:11 }}>
@@ -496,8 +498,10 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
           </div>))}
           <div style={{display:'flex',gap:8,marginTop:8,flexDirection:'column'}}>
             {showCommentEmoji && <div style={{display:'flex',flexWrap:'wrap',gap:4,background:'var(--bi)',borderRadius:8,padding:6}}>{['😊','❤️','😂','👍','🔥','😍','🙏','💎','👑'].map(e=>(<button key={e} onClick={()=>{setNewComment(c=>c+e);setShowCommentEmoji(false);}} style={{background:'none',border:'none',fontSize:18,cursor:'pointer'}}>{e}</button>))}</div>}
-            <div style={{display:'flex',gap:8}}>
+            {commentImage && <img src={commentImage} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8}} />}
+            <div style={{display:'flex',gap:8,alignItems:'center'}}>
               <button className='btn btn-gh' onClick={()=>setShowCommentEmoji(v=>!v)} style={{padding:'6px 10px',fontSize:16}}>😊</button>
+              <label className='btn btn-gh' style={{cursor:'pointer',fontSize:13,padding:'6px 8px'}}>{commentUploading?'...':'🖼️'}<input type='file' accept='image/*,video/*' onChange={uploadCommentImg} style={{display:'none'}} /></label>
               <input className='inp' placeholder='اكتب تعليقاً...' value={newComment} onChange={e=>setNewComment(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submitComment()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
               <button className='btn btn-g' onClick={submitComment} style={{padding:'8px 14px',fontSize:13}}>Send</button>
             </div>
