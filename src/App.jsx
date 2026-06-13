@@ -473,7 +473,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
 
       {tags.length>0 && (
         <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
-          {tags.map(h=><span key={h} style={{ color:'var(--gd)', fontSize:12, cursor:'pointer' }}>{h}</span>)}
+          {tags.map(h=><span key={h} style={{ color:'var(--gd)', fontSize:12, cursor:'pointer', marginLeft:4 }} onClick={()=>{ if(window.setHashtagFilter) window.setHashtagFilter(h); }}>{h}</span>)}
         </div>
       )}
 
@@ -815,12 +815,13 @@ function RightSidebar({ lang }) {
 
 // ── PAGES ─────────────────────────────────────────────────
 function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
+  const [hashFilter, setHashFilter] = useState('');
+  useEffect(()=>{ window.setHashtagFilter=(h)=>setHashFilter(h); return ()=>delete window.setHashtagFilter; },[]);
   const handlePosted = (text, postId, imageUrl, videoUrl) => {
     const newPost = {
       id: postId || `p_${Date.now()}`,
       user_id: user.id, nickname: user.nickname,
       avatar_emoji: user.avatar_emoji, is_verified: user.is_verified||0,
-      membership: user.membership||'free',
       membership: user.membership||'free',
       content: text, content_en: text, image_emoji:'',
       image_url: imageUrl||'', video_url: videoUrl||'', hashtags:'[]', likes_count:0, comments_count:0, shares_count:0, liked:false,
@@ -840,8 +841,9 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
         <button className="tab">{t('الأصدقاء','Following',lang)}</button>
         <button className="tab">{t('مصر','Egypt',lang)}</button>
       </div>
+      {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>✕</button></div>}
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
-      {posts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
+      {(hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
     </div>
   );
 }
