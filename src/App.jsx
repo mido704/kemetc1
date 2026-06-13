@@ -233,6 +233,7 @@ function Landing({ onLogin, onRegister, lang, setLang }) {
 const GOOGLE_CLIENT_ID = '289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com';
 
 function LoginModal({ onClose, onSuccess, lang }) {
+  const [email, setEmail] = useState('');
   const [pass, setPass]   = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError]  = useState('');
