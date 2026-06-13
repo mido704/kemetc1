@@ -483,15 +483,16 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
       {showComments && (
         <div className='fi' style={{marginTop:11,borderTop:'1px solid var(--bb)',paddingTop:11}}>
           {replyTo && (<div style={{background:"var(--bi)",border:"1px solid var(--gd)",borderRadius:12,padding:12,marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,color:"var(--gd)"}}>Reply to <b>{replyTo.nickname}</b></span><button onClick={()=>{setReplyTo(null);setReplyText("");}} style={{background:"none",border:"none",color:"var(--tm)",cursor:"pointer",fontSize:14}}>X</button></div><div style={{fontSize:12,color:"var(--tm)",padding:"4px 8px",background:"var(--bb)",borderRadius:6,marginBottom:8}}>{replyTo.content}</div><textarea className="inp" placeholder="Write reply..." value={replyText} onChange={e=>setReplyText(e.target.value)} rows={2} style={{marginBottom:8}} /><div style={{display:"flex",gap:8}}><button className="btn btn-gh" onClick={()=>setShowReplyEmoji(v=>!v)} style={{fontSize:16}}>emoji</button><button className="btn btn-g" onClick={submitReply} style={{marginRight:"auto"}}>Send</button></div></div>)}
-          {comments.map(c=>(<div key={c.id} style={{marginBottom:8,padding:'6px 0',borderBottom:'1px solid var(--bb)'}}>
+          {comments.filter(c=>!c.parent_id).map(c=>(<div key={c.id} style={{marginBottom:8,padding:'6px 0',borderBottom:'1px solid var(--bb)'}}>
             <div style={{display:'flex',alignItems:'flex-start',gap:6}}>
               <Avatar emoji={c.avatar_emoji||'👑'} size={26} url={c.avatar_url} />
               <div style={{flex:1}}>
                 <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
-                <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',marginTop:4,display:'block'}} onClick={()=>{setReplyTo(c);setShowComments(true);}}>↩ {t('رد','Reply',lang)}</button>
+                <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',marginTop:4,display:'block'}} onClick={()=>{setReplyTo(c);setShowComments(true);}}>↩ Reply</button>
               </div>
             </div>
+            {comments.filter(r=>r.parent_id===c.id).map(r=>(<div key={r.id} style={{marginRight:32,marginTop:6,padding:'6px 8px',background:'var(--bi)',borderRadius:8,borderRight:'2px solid var(--gd)'}}><span style={{color:'var(--g)',fontWeight:700,fontSize:11}}>{r.nickname} </span><span style={{color:'var(--gl)',fontSize:12}}>{r.content}</span></div>))}
           </div>))}
           <div style={{display:'flex',gap:8,marginTop:8,flexDirection:'column'}}>
             {showCommentEmoji && <div style={{display:'flex',flexWrap:'wrap',gap:4,background:'var(--bi)',borderRadius:8,padding:6}}>{['😊','❤️','😂','👍','🔥','😍','🙏','💎','👑'].map(e=>(<button key={e} onClick={()=>{setNewComment(c=>c+e);setShowCommentEmoji(false);}} style={{background:'none',border:'none',fontSize:18,cursor:'pointer'}}>{e}</button>))}</div>}
