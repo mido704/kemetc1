@@ -234,6 +234,14 @@ const GOOGLE_CLIENT_ID = '289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.goo
 
 function LoginModal({ onClose, onSuccess, lang }) {
   const [email, setEmail] = useState('');
+  useEffect(()=>{
+    if(window.google){
+      window.google.accounts.id.initialize({
+        client_id:'289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com',
+        callback: window.handleGoogleLogin
+      });
+    }
+  },[]);
   const [pass, setPass]   = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError]  = useState('');
