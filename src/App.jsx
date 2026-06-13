@@ -491,7 +491,8 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
               <div style={{flex:1}}>
                 <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
-                <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',marginTop:4,display:'block'}} onClick={()=>{setReplyTo(c);setShowComments(true);}}>↩ Reply</button>
+                <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
+                {c.image_url && <img src={c.image_url} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:6}} />}
               </div>
             </div>
             {comments.filter(r=>r.parent_id===c.id).map(r=>(<div key={r.id} style={{marginRight:32,marginTop:6,padding:'6px 8px',background:'var(--bi)',borderRadius:8,borderRight:'2px solid var(--gd)'}}><span style={{color:'var(--g)',fontWeight:700,fontSize:11}}>{r.nickname} </span><span style={{color:'var(--gl)',fontSize:12}}>{r.content}</span></div>))}
@@ -1224,7 +1225,7 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
   const openChat = async (item) => {
     setActive(item);
     const r = await messagesAPI.getConversation(item.other_id);
-    if (r.ok) setConv(r.data||[]);
+    if (r.ok) setConv((r.data||[]).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)));
     else setConv([
       { id:'m1', sender_id:item.other_id, sender_name:item.other_name, content:item.last_message, created_at:new Date(Date.now()-3600000).toISOString() }
     ]);
