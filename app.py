@@ -253,9 +253,9 @@ def get_comments(post_id):
 @require_auth
 def add_comment(post_id):
     b = request.get_json() or {}
-    if not b.get('content', '').strip():
-        return err('ط¸â€¦ط·آ­ط·ع¾ط¸ث†ط¸â€° ط·آ§ط¸â€‍ط·ع¾ط·آ¹ط¸â€‍ط¸ظ¹ط¸â€ڑ ط¸â€¦ط·آ·ط¸â€‍ط¸ث†ط·آ¨')
-    uid = request.current_user['id']
+    b = request.get_json() or {}
+    if not b.get('content', '').strip() and not b.get('image_url', '').strip():
+        return err('محتوى مطلوب')
     try:
         import uuid as _uuid2
         cid = str(_uuid2.uuid4())
