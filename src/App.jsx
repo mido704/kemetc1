@@ -417,14 +417,14 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const submitComment = async () => {
     if (!newComment.trim() && !commentImage) return;
     const imgUrl = commentImage;
-    const r = await postsAPI.addComment(post.id, newComment, null, imgUrl);
+    if (r.ok) {
       setComments(c=>[...c, { id:r.data.comment_id, content:newComment, image_url:imgUrl, nickname:user?.nickname||t('أنت','You',lang), avatar_emoji:user?.avatar_emoji||'👑', avatar_url:user?.avatar_url, created_at:new Date().toISOString() }]);
       setNewComment(''); setCommentImage('');
     }
-  return (
-    <div className="post-card">
   };
   const tags = ts(post.hashtags);
+  return (
+    <div className='post-card'>
       <div style={{ display:'flex', gap:11, alignItems:'flex-start', marginBottom:11 }}>
        <Avatar emoji={post.avatar_emoji} size={42} url={post?.avatar_url} />
         <div style={{ flex:1 }}>
