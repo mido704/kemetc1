@@ -1026,6 +1026,12 @@ function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [following, setFollowing] = useState(false);
+  const toggleFollow = async () => {
+    const r = await fetch(API+'/users/'+userId+'/follow', {method:'POST',headers:{'Authorization':'Bearer '+token}});
+    const d = await r.json();
+    if(d.ok){ setFollowing(d.data?.following); setProfile(p=>({...p,followers_count:(p.followers_count||0)+(d.data?.following?1:-1)})); }
+  };
   const token = storage.getToken();
   const API = 'https://kemetc1-production.up.railway.app/api';
   useEffect(()=>{
@@ -1054,6 +1060,7 @@ function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
             <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.following_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('متابَعون','Following',lang)}</div></div>
           </div>
         </div>
+          {userId !== user?.id && <button className={following?'btn btn-gh':'btn btn-g'} onClick={toggleFollow} style={{marginTop:12,padding:'8px 24px'}}>{following?t('إلغاء المتابعة','Unfollow',lang):t('+ متابعة','+ Follow',lang)}</button>}
       </div>
       {userId !== user?.id && (
         <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:12,padding:20,textAlign:'center'}}>

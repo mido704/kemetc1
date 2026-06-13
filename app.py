@@ -197,6 +197,30 @@ def follow_user(user_id):
     return ok(result)
 
 
+@app.route('/api/users/<user_id>/follow', methods=['POST'])
+@require_auth
+def toggle_follow(user_id):
+    uid = request.current_user['id']
+    if uid == user_id: return err('لا يمكنك متابعة نفسك')
+    try:
+        cur = get_db().conn.cursor()
+        cur.execute('SELECT id FROM follows WHERE follower_id=%s AND following_id=%s', (uid, user_id))
+        existing = cur.fetchone()
+        if existing:
+            cur.execute('DELETE FROM follows WHERE follower_id=%s AND following_id=%s', (uid, user_id))
+            cur.execute('UPDATE users SET followers_count=GREATEST(0,followers_count-1) WHERE id=%s', (user_id,))
+            cur.execute('UPDATE users SET following_count=GREATEST(0,following_count-1) WHERE id=%s', (uid,))
+            get_db().conn.commit()
+            return ok({'following': False})
+        else:
+            import uuid as _u
+            cur.execute('INSERT INTO follows (id,follower_id,following_id) VALUES (%s,%s,%s)', (str(_u.uuid4()), uid, user_id))
+            cur.execute('UPDATE users SET followers_count=followers_count+1 WHERE id=%s', (user_id,))
+            cur.execute('UPDATE users SET following_count=following_count+1 WHERE id=%s', (uid,))
+            get_db().conn.commit()
+            return ok({'following': True})
+    except Exception as e: return err(str(e))
+
 @app.route('/api/users/following', methods=['GET'])
 @require_auth
 def get_following():
