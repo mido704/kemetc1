@@ -383,7 +383,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const [replyTo, setReplyTo] = useState(null);
   const [liked, setLiked] = useState(post.liked||false);
   const [likesCount, setLikesCount] = useState(post.likes_count||0);
-  const [likeAnim, setLikeAnim] = useState(false);
+  const [showCommentEmoji, setShowCommentEmoji] = useState(false);
 
   const handleLike = async () => {
     setLikeAnim(true); setTimeout(()=>setLikeAnim(false), 350);
@@ -483,9 +483,13 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
               </div>
             </div>
           </div>))}
-          <div style={{display:'flex',gap:8,marginTop:8}}>
-            <input className='inp' placeholder={t('اكتب تعليقاً...','Write a comment...',lang)} value={newComment} onChange={e=>setNewComment(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submitComment()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
-            <button className='btn btn-g' onClick={submitComment} style={{padding:'8px 14px',fontSize:13}}>{t('إرسال','Send',lang)}</button>
+          <div style={{display:'flex',gap:8,marginTop:8,flexDirection:'column'}}>
+            {showCommentEmoji && <div style={{display:'flex',flexWrap:'wrap',gap:4,background:'var(--bi)',borderRadius:8,padding:6}}>{['😊','❤️','😂','👍','🔥','😍','🙏','💎','👑'].map(e=>(<button key={e} onClick={()=>{setNewComment(c=>c+e);setShowCommentEmoji(false);}} style={{background:'none',border:'none',fontSize:18,cursor:'pointer'}}>{e}</button>))}</div>}
+            <div style={{display:'flex',gap:8}}>
+              <button className='btn btn-gh' onClick={()=>setShowCommentEmoji(v=>!v)} style={{padding:'6px 10px',fontSize:16}}>😊</button>
+              <input className='inp' placeholder='اكتب تعليقاً...' value={newComment} onChange={e=>setNewComment(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submitComment()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
+              <button className='btn btn-g' onClick={submitComment} style={{padding:'8px 14px',fontSize:13}}>Send</button>
+            </div>
           </div>
         </div>
       )}
