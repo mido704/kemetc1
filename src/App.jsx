@@ -264,7 +264,7 @@ function LoginModal({ onClose, onSuccess, lang }) {
           </div>
           <button className="btn btn-g" onClick={handle} disabled={loading}>{loading ? '⏳' : t('دخول','Login',lang)}</button>
           <div id='g_id_onload' data-client_id='289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com' data-callback='handleGoogleLogin' data-auto_prompt='false'></div>
-          <div className='g_id_signin' data-type='standard' data-size='large' data-theme='filled_black' data-text='signin_with' data-shape='rectangular' data-logo_alignment='left' style={{width:'100%',marginBottom:8}}></div>
+          <button className='btn' style={{width:'100%',background:'white',color:'#333',border:'1px solid #ddd',padding:'10px 16px',display:'flex',alignItems:'center',justifyContent:'center',gap:10,fontSize:14,fontWeight:600,borderRadius:8,marginBottom:8}} onClick={()=>window.google?.accounts.id.prompt()}>🔴 Sign in with Google</button>
           <div style={{textAlign:'center',fontSize:12,color:'var(--tm)',margin:'4px 0'}}>── {t('أو','or',lang)} ──</div>
           <button className="btn btn-gh" onClick={onClose} style={{ textAlign:'center' }}>{t('إلغاء','Cancel',lang)}</button>
         </div>
