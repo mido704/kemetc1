@@ -253,7 +253,6 @@ def get_comments(post_id):
 @require_auth
 def add_comment(post_id):
     b = request.get_json() or {}
-    b = request.get_json() or {}
     if not b.get('content', '').strip() and not b.get('image_url', '').strip():
         return err('محتوى مطلوب')
     try:
