@@ -313,7 +313,7 @@ function RegisterModal({ onClose, onSuccess, lang }) {
               <input className="inp" placeholder={t('رقم الهاتف','Phone',lang)} value={form.phone} onChange={e=>set('phone',e.target.value)} />
               <select className="inp" value={form.country} onChange={e=>set('country',e.target.value)}>
                 <option value="">{t('الدولة','Country',lang)}</option>
-                {COUNTRIES.map(([k,ar,en])=><option key={k} value={k}>{lang==='ar'?ar:en}</option>)}
+                {COUNTRIES.map(([k,ar,en])=><option key={k} value={k}>{en}</option>)}
               </select>
               <button className="btn btn-g" onClick={()=>{
                 if(!form.name||!form.email||!form.password){setError(t('يرجى إدخال البيانات المطلوبة','Please fill required fields',lang));return;}
