@@ -90,7 +90,7 @@ body{background:var(--b);color:var(--g);font-family:'Cairo',sans-serif;direction
 .inp::placeholder{color:var(--td)}
 select.inp option{background:var(--b);color:var(--g)}
 textarea.inp{resize:none}
-.card{background:var(--bc);border:1px solid var(--bb);border-radius:12px}
+.card{background:var(--bc);border:1px solid var(--bb);border-radius:12px}.post-card{background:var(--bc);border:1px solid var(--bb);border-radius:12px;padding:16px;margin-bottom:12px;transition:border .2s}.post-card:hover{border-color:rgba(201,168,76,.15)}.comment-box{padding:6px 0;border-bottom:1px solid var(--bb)}
 .card:hover{border-color:rgba(201,168,76,.2)}
 .gdiv{height:1px;background:linear-gradient(90deg,transparent,var(--gd),var(--g),var(--gd),transparent);opacity:.4;margin:12px 0}
 .badge{background:linear-gradient(135deg,var(--gd),var(--g));color:#000;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
