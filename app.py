@@ -108,8 +108,11 @@ def google_auth():
         from google.oauth2 import id_token
         from google.auth.transport import requests as grequests
         b = request.get_json() or {}
-        credential = b.get('credential')
-        idinfo = id_token.verify_oauth2_token(credential, grequests.Request(), '289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com')
+        import json as _json
+        raw = b.get('credential') or b.get('token','')
+        if isinstance(raw, str) and raw.startswith('{'):
+            raw = _json.loads(raw).get('id_token', raw)
+        credential = raw
         email = idinfo['email']
         name = idinfo.get('name', email.split('@')[0])
         cur = get_db().conn.cursor()
