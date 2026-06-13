@@ -245,7 +245,7 @@ def like_post(post_id):
 def get_comments(post_id):
     try:
         cur = get_db().conn.cursor()
-        cur.execute('''SELECT c.id, c.content, c.created_at, c.parent_id, u.nickname, u.avatar_emoji, u.avatar_url, u.id as user_id FROM comments c JOIN users u ON c.user_id=u.id WHERE c.post_id=%s AND c.is_deleted=0 ORDER BY c.created_at ASC''', (post_id,))
+        cur.execute('''SELECT c.id, c.content, c.image_url, c.created_at, c.parent_id, u.nickname, u.avatar_emoji, u.avatar_url, u.id as user_id FROM comments c JOIN users u ON c.user_id=u.id WHERE c.post_id=%s AND c.is_deleted=0 ORDER BY c.created_at ASC''', (post_id,))
         return ok([dict(r) for r in cur.fetchall()])
     except Exception as e: return ok([])
 
