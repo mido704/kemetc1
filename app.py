@@ -102,6 +102,40 @@ def register():
                        platform=b.get('platform', 'web'))
     return ok(login_r.get('data') or {'token': login_r['token'], 'user': login_r['user']}), 201
 
+@app.route('/api/auth/google', methods=['POST'])
+def google_auth():
+    try:
+        from google.oauth2 import id_token
+        from google.auth.transport import requests as grequests
+        b = request.get_json() or {}
+        credential = b.get('credential')
+        idinfo = id_token.verify_oauth2_token(credential, grequests.Request(), '289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com')
+        email = idinfo['email']
+        name = idinfo.get('name', email.split('@')[0])
+        cur = get_db().conn.cursor()
+        cur.execute('SELECT * FROM users WHERE email=%s', (email,))
+        existing = cur.fetchone()
+        if existing:
+            login_r = get_db().login(email, '', platform='google')
+            import jwt, os
+            token = jwt.encode({'user_id': existing['id'], 'exp': __import__('datetime').datetime.utcnow() + __import__('datetime').timedelta(days=30)}, os.environ.get('SECRET_KEY','kemet2024'), algorithm='HS256')
+            return ok({'token': token, 'user': dict(existing)})
+        else:
+            import uuid
+            uid = str(uuid.uuid4())
+            nick = name.replace(' ','_')[:20]
+            cur.execute('SELECT COUNT(*) as cnt FROM users WHERE nickname ILIKE %s', (nick,))
+            cnt = cur.fetchone()['cnt']
+            if cnt > 0: nick = f'{nick}{cnt+1}'
+            cur.execute('INSERT INTO users (id,email,name,nickname,password_hash,avatar_emoji,country) VALUES (%s,%s,%s,%s,%s,%s,%s)', (uid,email,name,nick,'google_auth','👑',''))
+            get_db().conn.commit()
+            import jwt, os
+            token = jwt.encode({'user_id': uid, 'exp': __import__('datetime').datetime.utcnow() + __import__('datetime').timedelta(days=30)}, os.environ.get('SECRET_KEY','kemet2024'), algorithm='HS256')
+            cur.execute('SELECT * FROM users WHERE id=%s', (uid,))
+            user = dict(cur.fetchone())
+            return ok({'token': token, 'user': user}), 201
+    except Exception as e: return err(str(e))
+
 @app.route('/api/auth/login', methods=['POST'])
 def login():
     b = request.get_json() or {}

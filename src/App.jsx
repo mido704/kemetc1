@@ -230,8 +230,9 @@ function Landing({ onLogin, onRegister, lang, setLang }) {
 }
 
 // ── LOGIN MODAL ───────────────────────────────────────────
+const GOOGLE_CLIENT_ID = '289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com';
+
 function LoginModal({ onClose, onSuccess, lang }) {
-  const [email, setEmail] = useState('');
   const [pass, setPass]   = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError]  = useState('');
@@ -261,6 +262,9 @@ function LoginModal({ onClose, onSuccess, lang }) {
             {t('تجريبي: ramesses@kemet.com / Demo1234!','Demo: ramesses@kemet.com / Demo1234!',lang)}
           </div>
           <button className="btn btn-g" onClick={handle} disabled={loading}>{loading ? '⏳' : t('دخول','Login',lang)}</button>
+          <div id='g_id_onload' data-client_id='289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com' data-callback='handleGoogleLogin' data-auto_prompt='false'></div>
+          <div class='g_id_signin' data-type='standard' data-size='large' data-theme='outline' data-text='sign_in_with' data-shape='rectangular' data-logo_alignment='left' style={{width:'100%'}}></div>
+          <div style={{textAlign:'center',fontSize:12,color:'var(--tm)',margin:'4px 0'}}>── {t('أو','or',lang)} ──</div>
           <button className="btn btn-gh" onClick={onClose} style={{ textAlign:'center' }}>{t('إلغاء','Cancel',lang)}</button>
         </div>
       </div>
@@ -1540,6 +1544,13 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState(DEMO_POSTS);
   const [notifsList, setNotifsList] = useState([]);
+  useEffect(()=>{
+    window.handleGoogleLogin = async (response) => {
+      const r = await fetch('https://kemetc1-production.up.railway.app/api/auth/google', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
+      const d = await r.json();
+      if(d.ok){ storage.setToken(d.data.token); storage.setUser(d.data.user); setUser(d.data.user); setModal(null); setScreen('app'); }
+    };
+  },[]);
   const [toast, setToast] = useState(null);
 
  useEffect(()=>{

@@ -3,5 +3,5 @@ flask-cors
 flask-jwt-extended
 gunicorn
 psycopg2-binary
-
-psycopg2-binary
+google-auth
+PyJWT
