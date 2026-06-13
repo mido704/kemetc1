@@ -113,6 +113,7 @@ def google_auth():
         if isinstance(raw, str) and raw.startswith('{'):
             raw = _json.loads(raw).get('id_token', raw)
         credential = raw
+        idinfo = id_token.verify_oauth2_token(credential, grequests.Request(), '289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com')
         email = idinfo['email']
         name = idinfo.get('name', email.split('@')[0])
         cur = get_db().conn.cursor()
