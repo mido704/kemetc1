@@ -288,8 +288,8 @@ function RegisterModal({ onClose, onSuccess, lang }) {
     else setError(r.error);
   };
 
-  const COUNTRIES = ['SA','AE','KW','QA','BH','OM','EG','JO','LB','US','GB','OTHER'];
-  const CN = {SA:'السعودية',AE:'الإمارات',KW:'الكويت',QA:'قطر',BH:'البحرين',OM:'عُمان',EG:'مصر',JO:'الأردن',LB:'لبنان',US:'أمريكا',GB:'بريطانيا',OTHER:'أخرى'};
+  const COUNTRIES = [['EG','مصر','Egypt'],['SA','السعودية','Saudi Arabia'],['AE','الإمارات','UAE'],['KW','الكويت','Kuwait'],['QA','قطر','Qatar'],['BH','البحرين','Bahrain'],['OM','عُمان','Oman'],['JO','الأردن','Jordan'],['LB','لبنان','Lebanon'],['SY','سوريا','Syria'],['IQ','العراق','Iraq'],['YE','اليمن','Yemen'],['LY','ليبيا','Libya'],['TN','تونس','Tunisia'],['DZ','الجزائر','Algeria'],['MA','المغرب','Morocco'],['SD','السودان','Sudan'],['SO','الصومال','Somalia'],['MR','موريتانيا','Mauritania'],['US','أمريكا','USA'],['GB','بريطانيا','UK'],['DE','ألمانيا','Germany'],['FR','فرنسا','France'],['IT','إيطاليا','Italy'],['ES','إسبانيا','Spain'],['NL','هولندا','Netherlands'],['BE','بلجيكا','Belgium'],['SE','السويد','Sweden'],['NO','النرويج','Norway'],['DK','الدنمارك','Denmark'],['CH','سويسرا','Switzerland'],['AT','النمسا','Austria'],['PL','بولندا','Poland'],['PT','البرتغال','Portugal'],['GR','اليونان','Greece'],['TR','تركيا','Turkey'],['RU','روسيا','Russia'],['CA','كندا','Canada'],['AU','أستراليا','Australia'],['NZ','نيوزيلندا','New Zealand'],['JP','اليابان','Japan'],['CN','الصين','China'],['IN','الهند','India'],['PK','باكستان','Pakistan'],['BD','بنغلاديش','Bangladesh'],['ID','إندونيسيا','Indonesia'],['MY','ماليزيا','Malaysia'],['SG','سنغافورة','Singapore'],['ZA','جنوب أفريقيا','South Africa'],['NG','نيجيريا','Nigeria'],['KE','كينيا','Kenya'],['OTHER','أخرى','Other']];
+  const CN = Object.fromEntries(COUNTRIES.map(([k,ar,en])=>[k, lang==='ar'?ar:en]));
 
   return (
     <div className="modal-bg" onClick={e=>e.target===e.currentTarget&&onClose()}>
@@ -313,7 +313,7 @@ function RegisterModal({ onClose, onSuccess, lang }) {
               <input className="inp" placeholder={t('رقم الهاتف','Phone',lang)} value={form.phone} onChange={e=>set('phone',e.target.value)} />
               <select className="inp" value={form.country} onChange={e=>set('country',e.target.value)}>
                 <option value="">{t('الدولة','Country',lang)}</option>
-                {COUNTRIES.map(c=><option key={c} value={c}>{CN[c]}</option>)}
+                {COUNTRIES.map(([k,ar,en])=><option key={k} value={k}>{lang==='ar'?ar:en}</option>)}
               </select>
               <button className="btn btn-g" onClick={()=>{
                 if(!form.name||!form.email||!form.password){setError(t('يرجى إدخال البيانات المطلوبة','Please fill required fields',lang));return;}
