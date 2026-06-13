@@ -1059,8 +1059,8 @@ function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
             <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.followers_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('متابعون','Followers',lang)}</div></div>
             <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.following_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('متابَعون','Following',lang)}</div></div>
           </div>
-        </div>
           {userId !== user?.id && <button className={following?'btn btn-gh':'btn btn-g'} onClick={toggleFollow} style={{marginTop:12,padding:'8px 24px'}}>{following?t('إلغاء المتابعة','Unfollow',lang):t('+ متابعة','+ Follow',lang)}</button>}
+        </div>
       </div>
       {userId !== user?.id && (
         <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:12,padding:20,textAlign:'center'}}>
