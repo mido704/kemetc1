@@ -170,6 +170,8 @@ function GoldDivider() { return <div className="gdiv" />; }
 
 // ── LANDING PAGE ──────────────────────────────────────────
 function Landing({ onLogin, onRegister, lang, setLang }) {
+  const [phase, setPhase] = useState(0);
+  useEffect(()=>{ const t1=setTimeout(()=>setPhase(1),500); const t2=setTimeout(()=>setPhase(2),3000); const t3=setTimeout(()=>setPhase(3),5500); return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);}; },[]);
   return (
     <div style={{ minHeight:'100vh', background:'#000', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden', direction:lang==='ar'?'rtl':'ltr' }}>
       
@@ -177,6 +179,14 @@ function Landing({ onLogin, onRegister, lang, setLang }) {
       <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 50% 30%,rgba(201,168,76,.1) 0%,transparent 65%)', pointerEvents:'none' }}/>
       
       {/* Floating pyramid */}
+      {/* Pharaoh Animation */}
+      {phase>0 && phase<3 && (<div style={{position:'fixed',inset:0,zIndex:100,background:'#000',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',transition:'opacity 1s',opacity:phase===2?0:1}}>
+        <div style={{fontSize:phase===1?'40px':'180px',transition:'font-size 2.5s cubic-bezier(.17,.67,.35,1.2)',filter:'drop-shadow(0 0 40px rgba(201,168,76,.8))'}}>𓀭</div>
+        <div style={{color:'var(--gl)',fontSize:phase===1?0:22,transition:'font-size 1s, opacity 1s',opacity:phase===1?0:1,textAlign:'center',marginTop:20,padding:'0 30px',fontWeight:700,lineHeight:1.8}}>
+          {lang==='ar'?'مرحباً بك في أرض الحضارة':'Welcome to the Land of Civilization'}<br/>
+          <span style={{fontSize:14,color:'var(--tm)',fontWeight:400}}>{lang==='ar'?'ادخل لتكتشف التاريخ بنفسك':'Enter to discover history yourself'}</span>
+        </div>
+      </div>)}
       <div style={{ position:'absolute', fontSize:420, opacity:.015, bottom:-80, left:'50%', transform:'translateX(-50%)', pointerEvents:'none', lineHeight:1 }}>🔺</div>
 
       {/* Lang toggle */}
