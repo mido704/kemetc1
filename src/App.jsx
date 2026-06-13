@@ -549,9 +549,8 @@ function CreatePost({ user, lang, onPosted }) {
     if (!text.trim() && !imageUrl) return;
     setPosting(true);
     const content = text.trim() || (isVideo ? '🎥' : '📷');
-    const r = await postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'' });
-    setPosting(false);
-    if (r.ok) { onPosted(content, r.data?.post_id, isVideo?'':imageUrl, isVideo?imageUrl:''); setText(''); setImageUrl(''); setIsVideo(false); setShowEmoji(false); }
+    const hashtags = JSON.stringify((content.match(/#[\w\u0600-\u06FF]+/g)||[]));
+    const r = await postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'', hashtags });
   };
 
   return (
