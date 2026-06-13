@@ -382,6 +382,16 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
   const [liked, setLiked] = useState(post.liked||false);
+  const [replyText, setReplyText] = useState('');
+  const [replyImage, setReplyImage] = useState('');
+  const [replyUploading, setReplyUploading] = useState(false);
+  const [showReplyEmoji, setShowReplyEmoji] = useState(false);
+  const submitReply = async () => {
+    if (!replyText.trim() && !replyImage) return;
+    const r = await postsAPI.addComment(post.id, replyText, replyTo?.id);
+    if (r.ok) { setComments(c=>[...c, {id:r.data.comment_id,content:replyText,nickname:t('أنت','You',lang),avatar_emoji:'👑',created_at:new Date().toISOString(),parent_id:replyTo?.id}]); setReplyText(''); setReplyImage(''); setReplyTo(null); }
+  };
+  const uploadReplyImg = async (e) => { const file=e.target.files[0]; if(!file) return; setReplyUploading(true); const url=await uploadToCloudinary(file); setReplyImage(url); setReplyUploading(false); };
   const [likesCount, setLikesCount] = useState(post.likes_count||0);
   const [showCommentEmoji, setShowCommentEmoji] = useState(false);
 
