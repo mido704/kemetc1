@@ -82,6 +82,14 @@ def register():
     if len(b['password']) < 6:
         return err('ط¸ئ’ط¸â€‍ط¸â€¦ط·آ© ط·آ§ط¸â€‍ط¸â€¦ط·آ±ط¸ث†ط·آ± ط¸ظ¹ط·آ¬ط·آ¨ ط·آ£ط¸â€  ط·ع¾ط¸ئ’ط¸ث†ط¸â€  6 ط·آ£ط·آ­ط·آ±ط¸ظ¾ ط·آ¹ط¸â€‍ط¸â€° ط·آ§ط¸â€‍ط·آ£ط¸â€ڑط¸â€‍')
     db = get_db()
+    # Auto-number duplicate nicknames
+    try:
+        cur = get_db().conn.cursor()
+        base_nick = b['nickname']
+        cur.execute('SELECT COUNT(*) as cnt FROM users WHERE nickname ILIKE %s', (base_nick,))
+        cnt = cur.fetchone()['cnt']
+        if cnt > 0: b['nickname'] = f'{base_nick}{cnt+1}'
+    except: pass
     result = db.register(
         email=b['email'], password=b['password'],
         name=b['name'], nickname=b['nickname'],
