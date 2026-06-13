@@ -55,12 +55,19 @@ const DEMO_TOURS = [
   { id:"tour_desert",  category_id:"cat_desert",  title_ar:"تجربة الواحات والصحراء الغربية",   title_en:"Oasis & Western Desert Experience",   price:950,  duration_days:6,  image_emoji:"🌅", badge_ar:"مغامرة",       badge_en:"Adventure",     rating:4.8, reviews_count:52,  is_featured:0, includes_ar:'["خيام فاخرة","جيبات صحراوية","رصد النجوم","طعام بدوي"]', includes_en:'["Luxury Camping","Desert Jeeps","Stargazing","Bedouin Food"]',     description_ar:"مغامرة لا تُنسى في أعماق الصحراء الغربية",               description_en:"An unforgettable adventure in the Western Desert" },
 ];
 
-const HASHTAGS = [
-  { tag:"#مصر_الفراعنة", count:"12.4K" }, { tag:"#الأقصر_والأسوان", count:"8.1K" },
-  { tag:"#رحلات_مصر",    count:"6.7K" },  { tag:"#Egypt_Tourism",    count:"5.2K" },
-  { tag:"#الأهرامات",    count:"4.9K" },  { tag:"#حضارة_كيمت",      count:"3.8K" },
-  { tag:"#Nile_Cruise",  count:"3.2K" },  { tag:"#أبو_سمبل",        count:"2.9K" },
+const HASHTAGS_AR = [
+  { tag:'#مصر_الفراعنة', count:'12.4K' }, { tag:'#الأقصر_والأسوان', count:'8.1K' },
+  { tag:'#رحلات_مصر', count:'6.7K' }, { tag:'#حضارة_كيمت', count:'5.2K' },
+  { tag:'#الأهرامات', count:'4.9K' }, { tag:'#أبو_سمبل', count:'3.8K' },
+  { tag:'#النيل', count:'3.2K' }, { tag:'#فراعنة_مصر', count:'2.9K' },
 ];
+const HASHTAGS_EN = [
+  { tag:'#Egypt_Tourism', count:'12.4K' }, { tag:'#Luxor_Aswan', count:'8.1K' },
+  { tag:'#Egypt_Travel', count:'6.7K' }, { tag:'#Kemet_Culture', count:'5.2K' },
+  { tag:'#Pyramids', count:'4.9K' }, { tag:'#AbuSimbel', count:'3.8K' },
+  { tag:'#NileCruise', count:'3.2K' }, { tag:'#AncientEgypt', count:'2.9K' },
+];
+const HASHTAGS = HASHTAGS_AR;
 
 // ── CSS ───────────────────────────────────────────────────
 const CSS = `
@@ -796,10 +803,10 @@ function RightSidebar({ lang }) {
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:13, marginBottom:12, display:'flex', alignItems:'center', gap:6 }}>
         🔥 {t('الأكثر تداولاً','Trending',lang)}
       </div>
-      {HASHTAGS.map(h=>(
-        <div key={h.tag} style={{ padding:'7px 0', borderBottom:'1px solid var(--bb)', cursor:'pointer' }}>
+      {(lang==='ar'?HASHTAGS_AR:HASHTAGS_EN).map(h=>(
+        <div key={h.tag} style={{ padding:'7px 0', borderBottom:'1px solid var(--bb)', cursor:'pointer' }} onClick={()=>{ if(window.setHashtagFilter) window.setHashtagFilter(h.tag); }}>
           <div style={{ color:'var(--g)', fontWeight:600, fontSize:13 }}>{h.tag}</div>
-          <div style={{ color:'var(--g)', fontWeight:600, fontSize:13 }}>{lang==='ar'?h.tag:h.tag_en}</div>
+          <div style={{ color:'var(--tm)', fontSize:11 }}>{h.count} {t('منشور','posts',lang)}</div>
         </div>
       ))}
       <div className="card" style={{ padding:13, textAlign:'center', marginTop:16 }}>
