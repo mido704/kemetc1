@@ -863,6 +863,11 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
       {(hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).slice(0,visibleCount).map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
       {loadingMore && <div style={{textAlign:'center',padding:'20px 0',color:'var(--gd)',fontSize:22}}>⏳</div>}
+      {!loadingMore && visibleCount < (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).length && (
+        <div onClick={()=>{setLoadingMore(true);setTimeout(()=>{setVisibleCount(c=>c+10);setLoadingMore(false);},600);}} style={{textAlign:'center',padding:'16px 0',color:'var(--gd)',fontSize:14,cursor:'pointer',border:'1px solid var(--gd)',borderRadius:20,margin:'10px 0',fontWeight:700}}>
+          ↓ {lang==='ar'?'تحميل المزيد':'Load More'}
+        </div>
+      )}
       {!loadingMore && visibleCount < (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).length && <div style={{textAlign:'center',padding:'16px 0',color:'var(--tm)',fontSize:13}}>↓ {lang==='ar'?'اسحب للمزيد':'Scroll for more'}</div>}
     </div>
   );
