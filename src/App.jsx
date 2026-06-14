@@ -768,6 +768,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     <div style={{ borderLeft:'1px solid var(--bb)', padding:'18px 10px', position:'sticky', top:52, height:'calc(100vh - 52px)', overflowY:'auto', background:'var(--b)', display:'flex', flexDirection:'column' }}>
       <div style={{ padding:'0 8px', marginBottom:22 }}>
         <div className="logo" style={{ fontSize:18 }}>KEMET</div>
+        <button className="btn btn-gh" style={{fontSize:13,padding:"4px 10px",border:"1px solid rgba(201,168,76,0.3)",borderRadius:20,color:"var(--g)",display:"flex",alignItems:"center",gap:4}} onClick={()=>setPage("eclipse")}>🌑 <span className="hide-mobile">Eclipse 2027</span></button>
         <div style={{ fontSize:10, color:'var(--tm)', marginTop:1 }}>سوشيال</div>
       </div>
       {isAdmin && (
@@ -1715,6 +1716,7 @@ export default function App() {
       {/* Top Nav */}
       <div className="nav">
         <div className="logo" style={{ fontSize:18 }}>KEMET</div>
+        <button className="btn btn-gh" style={{fontSize:13,padding:"4px 10px",border:"1px solid rgba(201,168,76,0.3)",borderRadius:20,color:"var(--g)",display:"flex",alignItems:"center",gap:4}} onClick={()=>setPage("eclipse")}>🌑 <span className="hide-mobile">Eclipse 2027</span></button>
         <div style={{ display:'flex', gap:6, alignItems:'center' }}>
           <div className='hide-mobile' style={{display:'flex',gap:6}}>
             {navIcons.map(([k,ic])=>(<button key={k} className='btn btn-gh' style={{ color:page===k?'var(--g)':'var(--tm)', fontSize:18, padding:'4px 10px' }} onClick={()=>setPage(k)}>{ic}</button>))}
@@ -1750,7 +1752,7 @@ export default function App() {
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
 
       <div className='bottom-nav'>
-        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search'],['eclipse','🌑','كسوف','Eclipse']].map(([k,ic,ar,en])=>(
+        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
           <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>setPage(k)}>
             <span style={{fontSize:22}}>{ic}</span>
             <span>{lang==='ar'?ar:en}</span>
