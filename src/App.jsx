@@ -4,6 +4,7 @@
  */
 import { useState, useEffect, useCallback, createContext, useContext, useRef } from "react";
 import { authAPI, postsAPI, storeAPI, bookingsAPI, messagesAPI, notificationsAPI, usersAPI, storage } from "./utils/api.js";
+import EclipsePage from "./EclipsePage.jsx";
 
 // ── App Context ───────────────────────────────────────────
 const AppCtx = createContext(null);
@@ -758,6 +759,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'💬', ar:'الرسائل',   en:'Messages',      key:'messages' },
     { icon:'🔍', ar:'البحث',      en:'Search',        key:'search' },
     { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
+    { icon:'🌑', ar:'كسوف 2027', en:'Eclipse 2027', key:'eclipse' },
   ];
   const isAdmin = user?.email === 'mido704@gmail.com';
   const isStoreManager = user?.role === 'store_manager' || isAdmin;
@@ -1739,6 +1741,7 @@ export default function App() {
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='search' && <SearchPage lang={lang} onViewProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onStartChat={(u)=>{ setActiveChatUser(u); setPage('messages'); }} />}
           {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
+          {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
         </div>
 
         <RightSidebar lang={lang} />
@@ -1747,7 +1750,7 @@ export default function App() {
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
 
       <div className='bottom-nav'>
-        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
+        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search'],['eclipse','🌑','كسوف','Eclipse']].map(([k,ic,ar,en])=>(
           <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>setPage(k)}>
             <span style={{fontSize:22}}>{ic}</span>
             <span>{lang==='ar'?ar:en}</span>
