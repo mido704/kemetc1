@@ -1004,7 +1004,7 @@ function StorePage({ lang, user, onToast }) {
 
   return (
     <div style={{ maxWidth:860, margin:'0 auto', padding:'14px 14px' }}>
-      <div style={{ textAlign:'center', marginBottom:22, padding:'16px 0' }}>
+      <div style={{ textAlign:'center', marginBottom:22, padding:'16px 0', overflow:'hidden', width:'100%' }}>
         <div style={{ fontSize:48, marginBottom:7 }}>🏛️</div>
         <div className="logo" style={{ fontSize:24, display:'block', marginBottom:5 }}>{t('متجر كيمت السياحي','Kemet Tourism Store',lang)}</div>
         <p style={{ color:'var(--tm)', fontSize:12, padding:'0 8px', wordBreak:'break-word' }}>{t('رحلات فاخرة • استشارات • سياحة علاجية • ترخيص رسمي','Luxury Tours • Consulting • Medical Tourism • Official License',lang)}</p>
@@ -1666,12 +1666,12 @@ export default function App() {
       </div>
 
       {/* Layout */}
-      <div className="app-layout" style={{ direction:lang==='ar'?'rtl':'ltr' }}>
+      <div className="app-layout" style={{ direction:lang==='ar'?'rtl':'ltr', overflowX:'hidden', maxWidth:'100vw' }}>
         <div className="ls" style={{ borderLeft:lang==='ar'?'1px solid var(--bb)':'none', borderRight:lang==='ar'?'none':'1px solid var(--bb)' }}>
           <LeftSidebar user={user} page={page} setPage={setPage} lang={lang} onLogout={handleLogout} />
         </div>
 
-        <div style={{ minHeight:'calc(100vh - 52px)', borderLeft:'1px solid var(--bb)', borderRight:'1px solid var(--bb)' }}>
+        <div style={{ minHeight:'calc(100vh - 52px)', borderLeft:'1px solid var(--bb)', borderRight:'1px solid var(--bb)', overflowX:'hidden', minWidth:0 }}>
           {page==='feed' && <FeedPage user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} onViewProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} />}
           {page==='profile'        && <ProfilePage        user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
           {page==='view_profile' && viewUserId && <ViewProfilePage userId={viewUserId} lang={lang} user={user} onBack={()=>setPage('feed')} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
