@@ -832,6 +832,8 @@ function RightSidebar({ lang }) {
 // ── PAGES ─────────────────────────────────────────────────
 function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   const [hashFilter, setHashFilter] = useState('');
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [loadingMore, setLoadingMore] = useState(false);
   useEffect(()=>{ window.setHashtagFilter=(h)=>setHashFilter(h); return ()=>delete window.setHashtagFilter; },[]);
   const handlePosted = (text, postId, imageUrl, videoUrl) => {
     const newPost = {
