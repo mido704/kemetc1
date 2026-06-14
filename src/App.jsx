@@ -1249,6 +1249,84 @@ function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost }) {
   );
 }
       
+
+// ── AGORA VIDEO CALL ──────────────────────────────────────
+const AGORA_APP_ID = "ca75ac4fdc144d06bdadd8c6a549c404";
+
+function VideoCall({ channelName, onEnd, lang }) {
+  const [joined, setJoined] = useState(false);
+  const [remoteUsers, setRemoteUsers] = useState([]);
+  const [muted, setMuted] = useState(false);
+  const [videoOff, setVideoOff] = useState(false);
+  const clientRef = useRef(null);
+  const localTrackRef = useRef({ audio: null, video: null });
+  const localVideoRef = useRef(null);
+
+  useEffect(() => {
+    const join = async () => {
+      try {
+        const AgoraRTC = (await import("https://download.agora.io/sdk/release/AgoraRTC_N-4.20.2.js")).default;
+        const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+        clientRef.current = client;
+
+        client.on("user-published", async (user, mediaType) => {
+          await client.subscribe(user, mediaType);
+          if (mediaType === "video") {
+            setRemoteUsers(prev => [...prev.filter(u => u.uid !== user.uid), user]);
+            setTimeout(() => { user.videoTrack?.play("remote-video-" + user.uid); }, 100);
+          }
+          if (mediaType === "audio") user.audioTrack?.play();
+        });
+
+        client.on("user-unpublished", (user) => {
+          setRemoteUsers(prev => prev.filter(u => u.uid !== user.uid));
+        });
+
+        await client.join(AGORA_APP_ID, channelName, null, null);
+        const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+        localTrackRef.current = { audio: audioTrack, video: videoTrack };
+        await client.publish([audioTrack, videoTrack]);
+        videoTrack.play(localVideoRef.current);
+        setJoined(true);
+      } catch(e) { console.error("Agora error:", e); }
+    };
+    join();
+    return () => {
+      localTrackRef.current.audio?.close();
+      localTrackRef.current.video?.close();
+      clientRef.current?.leave();
+    };
+  }, [channelName]);
+
+  const toggleMute = () => { localTrackRef.current.audio?.setEnabled(muted); setMuted(m => !m); };
+  const toggleVideo = () => { localTrackRef.current.video?.setEnabled(videoOff); setVideoOff(v => !v); };
+
+  return (
+    <div style={{position:"fixed",inset:0,background:"#000",zIndex:2000,display:"flex",flexDirection:"column"}}>
+      <div style={{flex:1,display:"grid",gridTemplateColumns:remoteUsers.length?"1fr 1fr":"1fr",gap:4,padding:4}}>
+        <div style={{position:"relative",background:"#111",borderRadius:12,overflow:"hidden"}}>
+          <div ref={localVideoRef} style={{width:"100%",height:"100%",minHeight:200}} />
+          <div style={{position:"absolute",bottom:8,right:8,background:"rgba(0,0,0,.6)",color:"var(--g)",fontSize:11,padding:"2px 8px",borderRadius:20}}>{lang==="ar"?"أنت":"You"}</div>
+        </div>
+        {remoteUsers.map(u => (
+          <div key={u.uid} style={{position:"relative",background:"#111",borderRadius:12,overflow:"hidden"}}>
+            <div id={"remote-video-"+u.uid} style={{width:"100%",height:"100%",minHeight:200}} />
+          </div>
+        ))}
+        {!joined && (
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",color:"var(--g)",fontSize:14}}>
+            ⏳ {lang==="ar"?"جاري الاتصال...":"Connecting..."}
+          </div>
+        )}
+      </div>
+      <div style={{display:"flex",justifyContent:"center",gap:16,padding:16,background:"rgba(0,0,0,.9)"}}>
+        <button onClick={toggleMute} style={{width:52,height:52,borderRadius:"50%",border:"none",background:muted?"var(--red)":"var(--bb)",color:"#fff",fontSize:22,cursor:"pointer"}}>{muted?"🔇":"🎤"}</button>
+        <button onClick={toggleVideo} style={{width:52,height:52,borderRadius:"50%",border:"none",background:videoOff?"var(--red)":"var(--bb)",color:"#fff",fontSize:22,cursor:"pointer"}}>{videoOff?"📵":"📹"}</button>
+        <button onClick={onEnd} style={{width:52,height:52,borderRadius:"50%",border:"none",background:"var(--red)",color:"#fff",fontSize:22,cursor:"pointer"}}>📵</button>
+      </div>
+    </div>
+  );
+}
 function MessagesPage({ lang, user, initialChat, onChatOpened }) {
   const [inbox, setInbox] = useState([]);
   const [active, setActive] = useState(null);
@@ -1256,7 +1334,14 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
   const [msg, setMsg] = useState('');
   const [showEmoji, setShowEmoji] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆','🤩','😂','🥰','😎','🙏'];
+  const [inCall, setInCall] = useState(false);
+  const [callChannel, setCallChannel] = useState('');
+  const startCall = (type) => {
+    const ch = "kemet_" + [user?.id, active?.other_id].sort().join("_");
+    setCallChannel(ch);
+    setInCall(true);
+    messagesAPI.sendMessage(active.other_id, type==='video' ? '📹 مكالمة فيديو جارية' : '📞 مكالمة صوتية جارية');
+  };  const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆','🤩','😂','🥰','😎','🙏'];
   const msgRef = null;
   const uploadImage = async (e) => {
     const file = e.target.files[0]; if (!file) return;
@@ -1646,6 +1731,7 @@ export default function App() {
       {modal==='login'    && <LoginModal    lang={lang} onClose={()=>setModal(null)} onSuccess={handleLogin} />}
       {modal==='register' && <RegisterModal lang={lang} onClose={()=>setModal(null)} onSuccess={handleReg} />}
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
+      {inCall && <VideoCall channelName={callChannel} lang={lang} onEnd={()=>setInCall(false)} />}
     </>
   );
 
@@ -1688,6 +1774,7 @@ export default function App() {
       </div>
 
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
+      {inCall && <VideoCall channelName={callChannel} lang={lang} onEnd={()=>setInCall(false)} />}
       <div className='bottom-nav'>
         {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
           <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>setPage(k)}>
