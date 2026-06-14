@@ -1,4 +1,4 @@
-/**
+﻿/**
  * KEMET SOCIAL - Main React App
  * Full social media + tourism store
  */
@@ -119,7 +119,7 @@ textarea.inp{resize:none}
 .pharaoh-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-height:260px;overflow-y:auto}
 .ph-opt{background:var(--bi);border:1px solid var(--bb);border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;font-size:11px}
 .ph-opt:hover,.ph-opt.sel{border-color:var(--g);background:rgba(201,168,76,.08);color:var(--g)}
-.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}@media(max-width:800px){.store-grid{grid-template-columns:1fr}.tour-card{max-width:100%}}
 .tour-card{background:var(--bc);border:1px solid var(--bb);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer}
 .tour-card:hover{border-color:var(--gd);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .app-layout{display:grid;grid-template-columns:230px 1fr 210px;min-height:calc(100vh - 52px);max-width:1180px;margin:0 auto}
@@ -859,7 +859,9 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
       </div>
       {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>✕</button></div>}
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
-      {(hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
+      {(hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).slice(0,visibleCount).map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
+      {loadingMore && <div style={{textAlign:'center',padding:'20px 0',color:'var(--gd)',fontSize:22}}>⏳</div>}
+      {!loadingMore && visibleCount < (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).length && <div style={{textAlign:'center',padding:'16px 0',color:'var(--tm)',fontSize:13}}>↓ {lang==='ar'?'اسحب للمزيد':'Scroll for more'}</div>}
     </div>
   );
 }
@@ -1003,7 +1005,7 @@ function StorePage({ lang, user, onToast }) {
           {['✓ ترخيص رسمي','✓ دفع آمن','✓ دعم 24/7'].map(b=><span key={b} className="badge" style={{ fontSize:11 }}>{b}</span>)}
         </div>
       </div>
-      <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:18, gap:0, overflowX:'auto' }}>
+      <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:18, gap:0, overflowX:'auto', WebkitOverflowScrolling:'touch', msOverflowStyle:'none', scrollbarWidth:'none' }}>
         {[['all',t('الكل','All',lang)],['tours',t('رحلات','Tours',lang)],['nile',t('كروز','Cruises',lang)],['consult',t('استشارات','Consult',lang)],['medical',t('علاجية','Medical',lang)],['flights',t('طيران','Flights',lang)],['hotels',t('فنادق','Hotels',lang)]].map(([k,l])=>(<button key={k} className={'tab '+(tab===k?'on':'')} onClick={()=>setTab(k)}>{l}</button>))}
 
       </div>
