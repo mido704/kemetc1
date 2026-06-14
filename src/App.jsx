@@ -122,7 +122,7 @@ textarea.inp{resize:none}
 .store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}@media(max-width:800px){.store-grid{grid-template-columns:1fr}.tour-card{max-width:100%}}
 .tour-card{background:var(--bc);border:1px solid var(--bb);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer;max-width:100%;box-sizing:border-box}
 .tour-card:hover{border-color:var(--gd);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.5)}
-.app-layout{display:grid;grid-template-columns:230px 1fr 210px;min-height:calc(100vh - 52px);max-width:1180px;margin:0 auto;overflow-x:hidden}
+.app-layout{display:grid;grid-template-columns:230px 1fr 210px;min-height:calc(100vh - 52px);max-width:1180px;margin:0 auto}
 @media(max-width:1100px){.app-layout{grid-template-columns:220px 1fr}.rs{display:none}}
 @media(max-width:800px){.app-layout{grid-template-columns:1fr}.ls{display:none}.bottom-nav{display:flex!important}.hide-mobile{display:none!important}}
 .nav{position:sticky;top:0;z-index:500;background:rgba(0,0,0,.95);border-bottom:1px solid var(--bb);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(10px);width:100%;max-width:100vw;overflow:hidden;box-sizing:border-box}.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.97);border-top:1px solid var(--bb);padding:6px 0 10px;z-index:999;justify-content:space-around;align-items:center;backdrop-filter:blur(10px)}
