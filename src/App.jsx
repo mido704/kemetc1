@@ -76,7 +76,7 @@ const CSS = `
 :root{--g:#C9A84C;--gl:#F0D080;--gd:#8B6914;--gg:rgba(201,168,76,.25);
   --b:#000;--bc:#0A0A0A;--bh:#111;--bb:#1A1A1A;--bi:#0D0D0D;
   --tm:#666;--td:#444;--red:#E74C3C;--grn:#27AE60}
-body{background:var(--b);color:var(--g);font-family:'Cairo',sans-serif;direction:rtl;overflow-x:hidden}
+body{background:var(--b);color:var(--g);font-family:'Cairo',sans-serif;direction:rtl;overflow-x:hidden;max-width:100vw}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
@@ -120,7 +120,7 @@ textarea.inp{resize:none}
 .ph-opt{background:var(--bi);border:1px solid var(--bb);border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;font-size:11px}
 .ph-opt:hover,.ph-opt.sel{border-color:var(--g);background:rgba(201,168,76,.08);color:var(--g)}
 .store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}@media(max-width:800px){.store-grid{grid-template-columns:1fr}.tour-card{max-width:100%}}
-.tour-card{background:var(--bc);border:1px solid var(--bb);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer}
+.tour-card{background:var(--bc);border:1px solid var(--bb);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer;max-width:100%;box-sizing:border-box}
 .tour-card:hover{border-color:var(--gd);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .app-layout{display:grid;grid-template-columns:230px 1fr 210px;min-height:calc(100vh - 52px);max-width:1180px;margin:0 auto}
 @media(max-width:1100px){.app-layout{grid-template-columns:220px 1fr}.rs{display:none}}
@@ -1007,7 +1007,7 @@ function StorePage({ lang, user, onToast }) {
       <div style={{ textAlign:'center', marginBottom:22, padding:'16px 0' }}>
         <div style={{ fontSize:48, marginBottom:7 }}>🏛️</div>
         <div className="logo" style={{ fontSize:24, display:'block', marginBottom:5 }}>{t('متجر كيمت السياحي','Kemet Tourism Store',lang)}</div>
-        <p style={{ color:'var(--tm)', fontSize:13 }}>{t('رحلات فاخرة • استشارات • سياحة علاجية • ترخيص رسمي','Luxury Tours • Consulting • Medical Tourism • Official License',lang)}</p>
+        <p style={{ color:'var(--tm)', fontSize:12, padding:'0 8px', wordBreak:'break-word' }}>{t('رحلات فاخرة • استشارات • سياحة علاجية • ترخيص رسمي','Luxury Tours • Consulting • Medical Tourism • Official License',lang)}</p>
         <div style={{ marginTop:10, display:'flex', justifyContent:'center', gap:8, flexWrap:'wrap' }}>
           {['✓ ترخيص رسمي','✓ دفع آمن','✓ دعم 24/7'].map(b=><span key={b} className="badge" style={{ fontSize:11 }}>{b}</span>)}
         </div>
