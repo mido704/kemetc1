@@ -1,4 +1,4 @@
-﻿/**
+/**
  * KEMET SOCIAL - Main React App
  * Full social media + tourism store
  */
