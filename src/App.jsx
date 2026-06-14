@@ -2,7 +2,7 @@
  * KEMET SOCIAL - Main React App
  * Full social media + tourism store
  */
-import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, createContext, useContext, useRef } from "react";
 import { authAPI, postsAPI, storeAPI, bookingsAPI, messagesAPI, notificationsAPI, usersAPI, storage } from "./utils/api.js";
 
 // ── App Context ───────────────────────────────────────────
