@@ -1397,6 +1397,8 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
             <button className="btn btn-gh" onClick={()=>setActive(null)}>← {t('رجوع','Back',lang)}</button>
             <Avatar emoji={active.avatar_emoji} size={36} />
             <span style={{ fontWeight:700, color:'var(--g)' }}>{active.other_name}</span>
+            <button className="btn btn-gh" style={{fontSize:20,padding:'4px 10px',marginRight:'auto'}} onClick={()=>startCall('audio')}>📞</button>
+            <button className="btn btn-gh" style={{fontSize:20,padding:'4px 10px'}} onClick={()=>startCall('video')}>📹</button>
           </div>
           <div style={{ height:360, overflowY:'auto', marginBottom:12, display:'flex', flexDirection:'column' }}>
             {conv.map(m=>(
