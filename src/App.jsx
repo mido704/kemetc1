@@ -1265,8 +1265,10 @@ function VideoCall({ channelName, onEnd, lang }) {
         height: "100%",
         configOverwrite: {
           startWithAudioMuted: false,
-          startWithVideoMuted: false,
+          startWithVideoMuted: true,
           disableDeepLinking: true,
+          enableNoisyMicDetection: false,
+          p2p: { enabled: true },
         },
         interfaceConfigOverwrite: {
           SHOW_JITSI_WATERMARK: false,
