@@ -1392,6 +1392,7 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
         ))
       ) : (
         <div>
+          {inCall && <VideoCall channelName={callChannel} lang={lang} onEnd={()=>setInCall(false)} />}
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:14, padding:'10px 0', borderBottom:'1px solid var(--bb)' }}>
             <button className="btn btn-gh" onClick={()=>setActive(null)}>← {t('رجوع','Back',lang)}</button>
             <Avatar emoji={active.avatar_emoji} size={36} />
@@ -1731,7 +1732,7 @@ export default function App() {
       {modal==='login'    && <LoginModal    lang={lang} onClose={()=>setModal(null)} onSuccess={handleLogin} />}
       {modal==='register' && <RegisterModal lang={lang} onClose={()=>setModal(null)} onSuccess={handleReg} />}
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
-      {inCall && <VideoCall channelName={callChannel} lang={lang} onEnd={()=>setInCall(false)} />}
+
     </>
   );
 
@@ -1774,7 +1775,7 @@ export default function App() {
       </div>
 
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
-      {inCall && <VideoCall channelName={callChannel} lang={lang} onEnd={()=>setInCall(false)} />}
+
       <div className='bottom-nav'>
         {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
           <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>setPage(k)}>
