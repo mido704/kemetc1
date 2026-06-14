@@ -103,7 +103,7 @@ textarea.inp{resize:none}
 .badge{background:linear-gradient(135deg,var(--gd),var(--g));color:#000;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
 .av{border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--g));display:flex;align-items:center;justify-content:center;border:2px solid var(--gd);flex-shrink:0;cursor:pointer;transition:box-shadow .2s}
 .av:hover{box-shadow:0 0 12px var(--gg)}
-.tab{padding:10px 18px;border:none;background:transparent;color:var(--tm);font-family:'Cairo',sans-serif;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-weight:600}
+.tab{padding:10px 12px;border:none;background:transparent;color:var(--tm);font-family:'Cairo',sans-serif;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-weight:600}
 .tab.on{color:var(--g);border-bottom-color:var(--g)}
 .tab:hover{color:var(--gl)}
 .si{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:all .2s;color:var(--tm);font-size:14px;font-weight:500}
