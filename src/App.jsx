@@ -1250,34 +1250,35 @@ function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost }) {
 }
       
 
-// ── DAILY VIDEO CALL ──────────────────────────────────────
-const DAILY_API_KEY = "5f36b4179906840d980f32bcb9f9e1179cdb9a43509596772d3e223d0356a3fe";
-
+// ── JITSI VIDEO CALL ──────────────────────────────────────
 function VideoCall({ channelName, onEnd, lang }) {
-  const [roomUrl, setRoomUrl] = useState(null);
-  const [error, setError] = useState(null);
-  const iframeRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const createRoom = async () => {
-      try {
-        const r = await fetch("https://api.daily.co/v1/rooms", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + DAILY_API_KEY
-          },
-          body: JSON.stringify({
-            name: channelName.replace(/[^a-zA-Z0-9-]/g, "-").slice(0, 40),
-            properties: { exp: Math.floor(Date.now()/1000) + 3600, enable_chat: true }
-          })
-        });
-        const d = await r.json();
-        if (d.url) setRoomUrl(d.url);
-        else setError("فشل إنشاء الغرفة");
-      } catch(e) { setError("خطأ في الاتصال"); }
+    const script = document.createElement("script");
+    script.src = "https://meet.jit.si/external_api.js";
+    script.onload = () => {
+      const api = new window.JitsiMeetExternalAPI("meet.jit.si", {
+        roomName: "kemet-" + channelName.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 30),
+        parentNode: containerRef.current,
+        width: "100%",
+        height: "100%",
+        configOverwrite: {
+          startWithAudioMuted: false,
+          startWithVideoMuted: false,
+          disableDeepLinking: true,
+        },
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          TOOLBAR_BUTTONS: ["microphone","camera","hangup","chat","tileview","fullscreen"],
+        },
+        userInfo: { displayName: "Kemet User" }
+      });
+      api.addEventListener("readyToClose", onEnd);
     };
-    createRoom();
+    document.head.appendChild(script);
+    return () => { document.head.removeChild(script); };
   }, [channelName]);
 
   return (
@@ -1288,24 +1289,7 @@ function VideoCall({ channelName, onEnd, lang }) {
           📵 {lang==="ar"?"إنهاء":"End Call"}
         </button>
       </div>
-      {!roomUrl && !error && (
-        <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"var(--g)",fontSize:16}}>
-          ⏳ {lang==="ar"?"جاري الاتصال...":"Connecting..."}
-        </div>
-      )}
-      {error && (
-        <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"var(--red)",fontSize:14}}>
-          ❌ {error}
-        </div>
-      )}
-      {roomUrl && (
-        <iframe
-          ref={iframeRef}
-          src={roomUrl}
-          allow="camera; microphone; fullscreen; speaker; display-capture"
-          style={{flex:1,border:"none",width:"100%"}}
-        />
-      )}
+      <div ref={containerRef} style={{flex:1,width:"100%"}} />
     </div>
   );
 }
