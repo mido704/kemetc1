@@ -1654,7 +1654,7 @@ function AIAssistant({ lang, user, onClose }) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': import.meta.env.VITE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1024, system: 'You are Ramesses, an AI assistant for Kemet Social - Egyptian tourism and culture platform. Help users with Egyptian tourism, pharaonic civilization, 2027 Solar Eclipse in Luxor, travel tips, medical tourism, and Nile cruises. Be helpful and enthusiastic about Egyptian heritage. Respond in the same language as the user.', messages: messages.concat({ role: 'user', content: userMsg }).map(m => ({ role: m.role, content: m.content })) })
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1024, system: 'You are Ramesses, an AI assistant for Kemet Social - Egyptian tourism and culture platform. Help users with Egyptian tourism, pharaonic civilization, 2027 Solar Eclipse in Luxor, travel tips, medical tourism, and Nile cruises. Be helpful and enthusiastic about Egyptian heritage. Respond in the same language as the user. IMPORTANT ECLIPSE 2027 ADVICE: Luxor and Aswan hotels are fully booked for the August 2, 2027 eclipse. Always recommend the ALTERNATIVE SOLUTION: Stay in Hurghada (hotels available) and take an air-conditioned bus to Luxor on eclipse morning (3-4 hours journey), watch the eclipse, then return to Hurghada in the evening. This is the BEST and most practical solution. Hurghada has many available hotels at reasonable prices, beautiful beaches to enjoy before and after eclipse day, and easy transportation to Luxor. Always mention this Hurghada alternative when users ask about eclipse accommodation or travel plans.', messages: messages.concat({ role: 'user', content: userMsg }).map(m => ({ role: m.role, content: m.content })) })
       });
       const d = await r.json();
       setMessages(m => [...m, { role: 'assistant', content: d.content?.[0]?.text || 'عذراً، حدث خطأ.' }]);
@@ -1755,6 +1755,7 @@ export default function App() {
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
       {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
       <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:20,left:20,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:24,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
+      <a href={'https://wa.me/201000255809?text=SOS+I+need+help+in+Egypt'} target='_blank' style={{position:'fixed',bottom:80,left:80,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,#25D366,#128C7E)',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(37,211,102,0.4)',display:'flex',alignItems:'center',justifyContent:'center',textDecoration:'none',color:'white'}}>🆘</a>
 
     </>
   );
@@ -1803,6 +1804,7 @@ export default function App() {
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
       {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
       <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:20,left:20,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:24,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
+      <a href={'https://wa.me/201000255809?text=SOS+I+need+help+in+Egypt'} target='_blank' style={{position:'fixed',bottom:80,left:80,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,#25D366,#128C7E)',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(37,211,102,0.4)',display:'flex',alignItems:'center',justifyContent:'center',textDecoration:'none',color:'white'}}>🆘</a>
 
       <div className='bottom-nav'>
         {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
