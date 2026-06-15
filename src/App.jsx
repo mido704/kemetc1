@@ -1729,6 +1729,8 @@ export default function App() {
   },[]);
   const [toast, setToast] = useState(null);
   const [showAI, setShowAI] = useState(false);
+  const [theme, setTheme] = useState(()=>localStorage.getItem('kemet_theme')||'dark');
+  useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('kemet_theme',theme); },[theme]);
 
  useEffect(()=>{
     const u = storage.getUser();
@@ -1801,6 +1803,7 @@ export default function App() {
           </div>
          <Avatar emoji={user?.avatar_emoji||'👑'} size={34} url={user?.avatar_url} onClick={()=>setPage('profile')} />
          <button className="lang" onClick={()=>setLang(l=>l==='ar'?'en':'ar')} style={{fontSize:12,padding:'3px 10px'}}>{lang==='ar'?'EN':'عربي'}</button>
+         <button className="lang" onClick={()=>setTheme(t=>t==='dark'?'light':t==='light'?'gold':'dark')} style={{fontSize:14,padding:'3px 8px'}}>{theme==='dark'?'☀️':theme==='light'?'🌙':'✨'}</button>
          <button className="btn btn-gh" onClick={handleLogout} style={{fontSize:12,color:'var(--red)',padding:'4px 8px'}}>خروج</button>
         </div>
       </div>
