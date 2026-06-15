@@ -96,7 +96,7 @@ export default function EclipsePage({ lang, user, onToast, onBook }) {
     .ecl-edit{background:rgba(201,168,76,0.12);color:#C9A84C;border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer}
     .ecl-del{background:rgba(231,76,60,0.1);color:#E74C3C;border:1px solid rgba(231,76,60,0.2);border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer}
     .ecl-add{width:100%;margin-top:10px;padding:11px;background:transparent;border:1px dashed rgba(201,168,76,0.3);border-radius:10px;color:#C9A84C;font-size:12px;cursor:pointer;font-family:'Cairo',sans-serif;letter-spacing:1px}
-    .ecl-banner{margin:0 16px;padding:22px 18px;background:linear-gradient(135deg,rgba(139,105,20,0.15),rgba(201,168,76,0.07));border:1px solid rgba(201,168,76,0.3);border-radius:16px;text-align:center}
+    .ecl-banner{margin:0 16px;padding:16px 14px;background:linear-gradient(135deg,rgba(139,105,20,0.15),rgba(201,168,76,0.07));border:1px solid rgba(201,168,76,0.3);border-radius:16px;text-align:center}
     .ecl-banner h3{font-family:'Cinzel',serif;font-size:16px;color:#F0D080;margin-bottom:6px}
     .ecl-banner p{font-size:12px;color:#555;margin-bottom:14px;line-height:1.6}
     .ecl-book{padding:11px 32px;background:linear-gradient(135deg,#8B6914,#C9A84C,#F0D080);border:none;border-radius:10px;color:#000;font-weight:700;font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif}
