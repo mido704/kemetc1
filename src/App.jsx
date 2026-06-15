@@ -425,6 +425,23 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   };
   const uploadReplyImg = async (e) => { const file=e.target.files[0]; if(!file) return; setReplyUploading(true); const url=await uploadToCloudinary(file); setReplyImage(url); setReplyUploading(false); };
   const [likeAnim, setLikeAnim] = useState(false);
+  const [translated, setTranslated] = useState('');
+  const [translating, setTranslating] = useState(false);
+  const [showLangs, setShowLangs] = useState(false);
+  const translatePost = async (targetLang) => {
+    setShowLangs(false);
+    setTranslating(true);
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','x-api-key':import.meta.env.VITE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:'Translate this text to '+targetLang+'. Return ONLY the translation, nothing else: '+post.content}]})
+      });
+      const d = await r.json();
+      setTranslated(d.content?.[0]?.text || '');
+    } catch(e) { setTranslated('Translation error'); }
+    setTranslating(false);
+  };
   const [likesCount, setLikesCount] = useState(post.likes_count||0);
   const [showCommentEmoji, setShowCommentEmoji] = useState(false);
 
@@ -486,6 +503,8 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
         {lang==='ar' ? post.content : (post.content_en||post.content)}
       </div>
 
+      {translating && <div style={{fontSize:13,color:'var(--tm)',padding:'8px 0'}}>⏳ Translating...</div>}
+      {translated && <div style={{fontSize:14,lineHeight:1.85,color:'#8BC4E0',marginBottom:10,padding:'10px 12px',background:'rgba(139,196,224,0.06)',borderRadius:8,borderRight:'3px solid #4A9EC4'}}>{translated}<button onClick={()=>setTranslated(String())} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:11,marginRight:8}}>x</button></div>}
       {post.image_url && <img src={post.image_url} style={{width:'100%',maxHeight:300,objectFit:'cover',borderRadius:10,marginBottom:10}} />}
       {post.video_url && <video src={post.video_url} controls style={{width:'100%',maxHeight:300,borderRadius:10,marginBottom:10}} />}
 
@@ -505,6 +524,14 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
         <button className='btn btn-gh' onClick={loadComments} style={{ flex:1, fontSize:13 }}>
           💬 {t('تعليق','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
         </button>
+      <div style={{position:"relative",flex:1}}>
+        <button className="btn btn-gh" style={{width:"100%",fontSize:13}} onClick={()=>setShowLangs(v=>!v)}>🌐 {lang==='ar'?'ترجمة':'Translate'}</button>
+        {showLangs && <div style={{position:"absolute",bottom:"100%",left:0,background:"var(--bc)",border:"1px solid var(--gd)",borderRadius:10,padding:8,zIndex:100,display:"flex",flexDirection:"column",gap:4,minWidth:120}}>
+          {[['English','English'],['Arabic','العربية'],['French','Français'],['German','Deutsch'],['Italian','Italiano'],['Russian','Русский']].map(([code,label])=>(
+            <button key={code} className="btn btn-gh" style={{fontSize:12,padding:"4px 8px",textAlign:"right"}} onClick={()=>translatePost(code)}>{label}</button>
+          ))}
+        </div>}
+      </div>
       <button className="btn btn-gh" style={{ flex:1, fontSize:13 }} onClick={async()=>{
         const r = await postsAPI.createPost({
          content: `🔁 ${post.nickname}: ${post.content}`,
