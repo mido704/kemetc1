@@ -1730,7 +1730,41 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [showAI, setShowAI] = useState(false);
   const [theme, setTheme] = useState(()=>localStorage.getItem('kemet_theme')||'dark');
-  useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); document.body.setAttribute('data-theme', theme); localStorage.setItem('kemet_theme',theme); },[theme]);
+  useEffect(()=>{
+    localStorage.setItem('kemet_theme',theme);
+    const root = document.documentElement;
+    if(theme==='light'){
+      root.style.setProperty('--b','#F5F0E8');
+      root.style.setProperty('--bc','#FFFFFF');
+      root.style.setProperty('--bb','#E8DCC8');
+      root.style.setProperty('--bi','#FFF8EE');
+      root.style.setProperty('--g','#8B6914');
+      root.style.setProperty('--gl','#5A3D00');
+      root.style.setProperty('--gd','#C9A84C');
+      root.style.setProperty('--tm','#888');
+      root.style.setProperty('--td','#AAA');
+    } else if(theme==='gold'){
+      root.style.setProperty('--b','#FDF5DC');
+      root.style.setProperty('--bc','#FFF8E7');
+      root.style.setProperty('--bb','#F0DFA0');
+      root.style.setProperty('--bi','#FFFBF0');
+      root.style.setProperty('--g','#5A3D00');
+      root.style.setProperty('--gl','#3D2800');
+      root.style.setProperty('--gd','#8B6914');
+      root.style.setProperty('--tm','#8B6914');
+      root.style.setProperty('--td','#C9A84C');
+    } else {
+      root.style.setProperty('--b','#000');
+      root.style.setProperty('--bc','#0A0A0A');
+      root.style.setProperty('--bb','#1A1A1A');
+      root.style.setProperty('--bi','#0D0D0D');
+      root.style.setProperty('--g','#C9A84C');
+      root.style.setProperty('--gl','#F0D080');
+      root.style.setProperty('--gd','#8B6914');
+      root.style.setProperty('--tm','#666');
+      root.style.setProperty('--td','#444');
+    }
+  },[theme]);
 
  useEffect(()=>{
     const u = storage.getUser();
