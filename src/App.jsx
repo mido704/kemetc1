@@ -500,7 +500,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
 
       <div style={{ display:'flex', gap:4 }}>
         <button className='btn btn-gh' onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:13 }}>
-          {liked?'â‌¤ï¸ڈ':'ًں¤چ'} {t('ط¥ط¹ط¬ط§ط¨','Like',lang)} {likesCount>0&&<span style={{fontSize:11,opacity:.7}}>({likesCount})</span>}
+          {liked ? '❤' : '♡'} {t('Like','Like',lang)} {likesCount>0&&<span style={{fontSize:11,opacity:.7}}>({likesCount})</span>}
         </button>
         <button className='btn btn-gh' onClick={loadComments} style={{ flex:1, fontSize:13 }}>
           ًں’¬ {t('طھط¹ظ„ظٹظ‚','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
