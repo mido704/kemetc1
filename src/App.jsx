@@ -1772,6 +1772,7 @@ export default function App() {
             {navIcons.map(([k,ic])=>(<button key={k} className='btn btn-gh' style={{ color:page===k?'var(--g)':'var(--tm)', fontSize:18, padding:'4px 10px' }} onClick={()=>setPage(k)}>{ic}</button>))}
           </div>
          <Avatar emoji={user?.avatar_emoji||'👑'} size={34} url={user?.avatar_url} onClick={()=>setPage('profile')} />
+         <button className="lang" onClick={()=>setLang(l=>l==='ar'?'en':'ar')} style={{fontSize:12,padding:'3px 10px'}}>{lang==='ar'?'EN':'عربي'}</button>
          <button className="btn btn-gh" onClick={handleLogout} style={{fontSize:12,color:'var(--red)',padding:'4px 8px'}}>خروج</button>
         </div>
       </div>
