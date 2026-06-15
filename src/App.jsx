@@ -77,7 +77,7 @@ const CSS = `
 :root{--g:#C9A84C;--gl:#F0D080;--gd:#8B6914;--gg:rgba(201,168,76,.25);
   --b:#000;--bc:#0A0A0A;--bh:#111;--bb:#1A1A1A;--bi:#0D0D0D;
   --tm:#666;--td:#444;--red:#E74C3C;--grn:#27AE60}
-body{background:var(--b);color:var(--g);font-family:'Cairo',sans-serif;direction:rtl;overflow-x:hidden;max-width:100vw}
+body{background:var(--b);color:var(--g);font-family:'Cairo',sans-serif;direction:rtl;overflow-x:hidden;max-width:100vw;transition:background 0.3s,color 0.3s}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
@@ -1730,7 +1730,7 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [showAI, setShowAI] = useState(false);
   const [theme, setTheme] = useState(()=>localStorage.getItem('kemet_theme')||'dark');
-  useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('kemet_theme',theme); },[theme]);
+  useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); document.body.setAttribute('data-theme', theme); localStorage.setItem('kemet_theme',theme); },[theme]);
 
  useEffect(()=>{
     const u = storage.getUser();
