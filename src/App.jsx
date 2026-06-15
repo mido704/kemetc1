@@ -6,61 +6,61 @@ import { useState, useEffect, useCallback, createContext, useContext, useRef } f
 import { authAPI, postsAPI, storeAPI, bookingsAPI, messagesAPI, notificationsAPI, usersAPI, storage } from "./utils/api.js";
 import EclipsePage from "./EclipsePage.jsx";
 
-// ── App Context ───────────────────────────────────────────
+// â”€â”€ App Context â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AppCtx = createContext(null);
 const useApp = () => useContext(AppCtx);
 
-// ── Constants ─────────────────────────────────────────────
+// â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PHARAOH_NICKNAMES = [
-  { id:1,  name_ar:"رمسيس العظيم",  name_en:"Ramesses the Great", emoji:"👑" },
-  { id:2,  name_ar:"توت عنخ آمون", name_en:"Tutankhamun",         emoji:"⚱️" },
-  { id:3,  name_ar:"حتشبسوت",      name_en:"Hatshepsut",           emoji:"🌺" },
-  { id:4,  name_ar:"أخناتون",      name_en:"Akhenaten",            emoji:"☀️" },
-  { id:5,  name_ar:"نفرتيتي",      name_en:"Nefertiti",            emoji:"💎" },
-  { id:6,  name_ar:"تحتمس الثالث", name_en:"Thutmose III",         emoji:"⚔️" },
-  { id:7,  name_ar:"سنفرو",        name_en:"Sneferu",              emoji:"🔺" },
-  { id:8,  name_ar:"خوفو",         name_en:"Khufu",                emoji:"🏛️" },
-  { id:9,  name_ar:"نفرتاري",      name_en:"Nefertari",            emoji:"🌙" },
-  { id:10, name_ar:"كليوباترا",    name_en:"Cleopatra",            emoji:"🐍" },
-  { id:11, name_ar:"سيتي الأول",   name_en:"Seti I",               emoji:"🦅" },
-  { id:12, name_ar:"مرنبتاح",      name_en:"Merneptah",            emoji:"🌊" },
+  { id:1,  name_ar:"ط±ظ…ط³ظٹط³ ط§ظ„ط¹ط¸ظٹظ…",  name_en:"Ramesses the Great", emoji:"ًں‘‘" },
+  { id:2,  name_ar:"طھظˆطھ ط¹ظ†ط® ط¢ظ…ظˆظ†", name_en:"Tutankhamun",         emoji:"âڑ±ï¸ڈ" },
+  { id:3,  name_ar:"ط­طھط´ط¨ط³ظˆطھ",      name_en:"Hatshepsut",           emoji:"ًںŒ؛" },
+  { id:4,  name_ar:"ط£ط®ظ†ط§طھظˆظ†",      name_en:"Akhenaten",            emoji:"âک€ï¸ڈ" },
+  { id:5,  name_ar:"ظ†ظپط±طھظٹطھظٹ",      name_en:"Nefertiti",            emoji:"ًں’ژ" },
+  { id:6,  name_ar:"طھط­طھظ…ط³ ط§ظ„ط«ط§ظ„ط«", name_en:"Thutmose III",         emoji:"âڑ”ï¸ڈ" },
+  { id:7,  name_ar:"ط³ظ†ظپط±ظˆ",        name_en:"Sneferu",              emoji:"ًں”؛" },
+  { id:8,  name_ar:"ط®ظˆظپظˆ",         name_en:"Khufu",                emoji:"ًںڈ›ï¸ڈ" },
+  { id:9,  name_ar:"ظ†ظپط±طھط§ط±ظٹ",      name_en:"Nefertari",            emoji:"ًںŒ™" },
+  { id:10, name_ar:"ظƒظ„ظٹظˆط¨ط§طھط±ط§",    name_en:"Cleopatra",            emoji:"ًںگچ" },
+  { id:11, name_ar:"ط³ظٹطھظٹ ط§ظ„ط£ظˆظ„",   name_en:"Seti I",               emoji:"ًں¦…" },
+  { id:12, name_ar:"ظ…ط±ظ†ط¨طھط§ط­",      name_en:"Merneptah",            emoji:"ًںŒٹ" },
 ];
 
 const DEMO_POSTS = [
-  { id:"p1", user_id:"u1", nickname:"رمسيس العظيم", avatar_emoji:"👑", is_verified:1, membership:"gold",
-    content:"زيارة معبد الكرنك كانت تجربة روحانية لا تُوصف 🏛️ الحجارة تحكي قصص آلاف السنين! من زار الأقصر هذا الشهر؟",
-    content_en:"Visiting Karnak Temple was an indescribable spiritual experience 🏛️",
-    image_emoji:"🏛️", hashtags:'["#الأقصر","#معبد_الكرنك","#مصر"]',
+  { id:"p1", user_id:"u1", nickname:"ط±ظ…ط³ظٹط³ ط§ظ„ط¹ط¸ظٹظ…", avatar_emoji:"ًں‘‘", is_verified:1, membership:"gold",
+    content:"ط²ظٹط§ط±ط© ظ…ط¹ط¨ط¯ ط§ظ„ظƒط±ظ†ظƒ ظƒط§ظ†طھ طھط¬ط±ط¨ط© ط±ظˆط­ط§ظ†ظٹط© ظ„ط§ طھظڈظˆطµظپ ًںڈ›ï¸ڈ ط§ظ„ط­ط¬ط§ط±ط© طھط­ظƒظٹ ظ‚طµطµ ط¢ظ„ط§ظپ ط§ظ„ط³ظ†ظٹظ†! ظ…ظ† ط²ط§ط± ط§ظ„ط£ظ‚طµط± ظ‡ط°ط§ ط§ظ„ط´ظ‡ط±طں",
+    content_en:"Visiting Karnak Temple was an indescribable spiritual experience ًںڈ›ï¸ڈ",
+    image_emoji:"ًںڈ›ï¸ڈ", hashtags:'["#ط§ظ„ط£ظ‚طµط±","#ظ…ط¹ط¨ط¯_ط§ظ„ظƒط±ظ†ظƒ","#ظ…طµط±"]',
     likes_count:342, comments_count:28, shares_count:15, liked:false,
     created_at:"2025-01-13T10:00:00" },
-  { id:"p2", user_id:"u2", nickname:"نفرتيتي", avatar_emoji:"💎", is_verified:1, membership:"platinum",
-    content:"الغروب على النيل في أسوان شيء يسرق القلب ❤️ مصر بلد السحر والجمال الحقيقي 🌊",
-    content_en:"Sunset on the Nile in Aswan is something that steals your heart ❤️",
-    image_emoji:"🌅", hashtags:'["#أسوان","#النيل","#Egypt"]',
+  { id:"p2", user_id:"u2", nickname:"ظ†ظپط±طھظٹطھظٹ", avatar_emoji:"ًں’ژ", is_verified:1, membership:"platinum",
+    content:"ط§ظ„ط؛ط±ظˆط¨ ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„ ظپظٹ ط£ط³ظˆط§ظ† ط´ظٹط، ظٹط³ط±ظ‚ ط§ظ„ظ‚ظ„ط¨ â‌¤ï¸ڈ ظ…طµط± ط¨ظ„ط¯ ط§ظ„ط³ط­ط± ظˆط§ظ„ط¬ظ…ط§ظ„ ط§ظ„ط­ظ‚ظٹظ‚ظٹ ًںŒٹ",
+    content_en:"Sunset on the Nile in Aswan is something that steals your heart â‌¤ï¸ڈ",
+    image_emoji:"ًںŒ…", hashtags:'["#ط£ط³ظˆط§ظ†","#ط§ظ„ظ†ظٹظ„","#Egypt"]',
     likes_count:891, comments_count:65, shares_count:43, liked:false,
     created_at:"2025-01-13T08:00:00" },
-  { id:"p3", user_id:"u3", nickname:"تحتمس الثالث", avatar_emoji:"⚔️", is_verified:0, membership:"classic",
-    content:"انتهيت من رحلة الأهرامات مع فريق كيمت كونسيرج 🔺 الخدمة كانت 10/10 والمرشد موسوعة حية. أنصح الجميع!",
-    content_en:"Finished the Pyramids trip with Kemet Concierge 🔺 Service was 10/10!",
-    image_emoji:"🔺", hashtags:'["#الأهرامات","#كيمت","#رحلات"]',
+  { id:"p3", user_id:"u3", nickname:"طھط­طھظ…ط³ ط§ظ„ط«ط§ظ„ط«", avatar_emoji:"âڑ”ï¸ڈ", is_verified:0, membership:"classic",
+    content:"ط§ظ†طھظ‡ظٹطھ ظ…ظ† ط±ط­ظ„ط© ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ ظ…ط¹ ظپط±ظٹظ‚ ظƒظٹظ…طھ ظƒظˆظ†ط³ظٹط±ط¬ ًں”؛ ط§ظ„ط®ط¯ظ…ط© ظƒط§ظ†طھ 10/10 ظˆط§ظ„ظ…ط±ط´ط¯ ظ…ظˆط³ظˆط¹ط© ط­ظٹط©. ط£ظ†طµط­ ط§ظ„ط¬ظ…ظٹط¹!",
+    content_en:"Finished the Pyramids trip with Kemet Concierge ًں”؛ Service was 10/10!",
+    image_emoji:"ًں”؛", hashtags:'["#ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ","#ظƒظٹظ…طھ","#ط±ط­ظ„ط§طھ"]',
     likes_count:224, comments_count:18, shares_count:9, liked:false,
     created_at:"2025-01-12T20:00:00" },
 ];
 
 const DEMO_TOURS = [
-  { id:'tour_luxor', category_id:'cat_tours', title_ar:'رحلة الأقصر والأسوان الملكية', title_en:'Royal Luxor & Aswan Tour', price:1200, duration_days:7, image_emoji:'🏛️', image_url:'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800', gallery:['https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600','https://images.unsplash.com/photo-1539768942893-daf53e448371?w=600','https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=600'], badge_ar:'الأكثر مبيعاً', badge_en:'Best Seller', rating:4.9, reviews_count:128, is_featured:1, includes_ar:'["فندق 5 نجوم","جولات مع مرشد","وجبات","نقل"]', includes_en:'["5-Star Hotel","Guided Tours","Meals","Transport"]', description_ar:'اكتشف روعة المعابد والمقابر الملكية على ضفاف النيل في رحلة لا تُنسى تجمع بين التاريخ والفخامة', description_en:'Discover the grandeur of temples and royal tombs along the Nile in an unforgettable journey combining history and luxury', itinerary_en:['Day 1: Arrive Luxor, Check-in 5-Star Hotel','Day 2: Karnak & Luxor Temples','Day 3: Valley of the Kings & Queens','Day 4: Edfu & Kom Ombo Temples','Day 5: Aswan High Dam & Philae Temple','Day 6: Abu Simbel Day Trip','Day 7: Departure'], itinerary_ar:['اليوم 1: الوصول للأقصر والإقامة','اليوم 2: معابد الكرنك والأقصر','اليوم 3: وادي الملوك والملكات','اليوم 4: معبدا إدفو وكوم أمبو','اليوم 5: السد العالي ومعبد فيلة','اليوم 6: رحلة أبو سمبل','اليوم 7: المغادرة'] },
-  { id:"tour_pyramids",category_id:"cat_tours",   title_ar:"باقة الأهرامات والقاهرة الخديوية", title_en:"Pyramids & Khedival Cairo Package",    price:850,  duration_days:5,  image_emoji:"🔺", badge_ar:"عرض محدود",    badge_en:"Limited Offer", rating:4.8, reviews_count:95,  is_featured:1, includes_ar:'["فندق 5 نجوم","المتحف المصري","أبو الهول","جيزة"]',        includes_en:'["5-Star Hotel","Egyptian Museum","Sphinx","Giza"]',               description_ar:"رحلة شاملة لأعجوبة العالم القديمة وعاصمة الألف مئذنة",     description_en:"A comprehensive trip to the wonder of the ancient world" },
-  { id:"tour_nile",    category_id:"cat_nile",    title_ar:"جولة النيل الفاخرة على كروز",       title_en:"Luxury Nile Cruise Tour",             price:1800, duration_days:10, image_emoji:"🛳️", badge_ar:"فاخر",         badge_en:"Luxury",        rating:5.0, reviews_count:64,  is_featured:1, includes_ar:'["كروز 5 نجوم","جميع الوجبات","مرشد خاص","نقل VIP"]',       includes_en:'["5-Star Cruise","All Meals","Private Guide","VIP Transfers"]',    description_ar:"رحلة بحرية فاخرة على النيل من الأقصر حتى أسوان",          description_en:"A luxurious Nile cruise from Luxor to Aswan" },
-  { id:"tour_consult", category_id:"cat_consult", title_ar:"استشارة سياحية شخصية",             title_en:"Personal Tourism Consultation",        price:150,  duration_days:null,image_emoji:"💬", badge_ar:"خدمة",         badge_en:"Service",       rating:4.9, reviews_count:210, is_featured:0, includes_ar:'["جلسة ساعتين","خطة مخصصة","دعم واتساب","توصيات"]',         includes_en:'["2-Hour Session","Custom Plan","WhatsApp Support","Recommendations"]', description_ar:"استشارة سياحية مخصصة من خبراء مصريين معتمدين",           description_en:"Personalized consultation from certified Egyptian experts" },
-  { id:"tour_dental",  category_id:"cat_medical", title_ar:"باقة سياحة علاجية - الأسنان",      title_en:"Medical Tourism - Dental Package",     price:600,  duration_days:5,  image_emoji:"🦷", badge_ar:"طبي",          badge_en:"Medical",       rating:4.7, reviews_count:88,  is_featured:0, includes_ar:'["فحص شامل","علاج متكامل","إقامة","نقل طبي"]',             includes_en:'["Full Checkup","Complete Treatment","Accommodation","Medical Transport"]', description_ar:"سياحة علاجية متكاملة بأسعار منافسة",                       description_en:"Comprehensive medical tourism at competitive prices" },
-  { id:"tour_desert",  category_id:"cat_desert",  title_ar:"تجربة الواحات والصحراء الغربية",   title_en:"Oasis & Western Desert Experience",   price:950,  duration_days:6,  image_emoji:"🌅", badge_ar:"مغامرة",       badge_en:"Adventure",     rating:4.8, reviews_count:52,  is_featured:0, includes_ar:'["خيام فاخرة","جيبات صحراوية","رصد النجوم","طعام بدوي"]', includes_en:'["Luxury Camping","Desert Jeeps","Stargazing","Bedouin Food"]',     description_ar:"مغامرة لا تُنسى في أعماق الصحراء الغربية",               description_en:"An unforgettable adventure in the Western Desert" },
+  { id:'tour_luxor', category_id:'cat_tours', title_ar:'ط±ط­ظ„ط© ط§ظ„ط£ظ‚طµط± ظˆط§ظ„ط£ط³ظˆط§ظ† ط§ظ„ظ…ظ„ظƒظٹط©', title_en:'Royal Luxor & Aswan Tour', price:1200, duration_days:7, image_emoji:'ًںڈ›ï¸ڈ', image_url:'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800', gallery:['https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600','https://images.unsplash.com/photo-1539768942893-daf53e448371?w=600','https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=600'], badge_ar:'ط§ظ„ط£ظƒط«ط± ظ…ط¨ظٹط¹ط§ظ‹', badge_en:'Best Seller', rating:4.9, reviews_count:128, is_featured:1, includes_ar:'["ظپظ†ط¯ظ‚ 5 ظ†ط¬ظˆظ…","ط¬ظˆظ„ط§طھ ظ…ط¹ ظ…ط±ط´ط¯","ظˆط¬ط¨ط§طھ","ظ†ظ‚ظ„"]', includes_en:'["5-Star Hotel","Guided Tours","Meals","Transport"]', description_ar:'ط§ظƒطھط´ظپ ط±ظˆط¹ط© ط§ظ„ظ…ط¹ط§ط¨ط¯ ظˆط§ظ„ظ…ظ‚ط§ط¨ط± ط§ظ„ظ…ظ„ظƒظٹط© ط¹ظ„ظ‰ ط¶ظپط§ظپ ط§ظ„ظ†ظٹظ„ ظپظٹ ط±ط­ظ„ط© ظ„ط§ طھظڈظ†ط³ظ‰ طھط¬ظ…ط¹ ط¨ظٹظ† ط§ظ„طھط§ط±ظٹط® ظˆط§ظ„ظپط®ط§ظ…ط©', description_en:'Discover the grandeur of temples and royal tombs along the Nile in an unforgettable journey combining history and luxury', itinerary_en:['Day 1: Arrive Luxor, Check-in 5-Star Hotel','Day 2: Karnak & Luxor Temples','Day 3: Valley of the Kings & Queens','Day 4: Edfu & Kom Ombo Temples','Day 5: Aswan High Dam & Philae Temple','Day 6: Abu Simbel Day Trip','Day 7: Departure'], itinerary_ar:['ط§ظ„ظٹظˆظ… 1: ط§ظ„ظˆطµظˆظ„ ظ„ظ„ط£ظ‚طµط± ظˆط§ظ„ط¥ظ‚ط§ظ…ط©','ط§ظ„ظٹظˆظ… 2: ظ…ط¹ط§ط¨ط¯ ط§ظ„ظƒط±ظ†ظƒ ظˆط§ظ„ط£ظ‚طµط±','ط§ظ„ظٹظˆظ… 3: ظˆط§ط¯ظٹ ط§ظ„ظ…ظ„ظˆظƒ ظˆط§ظ„ظ…ظ„ظƒط§طھ','ط§ظ„ظٹظˆظ… 4: ظ…ط¹ط¨ط¯ط§ ط¥ط¯ظپظˆ ظˆظƒظˆظ… ط£ظ…ط¨ظˆ','ط§ظ„ظٹظˆظ… 5: ط§ظ„ط³ط¯ ط§ظ„ط¹ط§ظ„ظٹ ظˆظ…ط¹ط¨ط¯ ظپظٹظ„ط©','ط§ظ„ظٹظˆظ… 6: ط±ط­ظ„ط© ط£ط¨ظˆ ط³ظ…ط¨ظ„','ط§ظ„ظٹظˆظ… 7: ط§ظ„ظ…ط؛ط§ط¯ط±ط©'] },
+  { id:"tour_pyramids",category_id:"cat_tours",   title_ar:"ط¨ط§ظ‚ط© ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ ظˆط§ظ„ظ‚ط§ظ‡ط±ط© ط§ظ„ط®ط¯ظٹظˆظٹط©", title_en:"Pyramids & Khedival Cairo Package",    price:850,  duration_days:5,  image_emoji:"ًں”؛", badge_ar:"ط¹ط±ط¶ ظ…ط­ط¯ظˆط¯",    badge_en:"Limited Offer", rating:4.8, reviews_count:95,  is_featured:1, includes_ar:'["ظپظ†ط¯ظ‚ 5 ظ†ط¬ظˆظ…","ط§ظ„ظ…طھط­ظپ ط§ظ„ظ…طµط±ظٹ","ط£ط¨ظˆ ط§ظ„ظ‡ظˆظ„","ط¬ظٹط²ط©"]',        includes_en:'["5-Star Hotel","Egyptian Museum","Sphinx","Giza"]',               description_ar:"ط±ط­ظ„ط© ط´ط§ظ…ظ„ط© ظ„ط£ط¹ط¬ظˆط¨ط© ط§ظ„ط¹ط§ظ„ظ… ط§ظ„ظ‚ط¯ظٹظ…ط© ظˆط¹ط§طµظ…ط© ط§ظ„ط£ظ„ظپ ظ…ط¦ط°ظ†ط©",     description_en:"A comprehensive trip to the wonder of the ancient world" },
+  { id:"tour_nile",    category_id:"cat_nile",    title_ar:"ط¬ظˆظ„ط© ط§ظ„ظ†ظٹظ„ ط§ظ„ظپط§ط®ط±ط© ط¹ظ„ظ‰ ظƒط±ظˆط²",       title_en:"Luxury Nile Cruise Tour",             price:1800, duration_days:10, image_emoji:"ًں›³ï¸ڈ", badge_ar:"ظپط§ط®ط±",         badge_en:"Luxury",        rating:5.0, reviews_count:64,  is_featured:1, includes_ar:'["ظƒط±ظˆط² 5 ظ†ط¬ظˆظ…","ط¬ظ…ظٹط¹ ط§ظ„ظˆط¬ط¨ط§طھ","ظ…ط±ط´ط¯ ط®ط§طµ","ظ†ظ‚ظ„ VIP"]',       includes_en:'["5-Star Cruise","All Meals","Private Guide","VIP Transfers"]',    description_ar:"ط±ط­ظ„ط© ط¨ط­ط±ظٹط© ظپط§ط®ط±ط© ط¹ظ„ظ‰ ط§ظ„ظ†ظٹظ„ ظ…ظ† ط§ظ„ط£ظ‚طµط± ط­طھظ‰ ط£ط³ظˆط§ظ†",          description_en:"A luxurious Nile cruise from Luxor to Aswan" },
+  { id:"tour_consult", category_id:"cat_consult", title_ar:"ط§ط³طھط´ط§ط±ط© ط³ظٹط§ط­ظٹط© ط´ط®طµظٹط©",             title_en:"Personal Tourism Consultation",        price:150,  duration_days:null,image_emoji:"ًں’¬", badge_ar:"ط®ط¯ظ…ط©",         badge_en:"Service",       rating:4.9, reviews_count:210, is_featured:0, includes_ar:'["ط¬ظ„ط³ط© ط³ط§ط¹طھظٹظ†","ط®ط·ط© ظ…ط®طµطµط©","ط¯ط¹ظ… ظˆط§طھط³ط§ط¨","طھظˆطµظٹط§طھ"]',         includes_en:'["2-Hour Session","Custom Plan","WhatsApp Support","Recommendations"]', description_ar:"ط§ط³طھط´ط§ط±ط© ط³ظٹط§ط­ظٹط© ظ…ط®طµطµط© ظ…ظ† ط®ط¨ط±ط§ط، ظ…طµط±ظٹظٹظ† ظ…ط¹طھظ…ط¯ظٹظ†",           description_en:"Personalized consultation from certified Egyptian experts" },
+  { id:"tour_dental",  category_id:"cat_medical", title_ar:"ط¨ط§ظ‚ط© ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط© - ط§ظ„ط£ط³ظ†ط§ظ†",      title_en:"Medical Tourism - Dental Package",     price:600,  duration_days:5,  image_emoji:"ًں¦·", badge_ar:"ط·ط¨ظٹ",          badge_en:"Medical",       rating:4.7, reviews_count:88,  is_featured:0, includes_ar:'["ظپط­طµ ط´ط§ظ…ظ„","ط¹ظ„ط§ط¬ ظ…طھظƒط§ظ…ظ„","ط¥ظ‚ط§ظ…ط©","ظ†ظ‚ظ„ ط·ط¨ظٹ"]',             includes_en:'["Full Checkup","Complete Treatment","Accommodation","Medical Transport"]', description_ar:"ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط© ظ…طھظƒط§ظ…ظ„ط© ط¨ط£ط³ط¹ط§ط± ظ…ظ†ط§ظپط³ط©",                       description_en:"Comprehensive medical tourism at competitive prices" },
+  { id:"tour_desert",  category_id:"cat_desert",  title_ar:"طھط¬ط±ط¨ط© ط§ظ„ظˆط§ط­ط§طھ ظˆط§ظ„طµط­ط±ط§ط، ط§ظ„ط؛ط±ط¨ظٹط©",   title_en:"Oasis & Western Desert Experience",   price:950,  duration_days:6,  image_emoji:"ًںŒ…", badge_ar:"ظ…ط؛ط§ظ…ط±ط©",       badge_en:"Adventure",     rating:4.8, reviews_count:52,  is_featured:0, includes_ar:'["ط®ظٹط§ظ… ظپط§ط®ط±ط©","ط¬ظٹط¨ط§طھ طµط­ط±ط§ظˆظٹط©","ط±طµط¯ ط§ظ„ظ†ط¬ظˆظ…","ط·ط¹ط§ظ… ط¨ط¯ظˆظٹ"]', includes_en:'["Luxury Camping","Desert Jeeps","Stargazing","Bedouin Food"]',     description_ar:"ظ…ط؛ط§ظ…ط±ط© ظ„ط§ طھظڈظ†ط³ظ‰ ظپظٹ ط£ط¹ظ…ط§ظ‚ ط§ظ„طµط­ط±ط§ط، ط§ظ„ط؛ط±ط¨ظٹط©",               description_en:"An unforgettable adventure in the Western Desert" },
 ];
 
 const HASHTAGS_AR = [
-  { tag:'#مصر_الفراعنة', count:'12.4K' }, { tag:'#الأقصر_والأسوان', count:'8.1K' },
-  { tag:'#رحلات_مصر', count:'6.7K' }, { tag:'#حضارة_كيمت', count:'5.2K' },
-  { tag:'#الأهرامات', count:'4.9K' }, { tag:'#أبو_سمبل', count:'3.8K' },
-  { tag:'#النيل', count:'3.2K' }, { tag:'#فراعنة_مصر', count:'2.9K' },
+  { tag:'#ظ…طµط±_ط§ظ„ظپط±ط§ط¹ظ†ط©', count:'12.4K' }, { tag:'#ط§ظ„ط£ظ‚طµط±_ظˆط§ظ„ط£ط³ظˆط§ظ†', count:'8.1K' },
+  { tag:'#ط±ط­ظ„ط§طھ_ظ…طµط±', count:'6.7K' }, { tag:'#ط­ط¶ط§ط±ط©_ظƒظٹظ…طھ', count:'5.2K' },
+  { tag:'#ط§ظ„ط£ظ‡ط±ط§ظ…ط§طھ', count:'4.9K' }, { tag:'#ط£ط¨ظˆ_ط³ظ…ط¨ظ„', count:'3.8K' },
+  { tag:'#ط§ظ„ظ†ظٹظ„', count:'3.2K' }, { tag:'#ظپط±ط§ط¹ظ†ط©_ظ…طµط±', count:'2.9K' },
 ];
 const HASHTAGS_EN = [
   { tag:'#Egypt_Tourism', count:'12.4K' }, { tag:'#Luxor_Aswan', count:'8.1K' },
@@ -70,7 +70,7 @@ const HASHTAGS_EN = [
 ];
 const HASHTAGS = HASHTAGS_AR;
 
-// ── CSS ───────────────────────────────────────────────────
+// â”€â”€ CSS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cairo:wght@300;400;600;700;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}html,body{overflow-x:hidden;width:100%;max-width:100vw}
@@ -138,7 +138,7 @@ textarea.inp{resize:none}
 .msg-other{background:var(--bb);color:var(--gl);margin-left:auto;border-radius:12px 12px 12px 0}
 `;
 
-// ── Helpers ───────────────────────────────────────────────
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function t(ar, en, lang) { return lang === 'ar' ? ar : en; }
 function ts(arr, lang) {
   try { const p = JSON.parse(arr); return Array.isArray(p) ? p : []; } catch { return []; }
@@ -146,20 +146,20 @@ function ts(arr, lang) {
 function timeAgo(dt, lang) {
   const d = new Date(dt), n = new Date();
   const m = Math.floor((n - d) / 60000);
-  if (m < 1) return t('الآن', 'now', lang);
-  if (m < 60) return `${t('منذ', '', lang)} ${m} ${t('دقيقة', 'min ago', lang)}`;
+  if (m < 1) return t('ط§ظ„ط¢ظ†', 'now', lang);
+  if (m < 60) return `${t('ظ…ظ†ط°', '', lang)} ${m} ${t('ط¯ظ‚ظٹظ‚ط©', 'min ago', lang)}`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${t('منذ', '', lang)} ${h} ${t('ساعة', 'h ago', lang)}`;
-  return `${t('منذ', '', lang)} ${Math.floor(h/24)} ${t('يوم', 'd ago', lang)}`;
+  if (h < 24) return `${t('ظ…ظ†ط°', '', lang)} ${h} ${t('ط³ط§ط¹ط©', 'h ago', lang)}`;
+  return `${t('ظ…ظ†ط°', '', lang)} ${Math.floor(h/24)} ${t('ظٹظˆظ…', 'd ago', lang)}`;
 }
 
-// ── Small components ──────────────────────────────────────
+// â”€â”€ Small components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Toast({ msg, onDone }) {
   useEffect(() => { const id = setTimeout(onDone, 2600); return () => clearTimeout(id); }, []);
   return <div className="toast">{msg}</div>;
 }
 
-function Avatar({ emoji = '👑', size = 44, onClick, url }) {
+function Avatar({ emoji = 'ًں‘‘', size = 44, onClick, url }) {
   return (
     <div className="av" style={{ width: size, height: size, fontSize: size * 0.45, overflow:'hidden', padding: url ? 0 : undefined }} onClick={onClick}>
       {url ? <img src={url} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'top center',borderRadius:'50%'}} /> : emoji}
@@ -169,7 +169,7 @@ function Avatar({ emoji = '👑', size = 44, onClick, url }) {
 
 function GoldDivider() { return <div className="gdiv" />; }
 
-// ── LANDING PAGE ──────────────────────────────────────────
+// â”€â”€ LANDING PAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Landing({ onLogin, onRegister, lang, setLang }) {
   const [phase, setPhase] = useState(0);
   useEffect(()=>{ const t1=setTimeout(()=>setPhase(1),500); const t2=setTimeout(()=>setPhase(2),3000); const t3=setTimeout(()=>setPhase(3),5500); return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);}; },[]);
@@ -184,59 +184,59 @@ function Landing({ onLogin, onRegister, lang, setLang }) {
       {phase<3 && (<div style={{position:'fixed',inset:0,zIndex:100,background:'#000',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
         <video autoPlay muted playsInline onEnded={()=>setPhase(3)} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',opacity:0.9}} src='https://res.cloudinary.com/dnrfsmtbi/video/upload/KEMET_vxthiy.mp4' />
         <div style={{position:'relative',zIndex:2,textAlign:'center',padding:'0 40px',color:'var(--gl)',fontWeight:800,fontSize:phase===2?28:0,transition:'font-size 1s',lineHeight:1.8}}>
-          {lang==='ar'?'مرحباً بك في أرض الحضارة':'Welcome to the Land of Civilization'}<br/>
-          <span style={{fontSize:phase===2?16:0,color:'var(--tm)',fontWeight:400,transition:'font-size 1s 0.5s'}}>{lang==='ar'?'ادخل لتكتشف التاريخ بنفسك':'Enter to discover history yourself'}</span>
+          {lang==='ar'?'ظ…ط±ط­ط¨ط§ظ‹ ط¨ظƒ ظپظٹ ط£ط±ط¶ ط§ظ„ط­ط¶ط§ط±ط©':'Welcome to the Land of Civilization'}<br/>
+          <span style={{fontSize:phase===2?16:0,color:'var(--tm)',fontWeight:400,transition:'font-size 1s 0.5s'}}>{lang==='ar'?'ط§ط¯ط®ظ„ ظ„طھظƒطھط´ظپ ط§ظ„طھط§ط±ظٹط® ط¨ظ†ظپط³ظƒ':'Enter to discover history yourself'}</span>
         </div>
       </div>)}
-      <div style={{ position:'absolute', fontSize:420, opacity:.015, bottom:-80, left:'50%', transform:'translateX(-50%)', pointerEvents:'none', lineHeight:1 }}>🔺</div>
+      <div style={{ position:'absolute', fontSize:420, opacity:.015, bottom:-80, left:'50%', transform:'translateX(-50%)', pointerEvents:'none', lineHeight:1 }}>ًں”؛</div>
 
       {/* Lang toggle */}
       <div style={{ position:'absolute', top:20, right:20, zIndex:20 }}>
-        <button className="lang" onClick={()=>setLang(l=>l==='ar'?'en':'ar')}>{lang==='ar'?'EN':'عربي'}</button>
+        <button className="lang" onClick={()=>setLang(l=>l==='ar'?'en':'ar')}>{lang==='ar'?'EN':'ط¹ط±ط¨ظٹ'}</button>
       </div>
 
       {/* Main content */}
       <div style={{ textAlign:'center', padding:'40px 24px', maxWidth:540, zIndex:1 }}>
         
         {/* Logo */}
-        <div style={{ fontSize:72, lineHeight:1, marginBottom:16, animation:'float 5s ease-in-out infinite', filter:'drop-shadow(0 0 30px rgba(201,168,76,.6))' }}>🔺</div>
+        <div style={{ fontSize:72, lineHeight:1, marginBottom:16, animation:'float 5s ease-in-out infinite', filter:'drop-shadow(0 0 30px rgba(201,168,76,.6))' }}>ًں”؛</div>
         
         <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10, marginBottom:6 }}>
-          <span style={{ color:'var(--gd)', fontSize:18 }}>𓂀</span>
+          <span style={{ color:'var(--gd)', fontSize:18 }}>ً“‚€</span>
           <div className="logo" style={{ fontSize:44, letterSpacing:5 }}>KEMET</div>
-          <span style={{ color:'var(--gd)', fontSize:18 }}>𓂀</span>
+          <span style={{ color:'var(--gd)', fontSize:18 }}>ً“‚€</span>
         </div>
         
         <div style={{ fontSize:12, color:'var(--gd)', letterSpacing:4, marginBottom:32, textTransform:'uppercase' }}>
-          {lang==='ar' ? 'كيمت ليجاسي' : 'Legacy'}
+          {lang==='ar' ? 'ظƒظٹظ…طھ ظ„ظٹط¬ط§ط³ظٹ' : 'Legacy'}
         </div>
 
         {/* Tagline */}
         <h1 style={{ fontSize:24, fontWeight:800, color:'var(--gl)', lineHeight:1.5, marginBottom:12 }}>
           {lang==='ar' 
-            ? 'اكتشف أسرار الحضارة المصرية من خلال التواصل مع أبنائها'
+            ? 'ط§ظƒطھط´ظپ ط£ط³ط±ط§ط± ط§ظ„ط­ط¶ط§ط±ط© ط§ظ„ظ…طµط±ظٹط© ظ…ظ† ط®ظ„ط§ظ„ ط§ظ„طھظˆط§طµظ„ ظ…ط¹ ط£ط¨ظ†ط§ط¦ظ‡ط§'
             : 'Discover the Secrets of Egyptian Civilization Through Its People'}
         </h1>
         
         <p style={{ fontSize:14, color:'var(--tm)', lineHeight:1.9, marginBottom:36 }}>
           {lang==='ar'
-            ? 'انضم إلى مجتمع حي من عشاق التاريخ والثقافة المصرية حول العالم'
+            ? 'ط§ظ†ط¶ظ… ط¥ظ„ظ‰ ظ…ط¬طھظ…ط¹ ط­ظٹ ظ…ظ† ط¹ط´ط§ظ‚ ط§ظ„طھط§ط±ظٹط® ظˆط§ظ„ط«ظ‚ط§ظپط© ط§ظ„ظ…طµط±ظٹط© ط­ظˆظ„ ط§ظ„ط¹ط§ظ„ظ…'
             : 'Join a living community of history lovers and Egyptian culture enthusiasts worldwide'}
         </p>
 
         {/* CTA Buttons */}
         <div style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
           <button className="btn btn-g" style={{ minWidth:180, fontSize:16, padding:'14px 32px', borderRadius:12, boxShadow:'0 4px 28px rgba(201,168,76,.4)', letterSpacing:1 }} onClick={onRegister}>
-            {lang==='ar' ? 'ابدأ رحلتك' : 'Join Now'}
+            {lang==='ar' ? 'ط§ط¨ط¯ط£ ط±ط­ظ„طھظƒ' : 'Join Now'}
           </button>
           <button className="btn btn-o" style={{ minWidth:150, fontSize:15, padding:'14px 24px', borderRadius:12 }} onClick={onLogin}>
-            {lang==='ar' ? 'تسجيل الدخول' : 'Sign In'}
+            {lang==='ar' ? 'طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„' : 'Sign In'}
           </button>
         </div>
 
         {/* Subtle tagline */}
         <div style={{ marginTop:40, color:'var(--td)', fontSize:11, letterSpacing:2, textTransform:'uppercase' }}>
-          {lang==='ar' ? '𓂀 حضارة لا تموت 𓂀' : '𓂀 A Civilization That Never Dies 𓂀'}
+          {lang==='ar' ? 'ً“‚€ ط­ط¶ط§ط±ط© ظ„ط§ طھظ…ظˆطھ ً“‚€' : 'ً“‚€ A Civilization That Never Dies ً“‚€'}
         </div>
 
       </div>
@@ -247,7 +247,7 @@ function Landing({ onLogin, onRegister, lang, setLang }) {
   );
 }
 
-// ── LOGIN MODAL ───────────────────────────────────────────
+// â”€â”€ LOGIN MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const GOOGLE_CLIENT_ID = '289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com';
 
 function LoginModal({ onClose, onSuccess, lang }) {
@@ -265,7 +265,7 @@ function LoginModal({ onClose, onSuccess, lang }) {
   const [error, setError]  = useState('');
 
   const handle = async () => {
-    if (!email || !pass) { setError(t('يرجى إدخال البيانات','Please fill all fields',lang)); return; }
+    if (!email || !pass) { setError(t('ظٹط±ط¬ظ‰ ط¥ط¯ط®ط§ظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ','Please fill all fields',lang)); return; }
     setLoading(true); setError('');
     const r = await authAPI.login(email, pass);
     setLoading(false);
@@ -277,29 +277,29 @@ function LoginModal({ onClose, onSuccess, lang }) {
     <div className="modal-bg" onClick={e => e.target===e.currentTarget && onClose()}>
       <div className="modal" style={{ padding:28 }}>
         <div style={{ textAlign:'center', marginBottom:20 }}>
-          <div style={{ fontSize:38 }}>𓂀</div>
-          <div className="logo" style={{ fontSize:22 }}>{t('تسجيل الدخول','Login',lang)}</div>
+          <div style={{ fontSize:38 }}>ً“‚€</div>
+          <div className="logo" style={{ fontSize:22 }}>{t('طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„','Login',lang)}</div>
         </div>
         <GoldDivider />
         {error && <div style={{ color:'var(--red)', fontSize:12, textAlign:'center', padding:'8px 0' }}>{error}</div>}
         <div style={{ display:'flex', flexDirection:'column', gap:11, marginTop:14 }}>
-          <input className="inp" placeholder={t('البريد الإلكتروني','Email',lang)} value={email} onChange={e=>setEmail(e.target.value)} type="email" onKeyDown={e=>e.key==='Enter'&&handle()} />
-          <input className="inp" placeholder={t('كلمة المرور','Password',lang)} value={pass} onChange={e=>setPass(e.target.value)} type="password" onKeyDown={e=>e.key==='Enter'&&handle()} />
+          <input className="inp" placeholder={t('ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ','Email',lang)} value={email} onChange={e=>setEmail(e.target.value)} type="email" onKeyDown={e=>e.key==='Enter'&&handle()} />
+          <input className="inp" placeholder={t('ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط±','Password',lang)} value={pass} onChange={e=>setPass(e.target.value)} type="password" onKeyDown={e=>e.key==='Enter'&&handle()} />
           <div style={{ fontSize:11, color:'var(--tm)', textAlign:'center' }}>
-            {t('تجريبي: ramesses@kemet.com / Demo1234!','Demo: ramesses@kemet.com / Demo1234!',lang)}
+            {t('طھط¬ط±ظٹط¨ظٹ: ramesses@kemet.com / Demo1234!','Demo: ramesses@kemet.com / Demo1234!',lang)}
           </div>
-          <button className="btn btn-g" onClick={handle} disabled={loading}>{loading ? '⏳' : t('دخول','Login',lang)}</button>
+          <button className="btn btn-g" onClick={handle} disabled={loading}>{loading ? 'âڈ³' : t('ط¯ط®ظˆظ„','Login',lang)}</button>
           <div id='g_id_onload' data-client_id='289013959333-tql6lc08dvtn5cc9mvmpb7af3vvp8unl.apps.googleusercontent.com' data-callback='handleGoogleLogin' data-auto_prompt='false'></div>
-          <button className='btn' style={{width:'100%',background:'white',color:'#333',border:'1px solid #ddd',padding:'10px 16px',display:'flex',alignItems:'center',justifyContent:'center',gap:10,fontSize:14,fontWeight:600,borderRadius:8,marginBottom:8}} onClick={()=>window.google?.accounts.id.prompt()}>🔴 Sign in with Google</button>
-          <div style={{textAlign:'center',fontSize:12,color:'var(--tm)',margin:'4px 0'}}>── {t('أو','or',lang)} ──</div>
-          <button className="btn btn-gh" onClick={onClose} style={{ textAlign:'center' }}>{t('إلغاء','Cancel',lang)}</button>
+          <button className='btn' style={{width:'100%',background:'white',color:'#333',border:'1px solid #ddd',padding:'10px 16px',display:'flex',alignItems:'center',justifyContent:'center',gap:10,fontSize:14,fontWeight:600,borderRadius:8,marginBottom:8}} onClick={()=>window.google?.accounts.id.prompt()}>ًں”´ Sign in with Google</button>
+          <div style={{textAlign:'center',fontSize:12,color:'var(--tm)',margin:'4px 0'}}>â”€â”€ {t('ط£ظˆ','or',lang)} â”€â”€</div>
+          <button className="btn btn-gh" onClick={onClose} style={{ textAlign:'center' }}>{t('ط¥ظ„ط؛ط§ط،','Cancel',lang)}</button>
         </div>
       </div>
     </div>
   );
 }
 
-// ── REGISTER MODAL ────────────────────────────────────────
+// â”€â”€ REGISTER MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function RegisterModal({ onClose, onSuccess, lang }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ name:'', email:'', password:'', country:'', phone:'', selectedPharaoh:null, customNick:'' });
@@ -308,7 +308,7 @@ function RegisterModal({ onClose, onSuccess, lang }) {
   const set = (k,v) => setForm(f=>({...f,[k]:v}));
 
   const nickname  = form.selectedPharaoh ? t(form.selectedPharaoh.name_ar,form.selectedPharaoh.name_en,lang) : (form.customNick||form.name);
-  const avatarEmoji = form.selectedPharaoh?.emoji || '👑';
+  const avatarEmoji = form.selectedPharaoh?.emoji || 'ًں‘‘';
 
   const finish = async () => {
     setLoading(true); setError('');
@@ -319,7 +319,7 @@ function RegisterModal({ onClose, onSuccess, lang }) {
     else setError(r.error);
   };
 
-  const COUNTRIES = [['EG','مصر','Egypt'],['SA','السعودية','Saudi Arabia'],['AE','الإمارات','UAE'],['KW','الكويت','Kuwait'],['QA','قطر','Qatar'],['BH','البحرين','Bahrain'],['OM','عُمان','Oman'],['JO','الأردن','Jordan'],['LB','لبنان','Lebanon'],['SY','سوريا','Syria'],['IQ','العراق','Iraq'],['YE','اليمن','Yemen'],['LY','ليبيا','Libya'],['TN','تونس','Tunisia'],['DZ','الجزائر','Algeria'],['MA','المغرب','Morocco'],['SD','السودان','Sudan'],['SO','الصومال','Somalia'],['MR','موريتانيا','Mauritania'],['US','أمريكا','USA'],['GB','بريطانيا','UK'],['DE','ألمانيا','Germany'],['FR','فرنسا','France'],['IT','إيطاليا','Italy'],['ES','إسبانيا','Spain'],['NL','هولندا','Netherlands'],['BE','بلجيكا','Belgium'],['SE','السويد','Sweden'],['NO','النرويج','Norway'],['DK','الدنمارك','Denmark'],['CH','سويسرا','Switzerland'],['AT','النمسا','Austria'],['PL','بولندا','Poland'],['PT','البرتغال','Portugal'],['GR','اليونان','Greece'],['TR','تركيا','Turkey'],['RU','روسيا','Russia'],['CA','كندا','Canada'],['AU','أستراليا','Australia'],['NZ','نيوزيلندا','New Zealand'],['JP','اليابان','Japan'],['CN','الصين','China'],['IN','الهند','India'],['PK','باكستان','Pakistan'],['BD','بنغلاديش','Bangladesh'],['ID','إندونيسيا','Indonesia'],['MY','ماليزيا','Malaysia'],['SG','سنغافورة','Singapore'],['ZA','جنوب أفريقيا','South Africa'],['NG','نيجيريا','Nigeria'],['KE','كينيا','Kenya'],['OTHER','أخرى','Other']];
+  const COUNTRIES = [['EG','ظ…طµط±','Egypt'],['SA','ط§ظ„ط³ط¹ظˆط¯ظٹط©','Saudi Arabia'],['AE','ط§ظ„ط¥ظ…ط§ط±ط§طھ','UAE'],['KW','ط§ظ„ظƒظˆظٹطھ','Kuwait'],['QA','ظ‚ط·ط±','Qatar'],['BH','ط§ظ„ط¨ط­ط±ظٹظ†','Bahrain'],['OM','ط¹ظڈظ…ط§ظ†','Oman'],['JO','ط§ظ„ط£ط±ط¯ظ†','Jordan'],['LB','ظ„ط¨ظ†ط§ظ†','Lebanon'],['SY','ط³ظˆط±ظٹط§','Syria'],['IQ','ط§ظ„ط¹ط±ط§ظ‚','Iraq'],['YE','ط§ظ„ظٹظ…ظ†','Yemen'],['LY','ظ„ظٹط¨ظٹط§','Libya'],['TN','طھظˆظ†ط³','Tunisia'],['DZ','ط§ظ„ط¬ط²ط§ط¦ط±','Algeria'],['MA','ط§ظ„ظ…ط؛ط±ط¨','Morocco'],['SD','ط§ظ„ط³ظˆط¯ط§ظ†','Sudan'],['SO','ط§ظ„طµظˆظ…ط§ظ„','Somalia'],['MR','ظ…ظˆط±ظٹطھط§ظ†ظٹط§','Mauritania'],['US','ط£ظ…ط±ظٹظƒط§','USA'],['GB','ط¨ط±ظٹط·ط§ظ†ظٹط§','UK'],['DE','ط£ظ„ظ…ط§ظ†ظٹط§','Germany'],['FR','ظپط±ظ†ط³ط§','France'],['IT','ط¥ظٹط·ط§ظ„ظٹط§','Italy'],['ES','ط¥ط³ط¨ط§ظ†ظٹط§','Spain'],['NL','ظ‡ظˆظ„ظ†ط¯ط§','Netherlands'],['BE','ط¨ظ„ط¬ظٹظƒط§','Belgium'],['SE','ط§ظ„ط³ظˆظٹط¯','Sweden'],['NO','ط§ظ„ظ†ط±ظˆظٹط¬','Norway'],['DK','ط§ظ„ط¯ظ†ظ…ط§ط±ظƒ','Denmark'],['CH','ط³ظˆظٹط³ط±ط§','Switzerland'],['AT','ط§ظ„ظ†ظ…ط³ط§','Austria'],['PL','ط¨ظˆظ„ظ†ط¯ط§','Poland'],['PT','ط§ظ„ط¨ط±طھط؛ط§ظ„','Portugal'],['GR','ط§ظ„ظٹظˆظ†ط§ظ†','Greece'],['TR','طھط±ظƒظٹط§','Turkey'],['RU','ط±ظˆط³ظٹط§','Russia'],['CA','ظƒظ†ط¯ط§','Canada'],['AU','ط£ط³طھط±ط§ظ„ظٹط§','Australia'],['NZ','ظ†ظٹظˆط²ظٹظ„ظ†ط¯ط§','New Zealand'],['JP','ط§ظ„ظٹط§ط¨ط§ظ†','Japan'],['CN','ط§ظ„طµظٹظ†','China'],['IN','ط§ظ„ظ‡ظ†ط¯','India'],['PK','ط¨ط§ظƒط³طھط§ظ†','Pakistan'],['BD','ط¨ظ†ط؛ظ„ط§ط¯ظٹط´','Bangladesh'],['ID','ط¥ظ†ط¯ظˆظ†ظٹط³ظٹط§','Indonesia'],['MY','ظ…ط§ظ„ظٹط²ظٹط§','Malaysia'],['SG','ط³ظ†ط؛ط§ظپظˆط±ط©','Singapore'],['ZA','ط¬ظ†ظˆط¨ ط£ظپط±ظٹظ‚ظٹط§','South Africa'],['NG','ظ†ظٹط¬ظٹط±ظٹط§','Nigeria'],['KE','ظƒظٹظ†ظٹط§','Kenya'],['OTHER','ط£ط®ط±ظ‰','Other']];
   const CN = Object.fromEntries(COUNTRIES.map(([k,ar,en])=>[k, lang==='ar'?ar:en]));
 
   return (
@@ -332,25 +332,25 @@ function RegisterModal({ onClose, onSuccess, lang }) {
         {step===1 && (
           <div className="fi">
             <div style={{ textAlign:'center', marginBottom:16 }}>
-              <div style={{ fontSize:32 }}>🔺</div>
-              <div className="logo" style={{ fontSize:20 }}>{t('إنشاء حساب','Create Account',lang)}</div>
+              <div style={{ fontSize:32 }}>ًں”؛</div>
+              <div className="logo" style={{ fontSize:20 }}>{t('ط¥ظ†ط´ط§ط، ط­ط³ط§ط¨','Create Account',lang)}</div>
             </div>
             <GoldDivider />
             {error && <div style={{ color:'var(--red)', fontSize:12, padding:'6px 0', textAlign:'center' }}>{error}</div>}
             <div style={{ display:'flex', flexDirection:'column', gap:10, marginTop:14 }}>
-              <input className="inp" placeholder={t('الاسم الكامل *','Full Name *',lang)} value={form.name} onChange={e=>set('name',e.target.value)} />
-              <input className="inp" placeholder={t('البريد الإلكتروني *','Email *',lang)} value={form.email} onChange={e=>set('email',e.target.value)} type="email" />
-              <input className="inp" placeholder={t('كلمة المرور * (6 أحرف+)','Password * (6+ chars)',lang)} value={form.password} onChange={e=>set('password',e.target.value)} type="password" />
-              <input className="inp" placeholder={t('رقم الهاتف','Phone',lang)} value={form.phone} onChange={e=>set('phone',e.target.value)} />
+              <input className="inp" placeholder={t('ط§ظ„ط§ط³ظ… ط§ظ„ظƒط§ظ…ظ„ *','Full Name *',lang)} value={form.name} onChange={e=>set('name',e.target.value)} />
+              <input className="inp" placeholder={t('ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ *','Email *',lang)} value={form.email} onChange={e=>set('email',e.target.value)} type="email" />
+              <input className="inp" placeholder={t('ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± * (6 ط£ط­ط±ظپ+)','Password * (6+ chars)',lang)} value={form.password} onChange={e=>set('password',e.target.value)} type="password" />
+              <input className="inp" placeholder={t('ط±ظ‚ظ… ط§ظ„ظ‡ط§طھظپ','Phone',lang)} value={form.phone} onChange={e=>set('phone',e.target.value)} />
               <select className="inp" value={form.country} onChange={e=>set('country',e.target.value)}>
-                <option value="">{t('الدولة','Country',lang)}</option>
+                <option value="">{t('ط§ظ„ط¯ظˆظ„ط©','Country',lang)}</option>
                 {COUNTRIES.map(([k,ar,en])=><option key={k} value={k}>{en}</option>)}
               </select>
               <button className="btn btn-g" onClick={()=>{
-                if(!form.name||!form.email||!form.password){setError(t('يرجى إدخال البيانات المطلوبة','Please fill required fields',lang));return;}
-                if(form.password.length<6){setError(t('كلمة المرور قصيرة','Password too short',lang));return;}
+                if(!form.name||!form.email||!form.password){setError(t('ظٹط±ط¬ظ‰ ط¥ط¯ط®ط§ظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ظ…ط·ظ„ظˆط¨ط©','Please fill required fields',lang));return;}
+                if(form.password.length<6){setError(t('ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ظ‚طµظٹط±ط©','Password too short',lang));return;}
                 setError(''); setStep(2);
-              }}>{t('التالي ←','Next →',lang)}</button>
+              }}>{t('ط§ظ„طھط§ظ„ظٹ â†گ','Next â†’',lang)}</button>
             </div>
           </div>
         )}
@@ -358,9 +358,9 @@ function RegisterModal({ onClose, onSuccess, lang }) {
         {step===2 && (
           <div className="fi">
             <div style={{ textAlign:'center', marginBottom:14 }}>
-              <div style={{ fontSize:28 }}>👑</div>
-              <div style={{ color:'var(--g)', fontWeight:700, fontSize:15 }}>{t('اختر اسمك الفرعوني','Choose Your Pharaonic Name',lang)}</div>
-              <div style={{ color:'var(--tm)', fontSize:12, marginTop:3 }}>{t('اختر من قائمة الملوك والملكات','Choose from Kings & Queens of Egypt',lang)}</div>
+              <div style={{ fontSize:28 }}>ًں‘‘</div>
+              <div style={{ color:'var(--g)', fontWeight:700, fontSize:15 }}>{t('ط§ط®طھط± ط§ط³ظ…ظƒ ط§ظ„ظپط±ط¹ظˆظ†ظٹ','Choose Your Pharaonic Name',lang)}</div>
+              <div style={{ color:'var(--tm)', fontSize:12, marginTop:3 }}>{t('ط§ط®طھط± ظ…ظ† ظ‚ط§ط¦ظ…ط© ط§ظ„ظ…ظ„ظˆظƒ ظˆط§ظ„ظ…ظ„ظƒط§طھ','Choose from Kings & Queens of Egypt',lang)}</div>
             </div>
             <GoldDivider />
             <div className="pharaoh-grid" style={{ marginTop:10 }}>
@@ -372,12 +372,12 @@ function RegisterModal({ onClose, onSuccess, lang }) {
                 </div>
               ))}
             </div>
-            <div style={{ marginTop:10, color:'var(--tm)', fontSize:12, textAlign:'center' }}>{t('أو اكتب نيكنيم مخصص','Or type your own nickname',lang)}</div>
-            <input className="inp" style={{ marginTop:8 }} placeholder={t('نيكنيم مخصص (اختياري)','Custom nickname (optional)',lang)}
+            <div style={{ marginTop:10, color:'var(--tm)', fontSize:12, textAlign:'center' }}>{t('ط£ظˆ ط§ظƒطھط¨ ظ†ظٹظƒظ†ظٹظ… ظ…ط®طµطµ','Or type your own nickname',lang)}</div>
+            <input className="inp" style={{ marginTop:8 }} placeholder={t('ظ†ظٹظƒظ†ظٹظ… ظ…ط®طµطµ (ط§ط®طھظٹط§ط±ظٹ)','Custom nickname (optional)',lang)}
               value={form.customNick} onChange={e=>{set('customNick',e.target.value);set('selectedPharaoh',null)}} />
             <div style={{ display:'flex', gap:10, marginTop:13 }}>
-              <button className="btn btn-o" onClick={()=>setStep(1)} style={{ flex:1 }}>{t('← رجوع','← Back',lang)}</button>
-              <button className="btn btn-g" onClick={()=>setStep(3)} style={{ flex:1 }}>{t('التالي ←','Next →',lang)}</button>
+              <button className="btn btn-o" onClick={()=>setStep(1)} style={{ flex:1 }}>{t('â†گ ط±ط¬ظˆط¹','â†گ Back',lang)}</button>
+              <button className="btn btn-g" onClick={()=>setStep(3)} style={{ flex:1 }}>{t('ط§ظ„طھط§ظ„ظٹ â†گ','Next â†’',lang)}</button>
             </div>
           </div>
         )}
@@ -386,17 +386,17 @@ function RegisterModal({ onClose, onSuccess, lang }) {
           <div className="fi" style={{ textAlign:'center' }}>
             <div style={{ fontSize:64, marginBottom:8, animation:'float 3s ease-in-out infinite' }}>{avatarEmoji}</div>
             <div style={{ color:'var(--g)', fontWeight:700, fontSize:18 }}>{nickname}</div>
-            <div style={{ color:'var(--tm)', fontSize:13, marginTop:3 }}>{form.name} · {form.email}</div>
+            <div style={{ color:'var(--tm)', fontSize:13, marginTop:3 }}>{form.name} آ· {form.email}</div>
             {error && <div style={{ color:'var(--red)', fontSize:12, marginTop:8 }}>{error}</div>}
             <GoldDivider />
             <div style={{ color:'var(--tm)', fontSize:13, lineHeight:2, padding:'8px 0' }}>
-              ✦ {t('مرحباً بك في مملكة كيمت','Welcome to the Kingdom of Kemet',lang)}<br/>
-              ✦ {t('حسابك على وشك الإنشاء','Your account is ready to be created',lang)}
+              âœ¦ {t('ظ…ط±ط­ط¨ط§ظ‹ ط¨ظƒ ظپظٹ ظ…ظ…ظ„ظƒط© ظƒظٹظ…طھ','Welcome to the Kingdom of Kemet',lang)}<br/>
+              âœ¦ {t('ط­ط³ط§ط¨ظƒ ط¹ظ„ظ‰ ظˆط´ظƒ ط§ظ„ط¥ظ†ط´ط§ط،','Your account is ready to be created',lang)}
             </div>
             <div style={{ display:'flex', gap:10, marginTop:8 }}>
-              <button className="btn btn-o" onClick={()=>setStep(2)} style={{ flex:1 }}>{t('← رجوع','← Back',lang)}</button>
+              <button className="btn btn-o" onClick={()=>setStep(2)} style={{ flex:1 }}>{t('â†گ ط±ط¬ظˆط¹','â†گ Back',lang)}</button>
               <button className="btn btn-g" onClick={finish} disabled={loading} style={{ flex:1 }}>
-                {loading?'⏳':t('إنشاء الحساب 🔺','Create Account 🔺',lang)}
+                {loading?'âڈ³':t('ط¥ظ†ط´ط§ط، ط§ظ„ط­ط³ط§ط¨ ًں”؛','Create Account ًں”؛',lang)}
               </button>
             </div>
           </div>
@@ -406,7 +406,7 @@ function RegisterModal({ onClose, onSuccess, lang }) {
   );
 }
 
-// ── POST CARD ─────────────────────────────────────────────
+// â”€â”€ POST CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProfile }) {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
@@ -421,9 +421,10 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     if (!replyText.trim() && !replyImage) return;
     const imgUrl = replyImage;
     const r = await postsAPI.addComment(post.id, replyText, replyTo?.id, imgUrl);
-    if (r.ok) { setComments(c=>[...c, {id:r.data.comment_id,content:replyText,image_url:imgUrl,nickname:user?.nickname||t('أنت','You',lang),avatar_emoji:user?.avatar_emoji||'👑',avatar_url:user?.avatar_url,created_at:new Date().toISOString(),parent_id:replyTo?.id}]); setReplyText(''); setReplyImage(''); setReplyTo(null); }
+    if (r.ok) { setComments(c=>[...c, {id:r.data.comment_id,content:replyText,image_url:imgUrl,nickname:user?.nickname||t('ط£ظ†طھ','You',lang),avatar_emoji:user?.avatar_emoji||'ًں‘‘',avatar_url:user?.avatar_url,created_at:new Date().toISOString(),parent_id:replyTo?.id}]); setReplyText(''); setReplyImage(''); setReplyTo(null); }
   };
   const uploadReplyImg = async (e) => { const file=e.target.files[0]; if(!file) return; setReplyUploading(true); const url=await uploadToCloudinary(file); setReplyImage(url); setReplyUploading(false); };
+  const [likeAnim, setLikeAnim] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count||0);
   const [showCommentEmoji, setShowCommentEmoji] = useState(false);
 
@@ -451,7 +452,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     const imgUrl = commentImage;
     const r = await postsAPI.addComment(post.id, newComment, null, imgUrl);
     if (r.ok) {
-      setComments(c=>[...c, { id:r.data.comment_id, content:newComment, image_url:imgUrl, nickname:user?.nickname||t('أنت','You',lang), avatar_emoji:user?.avatar_emoji||'👑', avatar_url:user?.avatar_url, created_at:new Date().toISOString() }]);
+      setComments(c=>[...c, { id:r.data.comment_id, content:newComment, image_url:imgUrl, nickname:user?.nickname||t('ط£ظ†طھ','You',lang), avatar_emoji:user?.avatar_emoji||'ًں‘‘', avatar_url:user?.avatar_url, created_at:new Date().toISOString() }]);
       setNewComment(''); setCommentImage('');
     }
   };
@@ -463,7 +464,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
         <div style={{ flex:1 }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
            <span style={{ fontWeight:700, fontSize:14, color:'var(--g)', cursor:'pointer' }} onClick={()=>onViewProfile && onViewProfile(post.user_id)}>{post.nickname}</span>
-            {post.is_verified===1 && <span style={{ fontSize:13 }}>✓</span>}
+            {post.is_verified===1 && <span style={{ fontSize:13 }}>âœ“</span>}
             {post.membership==='gold' && <span className="badge" style={{ fontSize:10 }}>Gold</span>}
             {post.membership==='platinum' && <span className="badge" style={{ fontSize:10, background:'linear-gradient(135deg,#6B5B95,#9B8EC4)' }}>Platinum</span>}
           </div>
@@ -473,9 +474,9 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     onClick={async(e)=>{
       e.stopPropagation();
       const r = await usersAPI.follow(post.user_id);
-      onToast && onToast(t('تمت المتابعة','Followed',lang));
+      onToast && onToast(t('طھظ…طھ ط§ظ„ظ…طھط§ط¨ط¹ط©','Followed',lang));
     }}>
-    + {t('متابعة','Follow',lang)}
+    + {t('ظ…طھط§ط¨ط¹ط©','Follow',lang)}
   </button>
 )}
         </div>
@@ -499,28 +500,28 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
 
       <div style={{ display:'flex', gap:4 }}>
         <button className='btn btn-gh' onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:13 }}>
-          {liked?'❤️':'🤍'} {t('إعجاب','Like',lang)} {likesCount>0&&<span style={{fontSize:11,opacity:.7}}>({likesCount})</span>}
+          {liked?'â‌¤ï¸ڈ':'ًں¤چ'} {t('ط¥ط¹ط¬ط§ط¨','Like',lang)} {likesCount>0&&<span style={{fontSize:11,opacity:.7}}>({likesCount})</span>}
         </button>
         <button className='btn btn-gh' onClick={loadComments} style={{ flex:1, fontSize:13 }}>
-          💬 {t('تعليق','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
+          ًں’¬ {t('طھط¹ظ„ظٹظ‚','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
         </button>
       <button className="btn btn-gh" style={{ flex:1, fontSize:13 }} onClick={async()=>{
         const r = await postsAPI.createPost({
-         content: `🔁 ${post.nickname}: ${post.content}`,
+         content: `ًں”پ ${post.nickname}: ${post.content}`,
           language: post.language || 'ar'
        });
-        if (r.ok) onToast && onToast(t('تمت المشاركة','Shared',lang));
+        if (r.ok) onToast && onToast(t('طھظ…طھ ط§ظ„ظ…ط´ط§ط±ظƒط©','Shared',lang));
       }}>
-      🔁 {t('مشاركة','Share',lang)}
+      ًں”پ {t('ظ…ط´ط§ط±ظƒط©','Share',lang)}
     </button>
 
       </div>
       {showComments && (
         <div className='fi' style={{marginTop:11,borderTop:'1px solid var(--bb)',paddingTop:11}}>
-          {replyTo && (<div style={{background:"var(--bi)",border:"1px solid var(--gd)",borderRadius:12,padding:12,marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,color:"var(--gd)"}}>↩ Reply to <b>{replyTo.nickname}</b></span><button onClick={()=>{setReplyTo(null);setReplyText("");}} style={{background:"none",border:"none",color:"var(--tm)",cursor:"pointer",fontSize:14}}>✕</button></div><div style={{fontSize:12,color:"var(--tm)",padding:"4px 8px",background:"var(--bb)",borderRadius:6,marginBottom:8}}>{replyTo.content}</div>{showReplyEmoji&&<div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>{["😊","❤️","😂","👍","🔥","😍","🙏","💎","👑","🏛️"].map(e=>(<button key={e} onClick={()=>{setReplyText(t=>t+e);setShowReplyEmoji(false);}} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>{e}</button>))}</div>}{replyImage&&<img src={replyImage} style={{width:"100%",maxHeight:100,objectFit:"cover",borderRadius:8,marginBottom:8}} />}<textarea className="inp" placeholder="Write reply..." value={replyText} onChange={e=>setReplyText(e.target.value)} rows={2} style={{marginBottom:8}} /><div style={{display:"flex",gap:8,alignItems:"center"}}><button className="btn btn-gh" onClick={()=>setShowReplyEmoji(v=>!v)} style={{fontSize:18,padding:"4px 8px"}}>😊</button><label className="btn btn-gh" style={{cursor:"pointer",fontSize:13,padding:"4px 8px"}}>{replyUploading?"...":"🖼️"}<input type="file" accept="image/*,video/*" onChange={uploadReplyImg} style={{display:"none"}} /></label><button className="btn btn-g" onClick={submitReply} style={{marginRight:"auto",padding:"8px 16px"}}>إرسال</button></div></div>)}
+          {replyTo && (<div style={{background:"var(--bi)",border:"1px solid var(--gd)",borderRadius:12,padding:12,marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,color:"var(--gd)"}}>â†© Reply to <b>{replyTo.nickname}</b></span><button onClick={()=>{setReplyTo(null);setReplyText("");}} style={{background:"none",border:"none",color:"var(--tm)",cursor:"pointer",fontSize:14}}>âœ•</button></div><div style={{fontSize:12,color:"var(--tm)",padding:"4px 8px",background:"var(--bb)",borderRadius:6,marginBottom:8}}>{replyTo.content}</div>{showReplyEmoji&&<div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>{["ًںکٹ","â‌¤ï¸ڈ","ًںک‚","ًں‘چ","ًں”¥","ًںکچ","ًں™ڈ","ًں’ژ","ًں‘‘","ًںڈ›ï¸ڈ"].map(e=>(<button key={e} onClick={()=>{setReplyText(t=>t+e);setShowReplyEmoji(false);}} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>{e}</button>))}</div>}{replyImage&&<img src={replyImage} style={{width:"100%",maxHeight:100,objectFit:"cover",borderRadius:8,marginBottom:8}} />}<textarea className="inp" placeholder="Write reply..." value={replyText} onChange={e=>setReplyText(e.target.value)} rows={2} style={{marginBottom:8}} /><div style={{display:"flex",gap:8,alignItems:"center"}}><button className="btn btn-gh" onClick={()=>setShowReplyEmoji(v=>!v)} style={{fontSize:18,padding:"4px 8px"}}>ًںکٹ</button><label className="btn btn-gh" style={{cursor:"pointer",fontSize:13,padding:"4px 8px"}}>{replyUploading?"...":"ًں–¼ï¸ڈ"}<input type="file" accept="image/*,video/*" onChange={uploadReplyImg} style={{display:"none"}} /></label><button className="btn btn-g" onClick={submitReply} style={{marginRight:"auto",padding:"8px 16px"}}>ط¥ط±ط³ط§ظ„</button></div></div>)}
           {comments.filter(c=>!c.parent_id).map(c=>(<div key={c.id} style={{marginBottom:8,padding:'6px 0',borderBottom:'1px solid var(--bb)'}}>
             <div style={{display:'flex',alignItems:'flex-start',gap:6}}>
-              <Avatar emoji={c.avatar_emoji||'👑'} size={26} url={c.avatar_url} />
+              <Avatar emoji={c.avatar_emoji||'ًں‘‘'} size={26} url={c.avatar_url} />
               <div style={{flex:1}}>
                 <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
@@ -531,12 +532,12 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
             {comments.filter(r=>r.parent_id===c.id).map(r=>(<div key={r.id} style={{marginRight:32,marginTop:6,padding:'6px 8px',background:'var(--bi)',borderRadius:8,borderRight:'2px solid var(--gd)'}}><span style={{color:'var(--g)',fontWeight:700,fontSize:11}}>{r.nickname} </span><span style={{color:'var(--gl)',fontSize:12}}>{r.content}</span></div>))}
           </div>))}
           <div style={{display:'flex',gap:8,marginTop:8,flexDirection:'column'}}>
-            {showCommentEmoji && <div style={{display:'flex',flexWrap:'wrap',gap:4,background:'var(--bi)',borderRadius:8,padding:6}}>{['😊','❤️','😂','👍','🔥','😍','🙏','💎','👑'].map(e=>(<button key={e} onClick={()=>{setNewComment(c=>c+e);setShowCommentEmoji(false);}} style={{background:'none',border:'none',fontSize:18,cursor:'pointer'}}>{e}</button>))}</div>}
+            {showCommentEmoji && <div style={{display:'flex',flexWrap:'wrap',gap:4,background:'var(--bi)',borderRadius:8,padding:6}}>{['ًںکٹ','â‌¤ï¸ڈ','ًںک‚','ًں‘چ','ًں”¥','ًںکچ','ًں™ڈ','ًں’ژ','ًں‘‘'].map(e=>(<button key={e} onClick={()=>{setNewComment(c=>c+e);setShowCommentEmoji(false);}} style={{background:'none',border:'none',fontSize:18,cursor:'pointer'}}>{e}</button>))}</div>}
             {commentImage && <img src={commentImage} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8}} />}
             <div style={{display:'flex',gap:8,alignItems:'center'}}>
-              <button className='btn btn-gh' onClick={()=>setShowCommentEmoji(v=>!v)} style={{padding:'6px 10px',fontSize:16}}>😊</button>
-              <label className='btn btn-gh' style={{cursor:'pointer',fontSize:13,padding:'6px 8px'}}>{commentUploading?'...':'🖼️'}<input type='file' accept='image/*,video/*' onChange={uploadCommentImg} style={{display:'none'}} /></label>
-              <input className='inp' placeholder='اكتب تعليقاً...' value={newComment} onChange={e=>setNewComment(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submitComment()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
+              <button className='btn btn-gh' onClick={()=>setShowCommentEmoji(v=>!v)} style={{padding:'6px 10px',fontSize:16}}>ًںکٹ</button>
+              <label className='btn btn-gh' style={{cursor:'pointer',fontSize:13,padding:'6px 8px'}}>{commentUploading?'...':'ًں–¼ï¸ڈ'}<input type='file' accept='image/*,video/*' onChange={uploadCommentImg} style={{display:'none'}} /></label>
+              <input className='inp' placeholder='ط§ظƒطھط¨ طھط¹ظ„ظٹظ‚ط§ظ‹...' value={newComment} onChange={e=>setNewComment(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submitComment()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
               <button className='btn btn-g' onClick={submitComment} style={{padding:'8px 14px',fontSize:13}}>Send</button>
             </div>
           </div>
@@ -553,7 +554,7 @@ function CreatePost({ user, lang, onPosted }) {
   const [uploading, setUploading] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [isVideo, setIsVideo] = useState(false);
-  const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆'];
+  const emojis = ['ًںکٹ','â‌¤ï¸ڈ','ًں”؛','ًںڈ›ï¸ڈ','âœˆï¸ڈ','ًںŒچ','ًں‘‘','â­گ','ًںژ‰','ًںŒ…','ًںڈ–ï¸ڈ','ًںگھ','ًں¦…','ًںŒ؛','ًں’ژ','âڑ”ï¸ڈ','ًںŒ™','âک€ï¸ڈ','ًںژ­','ًںڈ†'];
   const uploadImage = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -566,7 +567,7 @@ function CreatePost({ user, lang, onPosted }) {
   const submit = async () => {
     if (!text.trim() && !imageUrl) return;
     setPosting(true);
-    const content = text.trim() || (isVideo ? '🎥' : '📷');
+    const content = text.trim() || (isVideo ? 'ًںژ¥' : 'ًں“·');
     const hashtags = JSON.stringify((content.match(/#[\w\u0600-\u06FF]+/g)||[]));
     const r = await postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'', hashtags });
   };
@@ -574,9 +575,9 @@ function CreatePost({ user, lang, onPosted }) {
   return (
     <div className="card" style={{ padding:14, marginBottom:14 }}>
       <div style={{ display:'flex', gap:11, alignItems:'flex-start' }}>
-        <Avatar emoji={user?.avatar_emoji||'👑'} size={42} url={user?.avatar_url} />
+        <Avatar emoji={user?.avatar_emoji||'ًں‘‘'} size={42} url={user?.avatar_url} />
         <div style={{ flex:1 }}>
-          <textarea className="inp" placeholder={t('ما الذي تفكر فيه ؟ 🔺','What are you thinking? 🔺',lang)}
+          <textarea className="inp" placeholder={t('ظ…ط§ ط§ظ„ط°ظٹ طھظپظƒط± ظپظٹظ‡ طں ًں”؛','What are you thinking? ًں”؛',lang)}
             value={text} onChange={e=>setText(e.target.value)} rows={3} />
           {imageUrl && !isVideo && <img src={imageUrl} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:8}} />}
           {imageUrl && isVideo && <video src={imageUrl} controls style={{width:'100%',maxHeight:200,borderRadius:8,marginTop:8}} />}
@@ -587,17 +588,17 @@ function CreatePost({ user, lang, onPosted }) {
           )}
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:9 }}>
             <div style={{ display:'flex', gap:6, alignItems:'center' }}>
-              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)',title:'صورة'}}>
-                {uploading ? '⏳' : '🖼️'}
+              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)',title:'طµظˆط±ط©'}}>
+                {uploading ? 'âڈ³' : 'ًں–¼ï¸ڈ'}
                 <input type='file' accept='image/*' onChange={uploadImage} style={{display:'none'}} />
               </label>
               <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>
-                🎥
+                ًںژ¥
                 <input type='file' accept='video/*' onChange={uploadImage} style={{display:'none'}} />
               </label>
             </div>
             <button className='btn btn-g' onClick={submit} disabled={posting||(!text.trim()&&!imageUrl)} style={{ padding:'8px 20px' }}>
-              {posting?'⏳':t('نشر','Post',lang)}
+              {posting?'âڈ³':t('ظ†ط´ط±','Post',lang)}
             </button>
           </div>
         </div>
@@ -605,7 +606,7 @@ function CreatePost({ user, lang, onPosted }) {
     </div>
   );
 }
-// ── TOUR CARD ─────────────────────────────────────────────
+// â”€â”€ TOUR CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function TourCard({ tour, lang, onBuy }) {
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
   return (
@@ -613,12 +614,12 @@ function TourCard({ tour, lang, onBuy }) {
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative', minHeight:160, overflow:'hidden' }}>
         {tour.image_url && <img src={tour.image_url} style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',objectFit:'cover',opacity:0.4}} />}
         {(tour.badge_ar||tour.badge_en) && <span className='badge' style={{position:'absolute',top:10,right:10,fontSize:10,zIndex:2}}>{t(tour.badge_ar,tour.badge_en,lang)}</span>}
-        <div style={{fontSize:58,marginBottom:6,position:'relative',zIndex:1}}>{tour.image_emoji||'🏛️'}</div>
-        <div style={{color:'var(--g)',fontSize:12,position:'relative',zIndex:1}}>{'⭐'.repeat(Math.floor(tour.rating||0))} {tour.rating||0} ({tour.reviews_count||0})</div>
+        <div style={{fontSize:58,marginBottom:6,position:'relative',zIndex:1}}>{tour.image_emoji||'ًںڈ›ï¸ڈ'}</div>
+        <div style={{color:'var(--g)',fontSize:12,position:'relative',zIndex:1}}>{'â­گ'.repeat(Math.floor(tour.rating||0))} {tour.rating||0} ({tour.reviews_count||0})</div>
       </div>
       <div style={{ padding:14 }}>
         <h3 style={{ color:'var(--g)', fontSize:15, fontWeight:700, lineHeight:1.4, marginBottom:4 }}>{t(tour.title_ar,tour.title_en,lang)}</h3>
-        {tour.duration_days && <div style={{ fontSize:12, color:'var(--tm)', marginBottom:8 }}>📅 {tour.duration_days} {t('أيام','days',lang)}</div>}
+        {tour.duration_days && <div style={{ fontSize:12, color:'var(--tm)', marginBottom:8 }}>ًں“… {tour.duration_days} {t('ط£ظٹط§ظ…','days',lang)}</div>}
         <GoldDivider />
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div>
@@ -626,14 +627,14 @@ function TourCard({ tour, lang, onBuy }) {
             <span style={{ fontSize:11, color:'var(--tm)' }}> $ / person</span>
           </div>
           <button className='btn btn-g' style={{ padding:'8px 14px', fontSize:13 }} onClick={e=>{e.stopPropagation();onBuy(tour);}}>
-            {t('احجز الآن','Book Now',lang)}
+            {t('ط§ط­ط¬ط² ط§ظ„ط¢ظ†','Book Now',lang)}
           </button>
         </div>
       </div>
     </div>
   );
 }
-// ── PAYMENT MODAL ─────────────────────────────────────────
+// â”€â”€ PAYMENT MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
   const [step, setStep] = useState(1);
   const [method, setMethod] = useState('');
@@ -644,11 +645,11 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
   const [error, setError] = useState('');
 
   const methods = [
-    { id:'card',     label:t('بطاقة ائتمان / خصم','Credit / Debit Card',lang), icon:'💳' },
-    { id:'paypal',   label:'PayPal',                                             icon:'🅿️' },
-    { id:'vodafone', label:t('فودافون كاش','Vodafone Cash',lang),               icon:'📱' },
-    { id:'instapay', label:'InstaPay',                                           icon:'⚡' },
-    { id:'whatsapp', label:t('دفع عبر واتساب','Pay via WhatsApp',lang),         icon:'💬' },
+    { id:'card',     label:t('ط¨ط·ط§ظ‚ط© ط§ط¦طھظ…ط§ظ† / ط®طµظ…','Credit / Debit Card',lang), icon:'ًں’³' },
+    { id:'paypal',   label:'PayPal',                                             icon:'ًں…؟ï¸ڈ' },
+    { id:'vodafone', label:t('ظپظˆط¯ط§ظپظˆظ† ظƒط§ط´','Vodafone Cash',lang),               icon:'ًں“±' },
+    { id:'instapay', label:'InstaPay',                                           icon:'âڑ،' },
+    { id:'whatsapp', label:t('ط¯ظپط¹ ط¹ط¨ط± ظˆط§طھط³ط§ط¨','Pay via WhatsApp',lang),         icon:'ًں’¬' },
   ];
 
   const total = tour.price * guests;
@@ -663,15 +664,15 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
     const pRes = await bookingsAPI.payBooking(bRes.data.booking_id, method);
     setLoading(false);
     if (pRes.ok) onSuccess();
-    else setError(pRes.error||t('خطأ في الدفع','Payment error',lang));
+    else setError(pRes.error||t('ط®ط·ط£ ظپظٹ ط§ظ„ط¯ظپط¹','Payment error',lang));
   };
 
   return (
     <div className="modal-bg" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="modal" style={{ padding:22 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14 }}>
-          <div style={{ fontWeight:700, color:'var(--g)', fontSize:15 }}>🔺 {t('إتمام الحجز','Complete Booking',lang)}</div>
-          <button className="btn btn-gh" onClick={onClose} style={{ fontSize:18, padding:'2px 8px' }}>×</button>
+          <div style={{ fontWeight:700, color:'var(--g)', fontSize:15 }}>ًں”؛ {t('ط¥طھظ…ط§ظ… ط§ظ„ط­ط¬ط²','Complete Booking',lang)}</div>
+          <button className="btn btn-gh" onClick={onClose} style={{ fontSize:18, padding:'2px 8px' }}>أ—</button>
         </div>
 
         <div style={{ background:'rgba(201,168,76,.04)', border:'1px solid var(--bb)', borderRadius:10, padding:14, marginBottom:14 }}>
@@ -680,18 +681,18 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
           <GoldDivider />
           <div style={{ display:'flex', gap:10 }}>
             <div style={{ flex:1 }}>
-              <label style={{ fontSize:11, color:'var(--tm)' }}>{t('عدد الأشخاص','Guests',lang)}</label>
+              <label style={{ fontSize:11, color:'var(--tm)' }}>{t('ط¹ط¯ط¯ ط§ظ„ط£ط´ط®ط§طµ','Guests',lang)}</label>
               <select className="inp" style={{ marginTop:4, padding:'7px 10px' }} value={guests} onChange={e=>setGuests(Number(e.target.value))}>
                 {[1,2,3,4,5,6,7,8,9,10].map(n=><option key={n} value={n}>{n}</option>)}
               </select>
             </div>
             <div style={{ flex:1 }}>
-              <label style={{ fontSize:11, color:'var(--tm)' }}>{t('تاريخ السفر','Travel Date',lang)}</label>
+              <label style={{ fontSize:11, color:'var(--tm)' }}>{t('طھط§ط±ظٹط® ط§ظ„ط³ظپط±','Travel Date',lang)}</label>
               <input className="inp" type="date" style={{ marginTop:4, padding:'7px 10px' }} value={date} onChange={e=>setDate(e.target.value)} />
             </div>
           </div>
           <div style={{ display:'flex', justifyContent:'space-between', marginTop:10, fontSize:13 }}>
-            <span style={{ color:'var(--tm)' }}>{t('الإجمالي','Total',lang)}</span>
+            <span style={{ color:'var(--tm)' }}>{t('ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ','Total',lang)}</span>
             <span style={{ color:'var(--g)', fontWeight:800, fontFamily:'Cinzel,serif' }}>${total}</span>
           </div>
         </div>
@@ -700,16 +701,16 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
 
         {step===1 && (
           <div className="fi">
-            <div style={{ fontSize:13, color:'var(--gl)', marginBottom:10, fontWeight:600 }}>{t('اختر طريقة الدفع:','Choose payment method:',lang)}</div>
+            <div style={{ fontSize:13, color:'var(--gl)', marginBottom:10, fontWeight:600 }}>{t('ط§ط®طھط± ط·ط±ظٹظ‚ط© ط§ظ„ط¯ظپط¹:','Choose payment method:',lang)}</div>
             {methods.map(m=>(
               <div key={m.id} className={`pay-opt ${method===m.id?'sel':''}`} onClick={()=>setMethod(m.id)}>
                 <span style={{ fontSize:20 }}>{m.icon}</span>
                 <span style={{ fontSize:13, color:'var(--gl)' }}>{m.label}</span>
-                {method===m.id && <span style={{ marginRight:'auto', color:'var(--g)' }}>✓</span>}
+                {method===m.id && <span style={{ marginRight:'auto', color:'var(--g)' }}>âœ“</span>}
               </div>
             ))}
             <button className="btn btn-g" style={{ width:'100%', marginTop:6 }} onClick={()=>method&&setStep(2)}>
-              {t('التالي ←','Next →',lang)}
+              {t('ط§ظ„طھط§ظ„ظٹ â†گ','Next â†’',lang)}
             </button>
           </div>
         )}
@@ -718,7 +719,7 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
           <div className="fi">
             {method==='card' && (
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                <input className="inp" placeholder={t('اسم حامل البطاقة','Cardholder Name',lang)} value={card.name} onChange={e=>setCard(c=>({...c,name:e.target.value}))} />
+                <input className="inp" placeholder={t('ط§ط³ظ… ط­ط§ظ…ظ„ ط§ظ„ط¨ط·ط§ظ‚ط©','Cardholder Name',lang)} value={card.name} onChange={e=>setCard(c=>({...c,name:e.target.value}))} />
                 <input className="inp" placeholder="0000 0000 0000 0000" value={card.num} onChange={e=>setCard(c=>({...c,num:e.target.value}))} />
                 <div style={{ display:'flex', gap:10 }}>
                   <input className="inp" placeholder="MM/YY" value={card.exp} onChange={e=>setCard(c=>({...c,exp:e.target.value}))} />
@@ -731,15 +732,15 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
                 <div style={{ fontSize:48, marginBottom:10 }}>{methods.find(m=>m.id===method)?.icon}</div>
                 <div style={{ color:'var(--gl)', fontSize:13, lineHeight:1.7 }}>
                   {method==='whatsapp'
-                    ? t('سيتم تحويلك إلى واتساب لإتمام الحجز مع فريق كيمت كونسيرج','You will be redirected to WhatsApp to complete booking with Kemet Concierge',lang)
-                    : t('ستتلقى تعليمات الدفع عبر البريد الإلكتروني','You will receive payment instructions via email',lang)}
+                    ? t('ط³ظٹطھظ… طھط­ظˆظٹظ„ظƒ ط¥ظ„ظ‰ ظˆط§طھط³ط§ط¨ ظ„ط¥طھظ…ط§ظ… ط§ظ„ط­ط¬ط² ظ…ط¹ ظپط±ظٹظ‚ ظƒظٹظ…طھ ظƒظˆظ†ط³ظٹط±ط¬','You will be redirected to WhatsApp to complete booking with Kemet Concierge',lang)
+                    : t('ط³طھطھظ„ظ‚ظ‰ طھط¹ظ„ظٹظ…ط§طھ ط§ظ„ط¯ظپط¹ ط¹ط¨ط± ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ','You will receive payment instructions via email',lang)}
                 </div>
               </div>
             )}
             <div style={{ display:'flex', gap:10, marginTop:14 }}>
-              <button className="btn btn-o" onClick={()=>setStep(1)} style={{ flex:1 }}>{t('رجوع','Back',lang)}</button>
+              <button className="btn btn-o" onClick={()=>setStep(1)} style={{ flex:1 }}>{t('ط±ط¬ظˆط¹','Back',lang)}</button>
               <button className="btn btn-g" onClick={handlePay} disabled={loading} style={{ flex:1 }}>
-                {loading?'⏳':t('تأكيد الحجز 🔺','Confirm 🔺',lang)}
+                {loading?'âڈ³':t('طھط£ظƒظٹط¯ ط§ظ„ط­ط¬ط² ًں”؛','Confirm ًں”؛',lang)}
               </button>
             </div>
           </div>
@@ -749,17 +750,17 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
   );
 }
 
-// ── LEFT SIDEBAR ──────────────────────────────────────────
+// â”€â”€ LEFT SIDEBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function LeftSidebar({ user, page, setPage, lang, onLogout }) {
   const navItems = [
-    { icon:'🏠', ar:'الرئيسية',   en:'Home',          key:'feed' },
-    { icon:'👤', ar:'البروفايل',  en:'Profile',       key:'profile' },
-    { icon:'🏛️', ar:'الاستور',   en:'Store',         key:'store' },
-    { icon:'🔔', ar:'الإشعارات', en:'Notifications', key:'notifications', dot:true },
-    { icon:'💬', ar:'الرسائل',   en:'Messages',      key:'messages' },
-    { icon:'🔍', ar:'البحث',      en:'Search',        key:'search' },
-    { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
-    { icon:'🌑', ar:'كسوف 2027', en:'Eclipse 2027', key:'eclipse' },
+    { icon:'ًںڈ ', ar:'ط§ظ„ط±ط¦ظٹط³ظٹط©',   en:'Home',          key:'feed' },
+    { icon:'ًں‘¤', ar:'ط§ظ„ط¨ط±ظˆظپط§ظٹظ„',  en:'Profile',       key:'profile' },
+    { icon:'ًںڈ›ï¸ڈ', ar:'ط§ظ„ط§ط³طھظˆط±',   en:'Store',         key:'store' },
+    { icon:'ًں””', ar:'ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ', en:'Notifications', key:'notifications', dot:true },
+    { icon:'ًں’¬', ar:'ط§ظ„ط±ط³ط§ط¦ظ„',   en:'Messages',      key:'messages' },
+    { icon:'ًں”چ', ar:'ط§ظ„ط¨ط­ط«',      en:'Search',        key:'search' },
+    { icon:'âڑ™ï¸ڈ', ar:'ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ', en:'Settings', key:'settings' },
+    { icon:'ًںŒ‘', ar:'ظƒط³ظˆظپ 2027', en:'Eclipse 2027', key:'eclipse' },
   ];
   const isAdmin = user?.email === 'mido704@gmail.com';
   const isStoreManager = user?.role === 'store_manager' || isAdmin;
@@ -768,19 +769,19 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     <div style={{ borderLeft:'1px solid var(--bb)', padding:'18px 10px', position:'sticky', top:52, height:'calc(100vh - 52px)', overflowY:'auto', background:'var(--b)', display:'flex', flexDirection:'column' }}>
       <div style={{ padding:'0 8px', marginBottom:22 }}>
         <div className="logo" style={{ fontSize:18 }}>KEMET</div>
-        <button className="btn btn-gh" style={{fontSize:12,padding:"5px 12px",border:"1px solid rgba(201,168,76,0.4)",borderRadius:20,color:"var(--g)",display:"flex",alignItems:"center",gap:6,background:"rgba(201,168,76,0.06)",fontWeight:700,letterSpacing:1}} onClick={()=>setPage("eclipse")}>🌑 Eclipse 2027</button>
-        <div style={{ fontSize:10, color:'var(--tm)', marginTop:1 }}>سوشيال</div>
+        <button className="btn btn-gh" style={{fontSize:12,padding:"5px 12px",border:"1px solid rgba(201,168,76,0.4)",borderRadius:20,color:"var(--g)",display:"flex",alignItems:"center",gap:6,background:"rgba(201,168,76,0.06)",fontWeight:700,letterSpacing:1}} onClick={()=>setPage("eclipse")}>ًںŒ‘ Eclipse 2027</button>
+        <div style={{ fontSize:10, color:'var(--tm)', marginTop:1 }}>ط³ظˆط´ظٹط§ظ„</div>
       </div>
       {isAdmin && (
         <div className={`si ${page==='admin'?'on':''}`} onClick={()=>setPage('admin')}>
-          <span style={{ fontSize:17, width:22, textAlign:'center' }}>🛡️</span>
-          <span>{t('الإدارة','Admin',lang)}</span>
+          <span style={{ fontSize:17, width:22, textAlign:'center' }}>ًں›،ï¸ڈ</span>
+          <span>{t('ط§ظ„ط¥ط¯ط§ط±ط©','Admin',lang)}</span>
         </div>
       )}
       {isStoreManager && (
         <div className={`si ${page===('store_manager')?'on':''}`} onClick={()=>setPage('store_manager')}>
-          <span style={{ fontSize:17, width:22, textAlign:'center' }}>🏛️</span>
-          <span>{t('إدارة المتجر','Store Mgr',lang)}</span>
+          <span style={{ fontSize:17, width:22, textAlign:'center' }}>ًںڈ›ï¸ڈ</span>
+          <span>{t('ط¥ط¯ط§ط±ط© ط§ظ„ظ…طھط¬ط±','Store Mgr',lang)}</span>
         </div>
       )}
       
@@ -794,7 +795,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
       <div style={{ marginTop:'auto', paddingTop:14, borderTop:'1px solid var(--bb)' }}>
         {user && (
           <div style={{ display:'flex', alignItems:'center', gap:9, padding:'6px 4px', cursor:'pointer' }} onClick={()=>setPage('profile')}>
-            <Avatar emoji={user.avatar_emoji||'👑'} url={user?.avatar_url} size={34} />
+            <Avatar emoji={user.avatar_emoji||'ًں‘‘'} url={user?.avatar_url} size={34} />
             <div style={{ flex:1, overflow:'hidden' }}>
               <div style={{ fontSize:12, color:'var(--g)', fontWeight:600, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user.nickname}</div>
               <div style={{ fontSize:10, color:'var(--tm)' }}>{user.email}</div>
@@ -802,37 +803,37 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
           </div>
         )}
         <button className="btn btn-gh" onClick={onLogout} style={{ width:'100%', marginTop:6, fontSize:12, color:'#E74C3C' }}>
-          {t('تسجيل الخروج','Logout',lang)}
+          {t('طھط³ط¬ظٹظ„ ط§ظ„ط®ط±ظˆط¬','Logout',lang)}
         </button>
       </div>
     </div>
   );
 }
 
-// ── RIGHT SIDEBAR ─────────────────────────────────────────
+// â”€â”€ RIGHT SIDEBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function RightSidebar({ lang }) {
   return (
     <div className="rs" style={{ borderRight:'1px solid var(--bb)', padding:'18px 12px', position:'sticky', top:52, height:'calc(100vh - 52px)', overflowY:'auto', background:'var(--b)' }}>
       <div style={{ fontWeight:700, color:'var(--g)', fontSize:13, marginBottom:12, display:'flex', alignItems:'center', gap:6 }}>
-        🔥 {t('الأكثر تداولاً','Trending',lang)}
+        ًں”¥ {t('ط§ظ„ط£ظƒط«ط± طھط¯ط§ظˆظ„ط§ظ‹','Trending',lang)}
       </div>
       {(lang==='ar'?HASHTAGS_AR:HASHTAGS_EN).map(h=>(
         <div key={h.tag} style={{ padding:'7px 0', borderBottom:'1px solid var(--bb)', cursor:'pointer' }} onClick={()=>{ if(window.setHashtagFilter) window.setHashtagFilter(h.tag); }}>
           <div style={{ color:'var(--g)', fontWeight:600, fontSize:13 }}>{h.tag}</div>
-          <div style={{ color:'var(--tm)', fontSize:11 }}>{h.count} {t('منشور','posts',lang)}</div>
+          <div style={{ color:'var(--tm)', fontSize:11 }}>{h.count} {t('ظ…ظ†ط´ظˆط±','posts',lang)}</div>
         </div>
       ))}
       <div className="card" style={{ padding:13, textAlign:'center', marginTop:16 }}>
-        <div style={{ fontSize:28, marginBottom:5 }}>🏛️</div>
-        <div style={{ color:'var(--g)', fontWeight:700, fontSize:12 }}>{t('كيمت كونسيرج','Kemet Concierge',lang)}</div>
-        <div style={{ fontSize:11, color:'var(--tm)', marginTop:4, lineHeight:1.6 }}>{t('ترخيص سياحي طبي رسمي','Official Medical Tourism License',lang)}</div>
-        <div style={{ marginTop:8 }}><span className="badge" style={{ fontSize:10 }}>✓ {t('معتمد','Certified',lang)}</span></div>
+        <div style={{ fontSize:28, marginBottom:5 }}>ًںڈ›ï¸ڈ</div>
+        <div style={{ color:'var(--g)', fontWeight:700, fontSize:12 }}>{t('ظƒظٹظ…طھ ظƒظˆظ†ط³ظٹط±ط¬','Kemet Concierge',lang)}</div>
+        <div style={{ fontSize:11, color:'var(--tm)', marginTop:4, lineHeight:1.6 }}>{t('طھط±ط®ظٹطµ ط³ظٹط§ط­ظٹ ط·ط¨ظٹ ط±ط³ظ…ظٹ','Official Medical Tourism License',lang)}</div>
+        <div style={{ marginTop:8 }}><span className="badge" style={{ fontSize:10 }}>âœ“ {t('ظ…ط¹طھظ…ط¯','Certified',lang)}</span></div>
       </div>
     </div>
   );
 }
 
-// ── PAGES ─────────────────────────────────────────────────
+// â”€â”€ PAGES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   const [hashFilter, setHashFilter] = useState('');
   const [visibleCount, setVisibleCount] = useState(10);
@@ -848,7 +849,7 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
       image_url: imageUrl||'', video_url: videoUrl||'', hashtags:'[]', likes_count:0, comments_count:0, shares_count:0, liked:false,
     };
     setPosts(p => [newPost, ...p]);
-    onToast(t('تم نشر المنشور! 🔺','Post published! 🔺',lang));
+    onToast(t('طھظ… ظ†ط´ط± ط§ظ„ظ…ظ†ط´ظˆط±! ًں”؛','Post published! ًں”؛',lang));
   };
 
   const handleLike = async (postId) => {
@@ -858,20 +859,20 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
-        <button className="tab on">{t('لك','For You',lang)}</button>
-        <button className="tab">{t('الأصدقاء','Following',lang)}</button>
-        <button className="tab">{t('مصر','Egypt',lang)}</button>
+        <button className="tab on">{t('ظ„ظƒ','For You',lang)}</button>
+        <button className="tab">{t('ط§ظ„ط£طµط¯ظ‚ط§ط،','Following',lang)}</button>
+        <button className="tab">{t('ظ…طµط±','Egypt',lang)}</button>
       </div>
-      {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>✕</button></div>}
+      {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>âœ•</button></div>}
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
       {(hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).slice(0,visibleCount).map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
-      {loadingMore && <div style={{textAlign:'center',padding:'20px 0',color:'var(--gd)',fontSize:22}}>⏳</div>}
+      {loadingMore && <div style={{textAlign:'center',padding:'20px 0',color:'var(--gd)',fontSize:22}}>âڈ³</div>}
       {!loadingMore && visibleCount < (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).length && (
         <div onClick={()=>{setLoadingMore(true);setTimeout(()=>{setVisibleCount(c=>c+10);setLoadingMore(false);},600);}} style={{textAlign:'center',padding:'16px 0',color:'var(--gd)',fontSize:14,cursor:'pointer',border:'1px solid var(--gd)',borderRadius:20,margin:'10px 0',fontWeight:700}}>
-          ↓ {lang==='ar'?'تحميل المزيد':'Load More'}
+          â†“ {lang==='ar'?'طھط­ظ…ظٹظ„ ط§ظ„ظ…ط²ظٹط¯':'Load More'}
         </div>
       )}
-      {!loadingMore && visibleCount < (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).length && <div style={{textAlign:'center',padding:'16px 0',color:'var(--tm)',fontSize:13}}>↓ {lang==='ar'?'اسحب للمزيد':'Scroll for more'}</div>}
+      {!loadingMore && visibleCount < (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).length && <div style={{textAlign:'center',padding:'16px 0',color:'var(--tm)',fontSize:13}}>â†“ {lang==='ar'?'ط§ط³ط­ط¨ ظ„ظ„ظ…ط²ظٹط¯':'Scroll for more'}</div>}
     </div>
   );
 }
@@ -883,12 +884,12 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
   const total = tour.price * guests;
   return (
     <div style={{ maxWidth:700, margin:'0 auto', padding:'14px 14px' }}>
-      <button className="btn btn-gh" onClick={onBack} style={{ marginBottom:14 }}>← {t('رجوع','Back',lang)}</button>
+      <button className="btn btn-gh" onClick={onBack} style={{ marginBottom:14 }}>â†گ {t('ط±ط¬ظˆط¹','Back',lang)}</button>
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', borderRadius:14, overflow:'hidden', marginBottom:16 }}>
         {tour.image_url ? (
           <img src={tour.image_url} style={{ width:'100%', maxHeight:280, objectFit:'cover' }} />
         ) : (
-          <div style={{ textAlign:'center', padding:'40px 0', fontSize:80 }}>{tour.image_emoji||'🏛️'}</div>
+          <div style={{ textAlign:'center', padding:'40px 0', fontSize:80 }}>{tour.image_emoji||'ًںڈ›ï¸ڈ'}</div>
         )}
       </div>
       {tour.gallery && tour.gallery.length>0 && (
@@ -900,50 +901,50 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10 }}>
           <div>
             <h2 style={{ color:'var(--g)', fontSize:20, fontWeight:800, marginBottom:6 }}>{t(tour.title_ar,tour.title_en,lang)}</h2>
-            <div style={{ color:'var(--g)', fontSize:13 }}>{'⭐'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count} {t('تقييم','reviews',lang)})</div>
+            <div style={{ color:'var(--g)', fontSize:13 }}>{'â­گ'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count} {t('طھظ‚ظٹظٹظ…','reviews',lang)})</div>
           </div>
           <span className="badge" style={{ fontSize:11 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>
         </div>
         <GoldDivider />
-        {tour.duration_days && <div style={{ fontSize:13, color:'var(--tm)', marginBottom:10 }}>📅 {tour.duration_days} {t('أيام','days',lang)}</div>}
+        {tour.duration_days && <div style={{ fontSize:13, color:'var(--tm)', marginBottom:10 }}>ًں“… {tour.duration_days} {t('ط£ظٹط§ظ…','days',lang)}</div>}
         <p style={{ fontSize:14, color:'#aaa', lineHeight:1.8, marginBottom:14 }}>{t(tour.description_ar,tour.description_en,lang)}</p>
         {incl.length>0 && (
           <div style={{ marginBottom:14 }}>
-            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:8 }}>✦ {t('يشمل البرنامج:','Program Includes:',lang)}</div>
+            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:8 }}>âœ¦ {t('ظٹط´ظ…ظ„ ط§ظ„ط¨ط±ظ†ط§ظ…ط¬:','Program Includes:',lang)}</div>
             <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-              {incl.map(i=><span key={i} style={{ fontSize:12, background:'rgba(201,168,76,.08)', border:'1px solid var(--bb)', padding:'4px 12px', borderRadius:20, color:'var(--gl)' }}>✓ {i}</span>)}
+              {incl.map(i=><span key={i} style={{ fontSize:12, background:'rgba(201,168,76,.08)', border:'1px solid var(--bb)', padding:'4px 12px', borderRadius:20, color:'var(--gl)' }}>âœ“ {i}</span>)}
             </div>
           </div>
         )}
       </div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20 }}>
-        <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>🎫 {t('تفاصيل الحجز','Booking Details',lang)}</div>
+        <div style={{ fontWeight:700, color:'var(--g)', fontSize:16, marginBottom:14 }}>ًںژ« {t('طھظپط§طµظٹظ„ ط§ظ„ط­ط¬ط²','Booking Details',lang)}</div>
         <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
-          <div style={{ color:'var(--tm)', fontSize:13 }}>{t('عدد الأفراد:','Number of guests:',lang)}</div>
+          <div style={{ color:'var(--tm)', fontSize:13 }}>{t('ط¹ط¯ط¯ ط§ظ„ط£ظپط±ط§ط¯:','Number of guests:',lang)}</div>
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <button className='btn btn-gh' style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.max(1,g-1))}>−</button>
+            <button className='btn btn-gh' style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.max(1,g-1))}>âˆ’</button>
             <span style={{ fontWeight:800, fontSize:20, color:'var(--g)', minWidth:30, textAlign:'center' }}>{guests}</span>
             <button className='btn btn-gh' style={{ width:34, height:34, fontSize:18, padding:0 }} onClick={()=>setGuests(g=>Math.min(9,g+1))}>+</button>
           </div>
-          <div style={{ fontSize:12, color:'var(--tm)' }}>{t('(حد أقصى 9)','(max 9)',lang)}</div>
+          <div style={{ fontSize:12, color:'var(--tm)' }}>{t('(ط­ط¯ ط£ظ‚طµظ‰ 9)','(max 9)',lang)}</div>
         </div>
         {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en) && (
           <div style={{ marginBottom:14 }}>
-            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:10 }}>🗓️ {t('البرنامج اليومي:','Daily Itinerary:',lang)}</div>
+            <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:10 }}>ًں—“ï¸ڈ {t('ط§ظ„ط¨ط±ظ†ط§ظ…ط¬ ط§ظ„ظٹظˆظ…ظٹ:','Daily Itinerary:',lang)}</div>
             {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en).map((day,i)=>(<div key={i} style={{ display:'flex', gap:10, marginBottom:8 }}><span style={{ background:'var(--gd)', color:'#000', borderRadius:'50%', width:22, height:22, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{i+1}</span><span style={{ fontSize:13, color:'var(--gl)', lineHeight:1.6 }}>{day}</span></div>))}
           </div>
         )}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:12 }}>
           <div>
-            <div style={{ fontSize:13, color:'var(--tm)' }}>{guests} × ${tour.price}</div>
+            <div style={{ fontSize:13, color:'var(--tm)' }}>{guests} أ— ${tour.price}</div>
             <div style={{ fontSize:26, fontWeight:800, color:'var(--g)', fontFamily:'Cinzel,serif' }}>${total}</div>
           </div>
           <button className="btn btn-g" style={{ padding:'12px 28px', fontSize:15 }} onClick={()=>setBuyTour({...tour, guests_count:guests, total_price:total})}>
-            🔺 {t('احجز الآن','Book Now',lang)}
+            ًں”؛ {t('ط§ط­ط¬ط² ط§ظ„ط¢ظ†','Book Now',lang)}
           </button>
         </div>
       </div>
-      {buyTour && <PaymentModal tour={buyTour} lang={lang} user={user} onClose={()=>setBuyTour(null)} onSuccess={()=>{ setBuyTour(null); onToast(t('تم تأكيد حجزك! 🔺','Booking confirmed! 🔺',lang)); onBack(); }} />}
+      {buyTour && <PaymentModal tour={buyTour} lang={lang} user={user} onClose={()=>setBuyTour(null)} onSuccess={()=>{ setBuyTour(null); onToast(t('طھظ… طھط£ظƒظٹط¯ ط­ط¬ط²ظƒ! ًں”؛','Booking confirmed! ًں”؛',lang)); onBack(); }} />}
     </div>
   );
 }
@@ -957,16 +958,16 @@ function FlightSearch({ lang }) {
   };
   return (
     <div className='card' style={{padding:24,maxWidth:500,margin:'0 auto',textAlign:'center'}}>
-      <div style={{fontSize:48,marginBottom:10}}>✈️</div>
-      <div style={{fontWeight:800,fontSize:20,color:'var(--g)',marginBottom:6}}>{lang==='ar'?'ابحث عن رحلات الطيران':'Search Flights'}</div>
-      <div style={{fontSize:12,color:'var(--tm)',marginBottom:20}}>{lang==='ar'?'بالتعاون مع Skyscanner':'Powered by Skyscanner'}</div>
+      <div style={{fontSize:48,marginBottom:10}}>âœˆï¸ڈ</div>
+      <div style={{fontWeight:800,fontSize:20,color:'var(--g)',marginBottom:6}}>{lang==='ar'?'ط§ط¨ط­ط« ط¹ظ† ط±ط­ظ„ط§طھ ط§ظ„ط·ظٹط±ط§ظ†':'Search Flights'}</div>
+      <div style={{fontSize:12,color:'var(--tm)',marginBottom:20}}>{lang==='ar'?'ط¨ط§ظ„طھط¹ط§ظˆظ† ظ…ط¹ Skyscanner':'Powered by Skyscanner'}</div>
       <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:16}}>
-        <input className='inp' placeholder={lang==='ar'?'من (مثال: CAI)':'From (e.g. CAI)'} value={from} onChange={e=>setFrom(e.target.value)} />
-        <input className='inp' placeholder={lang==='ar'?'إلى (مثال: DXB)':'To (e.g. DXB)'} value={to} onChange={e=>setTo(e.target.value)} />
+        <input className='inp' placeholder={lang==='ar'?'ظ…ظ† (ظ…ط«ط§ظ„: CAI)':'From (e.g. CAI)'} value={from} onChange={e=>setFrom(e.target.value)} />
+        <input className='inp' placeholder={lang==='ar'?'ط¥ظ„ظ‰ (ظ…ط«ط§ظ„: DXB)':'To (e.g. DXB)'} value={to} onChange={e=>setTo(e.target.value)} />
         <input className='inp' type='date' value={date} onChange={e=>setDate(e.target.value)} />
       </div>
-      <button className='btn btn-g' style={{width:'100%',padding:'12px 0',fontSize:15}} onClick={search}>🔍 {lang==='ar'?'ابحث الآن':'Search Now'}</button>
-      <div style={{marginTop:12,fontSize:11,color:'var(--tm)'}}>{lang==='ar'?'ستنتقل لموقع Skyscanner للحجز':'You will be redirected to Skyscanner to book'}</div>
+      <button className='btn btn-g' style={{width:'100%',padding:'12px 0',fontSize:15}} onClick={search}>ًں”چ {lang==='ar'?'ط§ط¨ط­ط« ط§ظ„ط¢ظ†':'Search Now'}</button>
+      <div style={{marginTop:12,fontSize:11,color:'var(--tm)'}}>{lang==='ar'?'ط³طھظ†طھظ‚ظ„ ظ„ظ…ظˆظ‚ط¹ Skyscanner ظ„ظ„ط­ط¬ط²':'You will be redirected to Skyscanner to book'}</div>
     </div>
   );
 }
@@ -980,16 +981,16 @@ function HotelSearch({ lang }) {
   };
   return (
     <div className='card' style={{padding:24,maxWidth:500,margin:'0 auto',textAlign:'center'}}>
-      <div style={{fontSize:48,marginBottom:10}}>🏨</div>
-      <div style={{fontWeight:800,fontSize:20,color:'var(--g)',marginBottom:6}}>{lang==='ar'?'ابحث عن فنادق':'Search Hotels'}</div>
-      <div style={{fontSize:12,color:'var(--tm)',marginBottom:20}}>{lang==='ar'?'بالتعاون مع Booking.com':'Powered by Booking.com'}</div>
+      <div style={{fontSize:48,marginBottom:10}}>ًںڈ¨</div>
+      <div style={{fontWeight:800,fontSize:20,color:'var(--g)',marginBottom:6}}>{lang==='ar'?'ط§ط¨ط­ط« ط¹ظ† ظپظ†ط§ط¯ظ‚':'Search Hotels'}</div>
+      <div style={{fontSize:12,color:'var(--tm)',marginBottom:20}}>{lang==='ar'?'ط¨ط§ظ„طھط¹ط§ظˆظ† ظ…ط¹ Booking.com':'Powered by Booking.com'}</div>
       <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:16}}>
-        <input className='inp' placeholder={lang==='ar'?'المدينة (مثال: القاهرة)':'City (e.g. Cairo)'} value={city} onChange={e=>setCity(e.target.value)} />
-        <input className='inp' type='date' placeholder={lang==='ar'?'تاريخ الوصول':'Check-in'} value={checkin} onChange={e=>setCheckin(e.target.value)} />
-        <input className='inp' type='date' placeholder={lang==='ar'?'تاريخ المغادرة':'Check-out'} value={checkout} onChange={e=>setCheckout(e.target.value)} />
+        <input className='inp' placeholder={lang==='ar'?'ط§ظ„ظ…ط¯ظٹظ†ط© (ظ…ط«ط§ظ„: ط§ظ„ظ‚ط§ظ‡ط±ط©)':'City (e.g. Cairo)'} value={city} onChange={e=>setCity(e.target.value)} />
+        <input className='inp' type='date' placeholder={lang==='ar'?'طھط§ط±ظٹط® ط§ظ„ظˆطµظˆظ„':'Check-in'} value={checkin} onChange={e=>setCheckin(e.target.value)} />
+        <input className='inp' type='date' placeholder={lang==='ar'?'طھط§ط±ظٹط® ط§ظ„ظ…ط؛ط§ط¯ط±ط©':'Check-out'} value={checkout} onChange={e=>setCheckout(e.target.value)} />
       </div>
-      <button className='btn btn-g' style={{width:'100%',padding:'12px 0',fontSize:15}} onClick={search}>🔍 {lang==='ar'?'ابحث الآن':'Search Now'}</button>
-      <div style={{marginTop:12,fontSize:11,color:'var(--tm)'}}>{lang==='ar'?'ستنتقل لموقع Booking.com للحجز':'You will be redirected to Booking.com to book'}</div>
+      <button className='btn btn-g' style={{width:'100%',padding:'12px 0',fontSize:15}} onClick={search}>ًں”چ {lang==='ar'?'ط§ط¨ط­ط« ط§ظ„ط¢ظ†':'Search Now'}</button>
+      <div style={{marginTop:12,fontSize:11,color:'var(--tm)'}}>{lang==='ar'?'ط³طھظ†طھظ‚ظ„ ظ„ظ…ظˆظ‚ط¹ Booking.com ظ„ظ„ط­ط¬ط²':'You will be redirected to Booking.com to book'}</div>
     </div>
   );
 }
@@ -1008,15 +1009,15 @@ function StorePage({ lang, user, onToast }) {
   return (
     <div style={{ maxWidth:860, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ textAlign:'center', marginBottom:22, padding:'16px 0', overflow:'hidden', width:'100%' }}>
-        <div style={{ fontSize:48, marginBottom:7 }}>🏛️</div>
-        <div className="logo" style={{ fontSize:24, display:'block', marginBottom:5 }}>{t('متجر كيمت السياحي','Kemet Tourism Store',lang)}</div>
-        <p style={{ color:'var(--tm)', fontSize:12, padding:'0 8px', wordBreak:'break-word' }}>{t('رحلات فاخرة • استشارات • سياحة علاجية • ترخيص رسمي','Luxury Tours • Consulting • Medical Tourism • Official License',lang)}</p>
+        <div style={{ fontSize:48, marginBottom:7 }}>ًںڈ›ï¸ڈ</div>
+        <div className="logo" style={{ fontSize:24, display:'block', marginBottom:5 }}>{t('ظ…طھط¬ط± ظƒظٹظ…طھ ط§ظ„ط³ظٹط§ط­ظٹ','Kemet Tourism Store',lang)}</div>
+        <p style={{ color:'var(--tm)', fontSize:12, padding:'0 8px', wordBreak:'break-word' }}>{t('ط±ط­ظ„ط§طھ ظپط§ط®ط±ط© â€¢ ط§ط³طھط´ط§ط±ط§طھ â€¢ ط³ظٹط§ط­ط© ط¹ظ„ط§ط¬ظٹط© â€¢ طھط±ط®ظٹطµ ط±ط³ظ…ظٹ','Luxury Tours â€¢ Consulting â€¢ Medical Tourism â€¢ Official License',lang)}</p>
         <div style={{ marginTop:10, display:'flex', justifyContent:'center', gap:8, flexWrap:'wrap' }}>
-          {['✓ ترخيص رسمي','✓ دفع آمن','✓ دعم 24/7'].map(b=><span key={b} className="badge" style={{ fontSize:11 }}>{b}</span>)}
+          {['âœ“ طھط±ط®ظٹطµ ط±ط³ظ…ظٹ','âœ“ ط¯ظپط¹ ط¢ظ…ظ†','âœ“ ط¯ط¹ظ… 24/7'].map(b=><span key={b} className="badge" style={{ fontSize:11 }}>{b}</span>)}
         </div>
       </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:18, gap:0, overflowX:'auto', WebkitOverflowScrolling:'touch', msOverflowStyle:'none', scrollbarWidth:'none' }}>
-        {[['all',t('الكل','All',lang)],['tours',t('رحلات','Tours',lang)],['consult',t('استشارات','Consult',lang)],['medical',t('علاجية','Medical',lang)],['flights',t('طيران','Flights',lang)],['hotels',t('فنادق','Hotels',lang)]].map(([k,l])=>(<button key={k} className={'tab '+(tab===k?'on':'')} onClick={()=>setTab(k)}>{l}</button>))}
+        {[['all',t('ط§ظ„ظƒظ„','All',lang)],['tours',t('ط±ط­ظ„ط§طھ','Tours',lang)],['consult',t('ط§ط³طھط´ط§ط±ط§طھ','Consult',lang)],['medical',t('ط¹ظ„ط§ط¬ظٹط©','Medical',lang)],['flights',t('ط·ظٹط±ط§ظ†','Flights',lang)],['hotels',t('ظپظ†ط§ط¯ظ‚','Hotels',lang)]].map(([k,l])=>(<button key={k} className={'tab '+(tab===k?'on':'')} onClick={()=>setTab(k)}>{l}</button>))}
 
       </div>
       {selectedTour ? (
@@ -1061,35 +1062,35 @@ function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
     fetch(API+'/users/'+userId, {headers:{'Authorization':'Bearer '+token}})
       .then(r=>r.json()).then(d=>{ if(d.ok) setProfile(d.data); setLoading(false); });
   },[userId]);
-  if(loading) return <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>⏳</div>;
-  if(!profile) return <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>مش موجود</div>;
+  if(loading) return <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>âڈ³</div>;
+  if(!profile) return <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>ظ…ط´ ظ…ظˆط¬ظˆط¯</div>;
   return (
     <div style={{maxWidth:600,margin:'0 auto',padding:'0 14px 14px'}}>
-      <button className='btn btn-gh' onClick={onBack} style={{marginBottom:14}}>← {t('رجوع','Back',lang)}</button>
+      <button className='btn btn-gh' onClick={onBack} style={{marginBottom:14}}>â†گ {t('ط±ط¬ظˆط¹','Back',lang)}</button>
       <div className='pcover' style={{marginBottom:0,position:'relative'}}>
-        {profile.cover_url ? <img src={profile.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',top:0,left:0}} /> : <div className='hiero'>𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div>}
+        {profile.cover_url ? <img src={profile.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',top:0,left:0}} /> : <div className='hiero'>ً“‚€ ً“پ؟ ً“†ڈ ً“‚‹ ً“†¼ ً“…“ ً“‚€ ً“پ؟ ً“†ڈ ً“‚‹</div>}
       </div>
       <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderTop:'none',borderRadius:'0 0 12px 12px',padding:'0 16px 16px',marginBottom:14}}>
         <div style={{marginTop:10}}>
-          <Avatar emoji={profile.avatar_emoji||'👑'} size={72} url={profile.avatar_url} />
+          <Avatar emoji={profile.avatar_emoji||'ًں‘‘'} size={72} url={profile.avatar_url} />
         </div>
         <div style={{marginTop:10}}>
           <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>{profile.nickname}</div>
           <div style={{fontSize:13,color:'var(--tm)',marginTop:2}}>{profile.name}</div>
           {profile.bio && <div style={{fontSize:13,color:'var(--gl)',marginTop:6,lineHeight:1.6}}>{profile.bio}</div>}
           <div style={{display:'flex',gap:24,marginTop:14}}>
-            <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.followers_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('متابعون','Followers',lang)}</div></div>
-            <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.following_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('متابَعون','Following',lang)}</div></div>
+            <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.followers_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('ظ…طھط§ط¨ط¹ظˆظ†','Followers',lang)}</div></div>
+            <div><div style={{fontWeight:800,fontSize:18,color:'var(--g)'}}>{profile.following_count||0}</div><div style={{fontSize:11,color:'var(--tm)'}}>{t('ظ…طھط§ط¨ظژط¹ظˆظ†','Following',lang)}</div></div>
           </div>
-          {userId !== user?.id && <button className={following?'btn btn-gh':'btn btn-g'} onClick={toggleFollow} style={{marginTop:12,padding:'8px 24px'}}>{following?t('إلغاء المتابعة','Unfollow',lang):t('+ متابعة','+ Follow',lang)}</button>}
+          {userId !== user?.id && <button className={following?'btn btn-gh':'btn btn-g'} onClick={toggleFollow} style={{marginTop:12,padding:'8px 24px'}}>{following?t('ط¥ظ„ط؛ط§ط، ط§ظ„ظ…طھط§ط¨ط¹ط©','Unfollow',lang):t('+ ظ…طھط§ط¨ط¹ط©','+ Follow',lang)}</button>}
         </div>
       </div>
       {userId !== user?.id && (
         <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:12,padding:20,textAlign:'center'}}>
-          <div style={{fontSize:32,marginBottom:8}}>💬</div>
-          <div style={{color:'var(--tm)',fontSize:13,marginBottom:14}}>{t('ابعت رسالة خاصة','Send a private message',lang)}</div>
+          <div style={{fontSize:32,marginBottom:8}}>ًں’¬</div>
+          <div style={{color:'var(--tm)',fontSize:13,marginBottom:14}}>{t('ط§ط¨ط¹طھ ط±ط³ط§ظ„ط© ط®ط§طµط©','Send a private message',lang)}</div>
           <button className='btn btn-g' style={{padding:'10px 28px'}} onClick={()=>onStartChat&&onStartChat({id:profile.id,nickname:profile.nickname,avatar_emoji:profile.avatar_emoji,avatar_url:profile.avatar_url})}>
-            💬 {t('ارسل رسالة','Send Message',lang)}
+            ًں’¬ {t('ط§ط±ط³ظ„ ط±ط³ط§ظ„ط©','Send Message',lang)}
           </button>
         </div>
       )}
@@ -1108,7 +1109,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
     const url = await uploadToCloudinary(file);
     setEditForm(f=>({...f, avatar_url: url}));
     setUploading(false);
-    onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
+    onToast && onToast(t('طھظ… ط±ظپط¹ ط§ظ„طµظˆط±ط©','Image uploaded',lang));
   };
   const uploadCover = async (e) => {
     const file = e.target.files[0]; if(!file) return;
@@ -1116,7 +1117,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
     const url = await uploadToCloudinary(file);
     setEditForm(f=>({...f, cover_url:url}));
     setUploading(false);
-    onToast && onToast(t('تم رفع البنر','Cover uploaded',lang));
+    onToast && onToast(t('طھظ… ط±ظپط¹ ط§ظ„ط¨ظ†ط±','Cover uploaded',lang));
   };
   const saveProfile = async () => {
     const token = storage.getToken();
@@ -1127,7 +1128,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
     const data = await r.json();
     if (data.ok) { const updatedUser = {...user, ...payload}; onUpdateUser && onUpdateUser(updatedUser); }
     setEditMode(false);
-    onToast && onToast(t('تم تحديث البروفايل','Profile updated',lang));
+    onToast && onToast(t('طھظ… طھط­ط¯ظٹط« ط§ظ„ط¨ط±ظˆظپط§ظٹظ„','Profile updated',lang));
   };
   const [tab, setTab] = useState('posts');
   const [friends, setFriends] = useState([]);
@@ -1147,80 +1148,80 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
       {editMode && (
         <div className='modal-bg' onClick={e=>e.target===e.currentTarget&&setEditMode(false)}>
           <div className='modal' style={{padding:24}}>
-            <div style={{fontWeight:700,color:'var(--g)',fontSize:16,marginBottom:16}}>{t('تعديل البروفايل','Edit Profile',lang)}</div>
+            <div style={{fontWeight:700,color:'var(--g)',fontSize:16,marginBottom:16}}>{t('طھط¹ط¯ظٹظ„ ط§ظ„ط¨ط±ظˆظپط§ظٹظ„','Edit Profile',lang)}</div>
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
               <div style={{textAlign:'center',marginBottom:8}}>
                 <label style={{cursor:'pointer',display:'inline-block',background:'rgba(201,168,76,.1)',border:'1px solid var(--gd)',borderRadius:8,padding:'8px 16px',color:'var(--g)',fontSize:13}}>
-                  {uploading ? '⏳' : t('رفع صورة الأفاتار','Upload Avatar',lang)}
+                  {uploading ? 'âڈ³' : t('ط±ظپط¹ طµظˆط±ط© ط§ظ„ط£ظپط§طھط§ط±','Upload Avatar',lang)}
                   <input type='file' accept='image/*' onChange={uploadAvatar} style={{display:'none'}} />
                 </label>
                 {editForm.avatar_url && <img src={editForm.avatar_url} style={{width:60,height:60,borderRadius:'50%',marginTop:8,display:'block',margin:'8px auto 0'}} />}
                 <label style={{cursor:'pointer',display:'inline-block',background:'rgba(201,168,76,.1)',border:'1px solid var(--gd)',borderRadius:8,padding:'8px 16px',color:'var(--g)',fontSize:13,marginTop:8}}>
-                  {uploading ? '⏳' : t('رفع صورة البنر','Upload Cover',lang)}
+                  {uploading ? 'âڈ³' : t('ط±ظپط¹ طµظˆط±ط© ط§ظ„ط¨ظ†ط±','Upload Cover',lang)}
                   <input type='file' accept='image/*' onChange={uploadCover} style={{display:'none'}} />
                 </label>
                 {editForm.cover_url && <img src={editForm.cover_url} style={{width:'100%',height:60,objectFit:'cover',borderRadius:8,marginTop:8}} />}
               </div>
-              <input className='inp' placeholder={t('الاسم','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
-              <input className='inp' placeholder={t('النيكنيم','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
-              <textarea className='inp' placeholder={t('نبذة عنك','Bio',lang)} value={editForm.bio} onChange={e=>setEditForm(f=>({...f,bio:e.target.value}))} rows={3} />
+              <input className='inp' placeholder={t('ط§ظ„ط§ط³ظ…','Name',lang)} value={editForm.name} onChange={e=>setEditForm(f=>({...f,name:e.target.value}))} />
+              <input className='inp' placeholder={t('ط§ظ„ظ†ظٹظƒظ†ظٹظ…','Nickname',lang)} value={editForm.nickname} onChange={e=>setEditForm(f=>({...f,nickname:e.target.value}))} />
+              <textarea className='inp' placeholder={t('ظ†ط¨ط°ط© ط¹ظ†ظƒ','Bio',lang)} value={editForm.bio} onChange={e=>setEditForm(f=>({...f,bio:e.target.value}))} rows={3} />
               <div style={{display:'flex',gap:10,marginTop:6}}>
-                <button className='btn btn-o' onClick={()=>setEditMode(false)} style={{flex:1}}>{t('إلغاء','Cancel',lang)}</button>
-                <button className='btn btn-g' onClick={saveProfile} style={{flex:1}}>{t('حفظ','Save',lang)}</button>
+                <button className='btn btn-o' onClick={()=>setEditMode(false)} style={{flex:1}}>{t('ط¥ظ„ط؛ط§ط،','Cancel',lang)}</button>
+                <button className='btn btn-g' onClick={saveProfile} style={{flex:1}}>{t('ط­ظپط¸','Save',lang)}</button>
               </div>
             </div>
           </div>
         </div>
       )}
       <div className='pcover' style={{ marginBottom:0, position:'relative' }}>
-        {user?.cover_url ? <img src={user.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center',position:'absolute',top:0,left:0}} /> : <div className='hiero'>𓂀 𓁿 𓆏 𓂋 𓆼 𓅓 𓂀 𓁿 𓆏 𓂋</div>}
+        {user?.cover_url ? <img src={user.cover_url} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center',position:'absolute',top:0,left:0}} /> : <div className='hiero'>ً“‚€ ً“پ؟ ً“†ڈ ً“‚‹ ً“†¼ ً“…“ ً“‚€ ً“پ؟ ً“†ڈ ً“‚‹</div>}
       </div>
       <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderTop:'none', borderRadius:'0 0 12px 12px', padding:'0 16px 16px', marginBottom:14 }}>
         <div style={{ marginTop:10 }}>
           <div style={{ marginBottom:10 }}>
-            <Avatar emoji={user?.avatar_emoji||'👑'} size={72} url={user?.avatar_url} />
-            <button className='btn btn-o' style={{ fontSize:12, marginTop:8, display:'block' }} onClick={()=>setEditMode(true)}>✏️ {t('تعديل البروفايل','Edit Profile',lang)}</button>
+            <Avatar emoji={user?.avatar_emoji||'ًں‘‘'} size={72} url={user?.avatar_url} />
+            <button className='btn btn-o' style={{ fontSize:12, marginTop:8, display:'block' }} onClick={()=>setEditMode(true)}>âœڈï¸ڈ {t('طھط¹ط¯ظٹظ„ ط§ظ„ط¨ط±ظˆظپط§ظٹظ„','Edit Profile',lang)}</button>
           </div>
           <div style={{ fontWeight:800, fontSize:20, color:'var(--g)' }}>{user?.nickname}</div>
-          <div style={{ fontSize:13, color:'var(--tm)', marginTop:2 }}>{user?.name} · {user?.email}</div>
+          <div style={{ fontSize:13, color:'var(--tm)', marginTop:2 }}>{user?.name} آ· {user?.email}</div>
           <div style={{ marginTop:7 }}>
-            <span className="badge">👑 {t('عضو مميز','Premium Member',lang)}</span>
-            {user?.country && <span style={{ fontSize:12, color:'var(--tm)', marginRight:10 }}>🌍 {user.country}</span>}
+            <span className="badge">ًں‘‘ {t('ط¹ط¶ظˆ ظ…ظ…ظٹط²','Premium Member',lang)}</span>
+            {user?.country && <span style={{ fontSize:12, color:'var(--tm)', marginRight:10 }}>ًںŒچ {user.country}</span>}
           </div>
           <div style={{ display:'flex', gap:24, marginTop:14 }}>
-            {[[myPosts.length, t('منشورات','Posts',lang)],[user?.followers_count||248,t('متابعون','Followers',lang)],[user?.following_count||89,t('متابَعون','Following',lang)]].map(([n,l])=>(
+            {[[myPosts.length, t('ظ…ظ†ط´ظˆط±ط§طھ','Posts',lang)],[user?.followers_count||248,t('ظ…طھط§ط¨ط¹ظˆظ†','Followers',lang)],[user?.following_count||89,t('ظ…طھط§ط¨ظژط¹ظˆظ†','Following',lang)]].map(([n,l])=>(
               <div key={l}><div style={{ fontWeight:800, fontSize:18, color:'var(--g)' }}>{n}</div><div style={{ fontSize:11, color:'var(--tm)' }}>{l}</div></div>
             ))}
           </div>
         </div>
       </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
-        {[['posts',t('المنشورات','Posts',lang)],['friends',t('الأصدقاء','Friends',lang)],['inbox',t('صندوق الوارد','Inbox',lang)]].map(([k,l])=>(
+        {[['posts',t('ط§ظ„ظ…ظ†ط´ظˆط±ط§طھ','Posts',lang)],['friends',t('ط§ظ„ط£طµط¯ظ‚ط§ط،','Friends',lang)],['inbox',t('طµظ†ط¯ظˆظ‚ ط§ظ„ظˆط§ط±ط¯','Inbox',lang)]].map(([k,l])=>(
           <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>{ setTab(k); if(k==="friends") loadFriends(); }}>{l}</button>
         ))}
       </div>
       {tab==='posts' && (myPosts.length===0 ? (
         <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
-          <div style={{ fontSize:48, marginBottom:10 }}>📝</div>
-          <div>{t('لا توجد منشورات بعد. ابدأ بنشر أول تغريدة!','No posts yet. Start with your first tweet!',lang)}</div>
+          <div style={{ fontSize:48, marginBottom:10 }}>ًں“‌</div>
+          <div>{t('ظ„ط§ طھظˆط¬ط¯ ظ…ظ†ط´ظˆط±ط§طھ ط¨ط¹ط¯. ط§ط¨ط¯ط£ ط¨ظ†ط´ط± ط£ظˆظ„ طھط؛ط±ظٹط¯ط©!','No posts yet. Start with your first tweet!',lang)}</div>
         </div>
       ) : myPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={()=>{}} user={user} onToast={onToast} currentUserId={user?.id} />))}
       {tab==='friends' && (
         <div>
-          {loadingFriends && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>⏳</div>}
-          {friends.length===0 && !loadingFriends && <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>👥 {t('لا يوجد أصدقاء','No friends yet',lang)}</div>}
+          {loadingFriends && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>âڈ³</div>}
+          {friends.length===0 && !loadingFriends && <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>ًں‘¥ {t('ظ„ط§ ظٹظˆط¬ط¯ ط£طµط¯ظ‚ط§ط،','No friends yet',lang)}</div>}
           {friends.map(f=>(<div key={f.id} className='post-card' style={{display:'flex',gap:10,alignItems:'center',cursor:'pointer'}} onClick={()=>onStartChat&&onStartChat(f)}>
-            <Avatar emoji={f.avatar_emoji||'👑'} size={44} url={f.avatar_url} />
+            <Avatar emoji={f.avatar_emoji||'ًں‘‘'} size={44} url={f.avatar_url} />
             <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
-            <span style={{color:'var(--gd)',fontSize:20}}>›</span>
+            <span style={{color:'var(--gd)',fontSize:20}}>â€؛</span>
           </div>))}
         </div>
       )}
       {tab==='inbox' && (
         <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>
-          <div style={{fontSize:48,marginBottom:10}}>💬</div>
-          <div>{t('اضغط على صديق للمراسلة','Tap a friend to message',lang)}</div>
-          <button className='btn btn-g' style={{marginTop:14}} onClick={()=>onSetPage&&onSetPage('messages')}>{t('فتح الرسائل','Open Messages',lang)}</button>
+          <div style={{fontSize:48,marginBottom:10}}>ًں’¬</div>
+          <div>{t('ط§ط¶ط؛ط· ط¹ظ„ظ‰ طµط¯ظٹظ‚ ظ„ظ„ظ…ط±ط§ط³ظ„ط©','Tap a friend to message',lang)}</div>
+          <button className='btn btn-g' style={{marginTop:14}} onClick={()=>onSetPage&&onSetPage('messages')}>{t('ظپطھط­ ط§ظ„ط±ط³ط§ط¦ظ„','Open Messages',lang)}</button>
         </div>
       )}
     </div>
@@ -1229,20 +1230,20 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
 
 function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost }) {
   const [notifs, setNotifs] = useState([]);
-  const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
+  const icons = { like:'â‌¤ï¸ڈ', comment:'ًں’¬', follow:'ًں‘¥', booking:'ًںڈ›ï¸ڈ', system:'ًں”؛' };
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
-      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔔 {t('الإشعارات','Notifications',lang)}</div>
+      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>ًں”” {t('ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ','Notifications',lang)}</div>
       {(notifsList||notifs).length === 0 ? (
         <div style={{ textAlign:'center', padding:40, color:'var(--tm)' }}>
-          <div style={{ fontSize:48, marginBottom:10 }}>🔔</div>
-          <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
+          <div style={{ fontSize:48, marginBottom:10 }}>ًں””</div>
+          <div>{t('ظ„ط§ طھظˆط¬ط¯ ط¥ط´ط¹ط§ط±ط§طھ ط¨ط¹ط¯','No notifications yet',lang)}</div>
         </div>
       ) : (notifsList||notifs).map(n=>(
         <div key={n.id} className='post-card' style={{ display:'flex', gap:12, alignItems:'center', cursor:n.post_id?'pointer':'default' }} onClick={()=>n.post_id&&onGoToPost&&onGoToPost(n.post_id)}>
-          <Avatar emoji={n.actor_avatar||icons[n.type]||'🔔'} size={40} url={n.actor_url||null} />
+          <Avatar emoji={n.actor_avatar||icons[n.type]||'ًں””'} size={40} url={n.actor_url||null} />
           <div style={{ flex:1, textAlign:'right' }}>
-            <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'🔔'}</div>
+            <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'ًں””'}</div>
             <div style={{ fontSize:13, color:'var(--gl)', marginTop:2 }}>{n.content}</div>
             <div style={{ fontSize:11, color:'var(--tm)', marginTop:2 }}>{timeAgo(n.created_at, lang)}</div>
           </div>
@@ -1253,7 +1254,7 @@ function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost }) {
 }
       
 
-// ── JITSI VIDEO CALL ──────────────────────────────────────
+// â”€â”€ JITSI VIDEO CALL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function VideoCall({ channelName, onEnd, lang }) {
   const containerRef = useRef(null);
 
@@ -1289,9 +1290,9 @@ function VideoCall({ channelName, onEnd, lang }) {
   return (
     <div style={{position:"fixed",inset:0,background:"#000",zIndex:2000,display:"flex",flexDirection:"column"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 16px",background:"rgba(0,0,0,.9)",borderBottom:"1px solid var(--gd)"}}>
-        <span style={{color:"var(--g)",fontWeight:700,fontSize:15}}>📹 {lang==="ar"?"مكالمة فيديو":"Video Call"}</span>
+        <span style={{color:"var(--g)",fontWeight:700,fontSize:15}}>ًں“¹ {lang==="ar"?"ظ…ظƒط§ظ„ظ…ط© ظپظٹط¯ظٹظˆ":"Video Call"}</span>
         <button onClick={onEnd} style={{background:"var(--red)",border:"none",color:"#fff",padding:"8px 18px",borderRadius:20,cursor:"pointer",fontWeight:700,fontSize:13}}>
-          📵 {lang==="ar"?"إنهاء":"End Call"}
+          ًں“µ {lang==="ar"?"ط¥ظ†ظ‡ط§ط،":"End Call"}
         </button>
       </div>
       <div ref={containerRef} style={{flex:1,width:"100%"}} />
@@ -1311,8 +1312,8 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
     const ch = "kemet_" + [user?.id, active?.other_id].sort().join("_");
     setCallChannel(ch);
     setInCall(true);
-    messagesAPI.sendMessage(active.other_id, type==='video' ? '📹 مكالمة فيديو جارية' : '📞 مكالمة صوتية جارية');
-  };  const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆','🤩','😂','🥰','😎','🙏'];
+    messagesAPI.sendMessage(active.other_id, type==='video' ? 'ًں“¹ ظ…ظƒط§ظ„ظ…ط© ظپظٹط¯ظٹظˆ ط¬ط§ط±ظٹط©' : 'ًں“‍ ظ…ظƒط§ظ„ظ…ط© طµظˆطھظٹط© ط¬ط§ط±ظٹط©');
+  };  const emojis = ['ًںکٹ','â‌¤ï¸ڈ','ًں”؛','ًںڈ›ï¸ڈ','âœˆï¸ڈ','ًںŒچ','ًں‘‘','â­گ','ًںژ‰','ًںŒ…','ًںڈ–ï¸ڈ','ًںگھ','ًں¦…','ًںŒ؛','ًں’ژ','âڑ”ï¸ڈ','ًںŒ™','âک€ï¸ڈ','ًںژ­','ًںڈ†','ًں¤©','ًںک‚','ًں¥°','ًںکژ','ًں™ڈ'];
   const msgRef = null;
   const uploadImage = async (e) => {
     const file = e.target.files[0]; if (!file) return;
@@ -1321,7 +1322,7 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
     setUploading(false);
     if (url) { const r = await messagesAPI.sendMessage(active.other_id, url); setConv(c=>[...c, { id:r.data?.message_id||Date.now(), sender_id:user?.id, content:url, created_at:new Date().toISOString() }]); }
   };
-  useEffect(()=>{ if(initialChat){ openChat({other_id:initialChat.id, other_name:initialChat.nickname, avatar_emoji:initialChat.avatar_emoji||'👑'}); onChatOpened&&onChatOpened(); } },[initialChat]);
+  useEffect(()=>{ if(initialChat){ openChat({other_id:initialChat.id, other_name:initialChat.nickname, avatar_emoji:initialChat.avatar_emoji||'ًں‘‘'}); onChatOpened&&onChatOpened(); } },[initialChat]);
 
  useEffect(()=>{
     messagesAPI.getInbox().then(r=>{ if(r.ok) setInbox(r.data||[]); });
@@ -1346,7 +1347,7 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
 
   return (
     <div style={{ maxWidth:700, margin:'0 auto', padding:'14px 14px' }}>
-      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>💬 {t('الرسائل','Messages',lang)}</div>
+      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>ًں’¬ {t('ط§ظ„ط±ط³ط§ط¦ظ„','Messages',lang)}</div>
       {!active ? (
         inbox.map(item=>(
           <div key={item.other_id} className="post-card" style={{ display:'flex', gap:12, alignItems:'center', cursor:'pointer' }} onClick={()=>openChat(item)}>
@@ -1365,11 +1366,11 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
         <div>
           {inCall && <VideoCall channelName={callChannel} lang={lang} onEnd={()=>setInCall(false)} />}
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:14, padding:'10px 0', borderBottom:'1px solid var(--bb)' }}>
-            <button className="btn btn-gh" onClick={()=>setActive(null)}>← {t('رجوع','Back',lang)}</button>
+            <button className="btn btn-gh" onClick={()=>setActive(null)}>â†گ {t('ط±ط¬ظˆط¹','Back',lang)}</button>
             <Avatar emoji={active.avatar_emoji} size={36} />
             <span style={{ fontWeight:700, color:'var(--g)' }}>{active.other_name}</span>
-            <button className="btn btn-gh" style={{fontSize:20,padding:'4px 10px',marginRight:'auto'}} onClick={()=>startCall('audio')}>📞</button>
-            <button className="btn btn-gh" style={{fontSize:20,padding:'4px 10px'}} onClick={()=>startCall('video')}>📹</button>
+            <button className="btn btn-gh" style={{fontSize:20,padding:'4px 10px',marginRight:'auto'}} onClick={()=>startCall('audio')}>ًں“‍</button>
+            <button className="btn btn-gh" style={{fontSize:20,padding:'4px 10px'}} onClick={()=>startCall('video')}>ًں“¹</button>
           </div>
           <div style={{ height:360, overflowY:'auto', marginBottom:12, display:'flex', flexDirection:'column' }}>
             {conv.map(m=>(
@@ -1386,13 +1387,13 @@ function MessagesPage({ lang, user, initialChat, onChatOpened }) {
             </div>
           )}
           <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-            <button className='btn btn-gh' style={{ fontSize:18, padding:'8px 10px' }} onClick={()=>setShowEmoji(v=>!v)}>😊</button>
+            <button className='btn btn-gh' style={{ fontSize:18, padding:'8px 10px' }} onClick={()=>setShowEmoji(v=>!v)}>ًںکٹ</button>
             <label className='btn btn-gh' style={{ fontSize:18, padding:'8px 10px', cursor:'pointer' }}>
-              {uploading ? '⏳' : '📎'}
+              {uploading ? 'âڈ³' : 'ًں“ژ'}
               <input type='file' accept='image/*' onChange={uploadImage} style={{ display:'none' }} />
             </label>
-            <input className='inp' placeholder={t('اكتب رسالة...','Type a message...',lang)} value={msg} onChange={e=>setMsg(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{ flex:1 }} />
-            <button className='btn btn-g' onClick={send} style={{ padding:'10px 16px' }}>{t('إرسال','Send',lang)}</button>
+            <input className='inp' placeholder={t('ط§ظƒطھط¨ ط±ط³ط§ظ„ط©...','Type a message...',lang)} value={msg} onChange={e=>setMsg(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{ flex:1 }} />
+            <button className='btn btn-g' onClick={send} style={{ padding:'10px 16px' }}>{t('ط¥ط±ط³ط§ظ„','Send',lang)}</button>
           </div>
 
 
@@ -1418,16 +1419,16 @@ function SearchPage({ lang, onViewProfile, onStartChat }) {
   };
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
-      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>🔍 {t('البحث','Search',lang)}</div>
+      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:14 }}>ًں”چ {t('ط§ظ„ط¨ط­ط«','Search',lang)}</div>
       <div style={{display:'flex',gap:8,marginBottom:20}}>
-        <input className='inp' placeholder={t('ابحث بالاسم أو النيكنيم...','Search by name or nickname...',lang)} value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} style={{flex:1}} />
-        <button className='btn btn-g' onClick={search}>{loading?'⏳':'🔍'}</button>
+        <input className='inp' placeholder={t('ط§ط¨ط­ط« ط¨ط§ظ„ط§ط³ظ… ط£ظˆ ط§ظ„ظ†ظٹظƒظ†ظٹظ…...','Search by name or nickname...',lang)} value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} style={{flex:1}} />
+        <button className='btn btn-g' onClick={search}>{loading?'âڈ³':'ًں”چ'}</button>
       </div>
       {results.length>0 && results.map(u=>(
         <div key={u.id} className='post-card' style={{display:'flex',gap:12,alignItems:'center',cursor:'pointer'}} onClick={()=>onViewProfile&&onViewProfile(u.id)}>
-          <Avatar emoji={u.avatar_emoji||'👑'} size={44} url={u.avatar_url} />
+          <Avatar emoji={u.avatar_emoji||'ًں‘‘'} size={44} url={u.avatar_url} />
           <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)'}}>{u.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{u.name}</div></div>
-          <span style={{color:'var(--gd)',fontSize:18}}>›</span>
+          <span style={{color:'var(--gd)',fontSize:18}}>â€؛</span>
         </div>
       ))}
     </div>
@@ -1435,25 +1436,25 @@ function SearchPage({ lang, onViewProfile, onStartChat }) {
 }
 function SettingsPage({ lang, setLang, onLogout }) {
   const items = [
-    { icon:'🌐', ar:'اللغة', en:'Language', val:lang==='ar'?'العربية':'English', action:()=>setLang(l=>l==='ar'?'en':'ar') },
-    { icon:'🔔', ar:'الإشعارات', en:'Notifications', val:t('مفعّلة','Enabled',lang), action:null },
-    { icon:'🔒', ar:'الخصوصية', en:'Privacy', val:t('عام','Public',lang), action:null },
+    { icon:'ًںŒگ', ar:'ط§ظ„ظ„ط؛ط©', en:'Language', val:lang==='ar'?'ط§ظ„ط¹ط±ط¨ظٹط©':'English', action:()=>setLang(l=>l==='ar'?'en':'ar') },
+    { icon:'ًں””', ar:'ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ', en:'Notifications', val:t('ظ…ظپط¹ظ‘ظ„ط©','Enabled',lang), action:null },
+    { icon:'ًں”’', ar:'ط§ظ„ط®طµظˆطµظٹط©', en:'Privacy', val:t('ط¹ط§ظ…','Public',lang), action:null },
   ];
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
-      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:18 }}>⚙️ {t('الإعدادات','Settings',lang)}</div>
+      <div style={{ fontWeight:700, color:'var(--g)', fontSize:18, marginBottom:18 }}>âڑ™ï¸ڈ {t('ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ','Settings',lang)}</div>
       {items.map(s=>(
         <div key={s.ar} className="post-card" style={{ display:'flex', justifyContent:'space-between', alignItems:'center', cursor:s.action?'pointer':'default' }} onClick={s.action||undefined}>
           <div style={{ display:'flex', gap:12, alignItems:'center' }}>
             <span style={{ fontSize:20 }}>{s.icon}</span>
             <span style={{ fontSize:14, color:'var(--gl)' }}>{t(s.ar,s.en,lang)}</span>
           </div>
-          <span style={{ fontSize:12, color:'var(--tm)' }}>{s.val} ›</span>
+          <span style={{ fontSize:12, color:'var(--tm)' }}>{s.val} â€؛</span>
         </div>
       ))}
       <div style={{ marginTop:20 }}>
         <button className="btn btn-o" style={{ width:'100%', borderColor:'var(--red)', color:'var(--red)' }} onClick={onLogout}>
-          {t('تسجيل الخروج','Logout',lang)}
+          {t('طھط³ط¬ظٹظ„ ط§ظ„ط®ط±ظˆط¬','Logout',lang)}
         </button>
       </div>
     </div>
@@ -1463,7 +1464,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
   const [tours, setTours] = useState([]);
   const [editing, setEditing] = useState(null);
   const [adding, setAdding] = useState(false);
-  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', is_featured:0 });
+  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'ًںڈ›', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', is_featured:0 });
   const token = storage.getToken();
   const [uploading, setUploading] = useState(false);
   const API = 'https://kemetc1-production.up.railway.app/api';
@@ -1475,7 +1476,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
     const url = await uploadToCloudinary(file);
     setForm(f=>({...f, image_url:url}));
     setUploading(false);
-    onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
+    onToast && onToast(t('طھظ… ط±ظپط¹ ط§ظ„طµظˆط±ط©','Image uploaded',lang));
   };
   const saveTour = async () => {
     const body = {...form, price:Number(form.price), duration_days:Number(form.duration_days),
@@ -1486,80 +1487,80 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
     };
     if(editing) {
       await fetch(API+'/store/tours/'+editing.id, {method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body:JSON.stringify(body)});
-      onToast && onToast(t('تم التحديث','Updated',lang));
+      onToast && onToast(t('طھظ… ط§ظ„طھط­ط¯ظٹط«','Updated',lang));
     } else {
       await fetch(API+'/store/tours', {method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body:JSON.stringify(body)});
-      onToast && onToast(t('تمت الاضافة','Added',lang));
+      onToast && onToast(t('طھظ…طھ ط§ظ„ط§ط¶ط§ظپط©','Added',lang));
     }
     setEditing(null); setAdding(false); loadTours();
   };
   const deleteTour = async (id) => {
     await fetch(API+'/store/tours/'+id, {method:'DELETE', headers:{'Authorization':'Bearer '+token}});
-    onToast && onToast(t('تم الحذف','Deleted',lang));
+    onToast && onToast(t('طھظ… ط§ظ„ط­ط°ظپ','Deleted',lang));
     loadTours();
   };
   const startEdit = (tour) => {
-    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:(tour.includes_ar?JSON.parse(tour.includes_ar):[]).join(','), includes_en:(tour.includes_en?JSON.parse(tour.includes_en):[]).join(','), itinerary_ar:(tour.itinerary_ar?JSON.parse(tour.itinerary_ar):[]).join('\n'), itinerary_en:(tour.itinerary_en?JSON.parse(tour.itinerary_en):[]).join('\n'), is_featured:tour.is_featured||0 });
+    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'ًںڈ›', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:(tour.includes_ar?JSON.parse(tour.includes_ar):[]).join(','), includes_en:(tour.includes_en?JSON.parse(tour.includes_en):[]).join(','), itinerary_ar:(tour.itinerary_ar?JSON.parse(tour.itinerary_ar):[]).join('\n'), itinerary_en:(tour.itinerary_en?JSON.parse(tour.itinerary_en):[]).join('\n'), is_featured:tour.is_featured||0 });
     setEditing(tour); setAdding(true);
   };
   return (
     <div style={{maxWidth:800,margin:'0 auto',padding:14}}>
       <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
-        <button className='btn btn-gh' onClick={onBack}>← {t('رجوع','Back',lang)}</button>
-        <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>🏛 {t('ادارة المتجر','Store Manager',lang)}</div>
-        <button className='btn btn-g' style={{marginRight:'auto'}} onClick={()=>{setEditing(null);setForm({title_ar:'',title_en:'',description_ar:'',description_en:'',price:0,duration_days:1,image_emoji:'🏛',image_url:'',badge_ar:'',badge_en:'',category_id:'cat_tours',includes_ar:'',includes_en:'',is_featured:0});setAdding(true);}}>+ {t('اضافة رحلة','Add Tour',lang)}</button>
+        <button className='btn btn-gh' onClick={onBack}>â†گ {t('ط±ط¬ظˆط¹','Back',lang)}</button>
+        <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>ًںڈ› {t('ط§ط¯ط§ط±ط© ط§ظ„ظ…طھط¬ط±','Store Manager',lang)}</div>
+        <button className='btn btn-g' style={{marginRight:'auto'}} onClick={()=>{setEditing(null);setForm({title_ar:'',title_en:'',description_ar:'',description_en:'',price:0,duration_days:1,image_emoji:'ًںڈ›',image_url:'',badge_ar:'',badge_en:'',category_id:'cat_tours',includes_ar:'',includes_en:'',is_featured:0});setAdding(true);}}>+ {t('ط§ط¶ط§ظپط© ط±ط­ظ„ط©','Add Tour',lang)}</button>
       </div>
       {adding && (
         <div className='card' style={{padding:20,marginBottom:20}}>
-          <div style={{fontWeight:700,color:'var(--g)',marginBottom:14}}>{editing?t('تعديل رحلة','Edit Tour',lang):t('رحلة جديدة','New Tour',lang)}</div>
+          <div style={{fontWeight:700,color:'var(--g)',marginBottom:14}}>{editing?t('طھط¹ط¯ظٹظ„ ط±ط­ظ„ط©','Edit Tour',lang):t('ط±ط­ظ„ط© ط¬ط¯ظٹط¯ط©','New Tour',lang)}</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-            <input className='inp' placeholder='العنوان بالعربي' value={form.title_ar} onChange={e=>setForm(f=>({...f,title_ar:e.target.value}))} />
+            <input className='inp' placeholder='ط§ظ„ط¹ظ†ظˆط§ظ† ط¨ط§ظ„ط¹ط±ط¨ظٹ' value={form.title_ar} onChange={e=>setForm(f=>({...f,title_ar:e.target.value}))} />
             <input className='inp' placeholder='Title EN' value={form.title_en} onChange={e=>setForm(f=>({...f,title_en:e.target.value}))} />
-            <textarea className='inp' placeholder='الوصف بالعربي' value={form.description_ar} onChange={e=>setForm(f=>({...f,description_ar:e.target.value}))} rows={3} />
+            <textarea className='inp' placeholder='ط§ظ„ظˆطµظپ ط¨ط§ظ„ط¹ط±ط¨ظٹ' value={form.description_ar} onChange={e=>setForm(f=>({...f,description_ar:e.target.value}))} rows={3} />
             <textarea className='inp' placeholder='Description EN' value={form.description_en} onChange={e=>setForm(f=>({...f,description_en:e.target.value}))} rows={3} />
-            <input className='inp' placeholder='السعر بالدولار $' type='number' value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} />
-            <input className='inp' placeholder='عدد الايام' type='number' value={form.duration_days} onChange={e=>setForm(f=>({...f,duration_days:e.target.value}))} />
-            <input className='inp' placeholder='الشارة عربي' value={form.badge_ar} onChange={e=>setForm(f=>({...f,badge_ar:e.target.value}))} />
+            <input className='inp' placeholder='ط§ظ„ط³ط¹ط± ط¨ط§ظ„ط¯ظˆظ„ط§ط± $' type='number' value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} />
+            <input className='inp' placeholder='ط¹ط¯ط¯ ط§ظ„ط§ظٹط§ظ…' type='number' value={form.duration_days} onChange={e=>setForm(f=>({...f,duration_days:e.target.value}))} />
+            <input className='inp' placeholder='ط§ظ„ط´ط§ط±ط© ط¹ط±ط¨ظٹ' value={form.badge_ar} onChange={e=>setForm(f=>({...f,badge_ar:e.target.value}))} />
             <input className='inp' placeholder='Badge EN' value={form.badge_en} onChange={e=>setForm(f=>({...f,badge_en:e.target.value}))} />
-            <input className='inp' placeholder='يشمل عربي (مفصول بفواصل)' value={form.includes_ar} onChange={e=>setForm(f=>({...f,includes_ar:e.target.value}))} />
+            <input className='inp' placeholder='ظٹط´ظ…ظ„ ط¹ط±ط¨ظٹ (ظ…ظپطµظˆظ„ ط¨ظپظˆط§طµظ„)' value={form.includes_ar} onChange={e=>setForm(f=>({...f,includes_ar:e.target.value}))} />
             <input className='inp' placeholder='Includes EN (comma separated)' value={form.includes_en} onChange={e=>setForm(f=>({...f,includes_en:e.target.value}))} />
             <select className='inp' value={form.category_id} onChange={e=>setForm(f=>({...f,category_id:e.target.value}))}>
-              <option value='cat_tours'>رحلات</option>
-              <option value='cat_nile'>كروز</option>
-              <option value='cat_consult'>استشارات</option>
-              <option value='cat_medical'>علاجية</option>
+              <option value='cat_tours'>ط±ط­ظ„ط§طھ</option>
+              <option value='cat_nile'>ظƒط±ظˆط²</option>
+              <option value='cat_consult'>ط§ط³طھط´ط§ط±ط§طھ</option>
+              <option value='cat_medical'>ط¹ظ„ط§ط¬ظٹط©</option>
             </select>
             <input className='inp' placeholder='Emoji' value={form.image_emoji} onChange={e=>setForm(f=>({...f,image_emoji:e.target.value}))} />
           </div>
-            <textarea className='inp' placeholder='البرنامج اليومي بالعربي (كل يوم في سطر)&#10;اليوم 1: ...&#10;اليوم 2: ...' value={form.itinerary_ar||''} onChange={e=>setForm(f=>({...f,itinerary_ar:e.target.value}))} rows={4} />
+            <textarea className='inp' placeholder='ط§ظ„ط¨ط±ظ†ط§ظ…ط¬ ط§ظ„ظٹظˆظ…ظٹ ط¨ط§ظ„ط¹ط±ط¨ظٹ (ظƒظ„ ظٹظˆظ… ظپظٹ ط³ط·ط±)&#10;ط§ظ„ظٹظˆظ… 1: ...&#10;ط§ظ„ظٹظˆظ… 2: ...' value={form.itinerary_ar||''} onChange={e=>setForm(f=>({...f,itinerary_ar:e.target.value}))} rows={4} />
             <textarea className='inp' placeholder='Daily Itinerary EN (one day per line)&#10;Day 1: ...&#10;Day 2: ...' value={form.itinerary_en||''} onChange={e=>setForm(f=>({...f,itinerary_en:e.target.value}))} rows={4} />
           <div style={{marginTop:10,display:'flex',gap:10,alignItems:'center'}}>
             <label className='btn btn-gh' style={{cursor:'pointer',border:'1px solid var(--gd)'}}>
-              {uploading?'...':t('رفع صورة','Upload Image',lang)}
+              {uploading?'...':t('ط±ظپط¹ طµظˆط±ط©','Upload Image',lang)}
               <input type='file' accept='image/*' onChange={uploadImg} style={{display:'none'}} />
             </label>
             {form.image_url && <img src={form.image_url} style={{height:50,borderRadius:8}} />}
             <label style={{display:'flex',alignItems:'center',gap:6,color:'var(--tm)',fontSize:13}}>
               <input type='checkbox' checked={form.is_featured===1} onChange={e=>setForm(f=>({...f,is_featured:e.target.checked?1:0}))} />
-              {t('مميز','Featured',lang)}
+              {t('ظ…ظ…ظٹط²','Featured',lang)}
             </label>
           </div>
           <div style={{display:'flex',gap:10,marginTop:14}}>
-            <button className='btn btn-o' onClick={()=>{setAdding(false);setEditing(null);}} style={{flex:1}}>{t('الغاء','Cancel',lang)}</button>
-            <button className='btn btn-g' onClick={saveTour} style={{flex:1}}>🔺 {t('حفظ','Save',lang)}</button>
+            <button className='btn btn-o' onClick={()=>{setAdding(false);setEditing(null);}} style={{flex:1}}>{t('ط§ظ„ط؛ط§ط،','Cancel',lang)}</button>
+            <button className='btn btn-g' onClick={saveTour} style={{flex:1}}>ًں”؛ {t('ط­ظپط¸','Save',lang)}</button>
           </div>
         </div>
       )}
       <div>
         {tours.map(tour=>(
           <div key={tour.id} className='card' style={{padding:14,marginBottom:10,display:'flex',gap:12,alignItems:'center'}}>
-            <div style={{fontSize:36}}>{tour.image_emoji||'🏛'}</div>
+            <div style={{fontSize:36}}>{tour.image_emoji||'ًںڈ›'}</div>
             <div style={{flex:1}}>
               <div style={{fontWeight:700,color:'var(--g)'}}>{t(tour.title_ar,tour.title_en,lang)}</div>
-              <div style={{fontSize:12,color:'var(--tm)'}}>{tour.price} dollar - {tour.duration_days} {t('ايام','days',lang)}</div>
+              <div style={{fontSize:12,color:'var(--tm)'}}>{tour.price} dollar - {tour.duration_days} {t('ط§ظٹط§ظ…','days',lang)}</div>
             </div>
-            <button className='btn btn-gh' style={{fontSize:12}} onClick={()=>startEdit(tour)}>✏️ {t('تعديل','Edit',lang)}</button>
-            <button className='btn btn-o' style={{fontSize:12,borderColor:'var(--red)',color:'var(--red)'}} onClick={()=>deleteTour(tour.id)}>🗑 {t('حذف','Delete',lang)}</button>
+            <button className='btn btn-gh' style={{fontSize:12}} onClick={()=>startEdit(tour)}>âœڈï¸ڈ {t('طھط¹ط¯ظٹظ„','Edit',lang)}</button>
+            <button className='btn btn-o' style={{fontSize:12,borderColor:'var(--red)',color:'var(--red)'}} onClick={()=>deleteTour(tour.id)}>ًں—‘ {t('ط­ط°ظپ','Delete',lang)}</button>
           </div>
         ))}
       </div>
@@ -1591,17 +1592,17 @@ function AdminDashboard({ lang, user, onBack }) {
   return (
     <div style={{maxWidth:700,margin:'0 auto',padding:14,direction:'rtl'}}>
       <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
-        <button className="btn btn-gh" onClick={onBack}>← رجوع</button>
-        <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>🏛️ لوحة الإدارة</div>
+        <button className="btn btn-gh" onClick={onBack}>â†گ ط±ط¬ظˆط¹</button>
+        <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>ًںڈ›ï¸ڈ ظ„ظˆط­ط© ط§ظ„ط¥ط¯ط§ط±ط©</div>
       </div>
       <div style={{display:'flex',gap:8,marginBottom:16}}>
-        {[['stats','📊 إحصائيات'],['users','👥 المستخدمين']].map(([k,l])=>(
+        {[['stats','ًں“ٹ ط¥ط­طµط§ط¦ظٹط§طھ'],['users','ًں‘¥ ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ†']].map(([k,l])=>(
           <button key={k} className={`btn ${tab===k?'btn-g':'btn-gh'}`} onClick={()=>setTab(k)}>{l}</button>
         ))}
       </div>
       {tab==='stats' && stats && (
         <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:10}}>
-          {[['👥','المستخدمين',stats.users],['📝','البوستات',stats.posts],['❤️','الإعجابات',stats.likes],['👥','المتابعات',stats.follows],['🔑','الجلسات',stats.sessions]].map(([ic,l,n])=>(
+          {[['ًں‘¥','ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ†',stats.users],['ًں“‌','ط§ظ„ط¨ظˆط³طھط§طھ',stats.posts],['â‌¤ï¸ڈ','ط§ظ„ط¥ط¹ط¬ط§ط¨ط§طھ',stats.likes],['ًں‘¥','ط§ظ„ظ…طھط§ط¨ط¹ط§طھ',stats.follows],['ًں”‘','ط§ظ„ط¬ظ„ط³ط§طھ',stats.sessions]].map(([ic,l,n])=>(
             <div key={l} className="card" style={{padding:16,textAlign:'center'}}>
               <div style={{fontSize:32}}>{ic}</div>
               <div style={{fontSize:28,fontWeight:800,color:'var(--g)'}}>{n}</div>
@@ -1621,10 +1622,10 @@ function AdminDashboard({ lang, user, onBack }) {
               </div>
               <div style={{display:'flex',gap:6}}>
                 <button className='btn btn-gh' style={{fontSize:10,padding:'4px 8px',border:'1px solid var(--gd)',color:'var(--g)'}} onClick={()=>setRole(u.id, u.role==='store_manager'?'user':'store_manager')}>
-                  {u.role==='store_manager'?'❌ مدير متجر':'🏛️ مدير متجر'}
+                  {u.role==='store_manager'?'â‌Œ ظ…ط¯ظٹط± ظ…طھط¬ط±':'ًںڈ›ï¸ڈ ظ…ط¯ظٹط± ظ…طھط¬ط±'}
                 </button>
                 <button className={`btn ${u.is_active?'btn-o':'btn-g'}`} style={{fontSize:11}} onClick={()=>toggleUser(u.id)}>
-                  {u.is_active?'تعطيل':'تفعيل'}
+                  {u.is_active?'طھط¹ط·ظٹظ„':'طھظپط¹ظٹظ„'}
                 </button>
               </div>
             </div>
@@ -1644,7 +1645,7 @@ export default function App() {
   const [viewUserId, setViewUserId] = useState(null);
   const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
-  const [posts, setPosts] = useState(DEMO_POSTS);
+  const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
   useEffect(()=>{
     window.handleGoogleLogin = async (response) => {
@@ -1693,10 +1694,10 @@ export default function App() {
   }
 };
       
-  const handleLogout = async () => { await authAPI.logout(); setUser(null); setScreen('landing'); setPage('feed'); showToast(t('تم تسجيل الخروج','Logged out',lang)); };
+  const handleLogout = async () => { await authAPI.logout(); setUser(null); setScreen('landing'); setPage('feed'); showToast(t('طھظ… طھط³ط¬ظٹظ„ ط§ظ„ط®ط±ظˆط¬','Logged out',lang)); };
   const handleLogin = (u) => { setUser(u); setModal(null); setScreen('app'); showToast(t('ahlan ' + u.nickname, 'Welcome back ' + u.nickname, lang)); const token = localStorage.getItem('kemet_token'); if(token){ fetch('https://kemetc1-production.up.railway.app/api/notifications',{headers:{'Authorization':'Bearer '+token}}).then(r=>r.json()).then(d=>{ if(d.ok) setNotifsList(d.data||[]); }); } };
 
-  const navIcons = [['feed','🏠'],['store','🏛️'],['notifications','🔔'],['messages','💬']];
+  const navIcons = [['feed','ًںڈ '],['store','ًںڈ›ï¸ڈ'],['notifications','ًں””'],['messages','ًں’¬']];
 
   if (screen==='landing') return (
     <>
@@ -1716,13 +1717,13 @@ export default function App() {
       {/* Top Nav */}
       <div className="nav">
         <div className="logo" style={{ fontSize:18 }}>KEMET</div>
-        <button className="btn btn-gh" style={{fontSize:12,padding:"5px 12px",border:"1px solid rgba(201,168,76,0.4)",borderRadius:20,color:"var(--g)",display:"flex",alignItems:"center",gap:6,background:"rgba(201,168,76,0.06)",fontWeight:700,letterSpacing:1}} onClick={()=>setPage("eclipse")}>🌑 Eclipse 2027</button>
+        <button className="btn btn-gh" style={{fontSize:12,padding:"5px 12px",border:"1px solid rgba(201,168,76,0.4)",borderRadius:20,color:"var(--g)",display:"flex",alignItems:"center",gap:6,background:"rgba(201,168,76,0.06)",fontWeight:700,letterSpacing:1}} onClick={()=>setPage("eclipse")}>ًںŒ‘ Eclipse 2027</button>
         <div style={{ display:'flex', gap:6, alignItems:'center' }}>
           <div className='hide-mobile' style={{display:'flex',gap:6}}>
             {navIcons.map(([k,ic])=>(<button key={k} className='btn btn-gh' style={{ color:page===k?'var(--g)':'var(--tm)', fontSize:18, padding:'4px 10px' }} onClick={()=>setPage(k)}>{ic}</button>))}
           </div>
-         <Avatar emoji={user?.avatar_emoji||'👑'} size={34} url={user?.avatar_url} onClick={()=>setPage('profile')} />
-         <button className="btn btn-gh" onClick={handleLogout} style={{fontSize:12,color:'var(--red)',padding:'4px 8px'}}>خروج</button>
+         <Avatar emoji={user?.avatar_emoji||'ًں‘‘'} size={34} url={user?.avatar_url} onClick={()=>setPage('profile')} />
+         <button className="btn btn-gh" onClick={handleLogout} style={{fontSize:12,color:'var(--red)',padding:'4px 8px'}}>ط®ط±ظˆط¬</button>
         </div>
       </div>
 
@@ -1752,7 +1753,7 @@ export default function App() {
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
 
       <div className='bottom-nav'>
-        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
+        {[['feed','ًںڈ ','ط§ظ„ط±ط¦ظٹط³ظٹط©','Home'],['store','ًںڈ›ï¸ڈ','ط§ظ„ظ…طھط¬ط±','Store'],['notifications','ًں””','ط¥ط´ط¹ط§ط±ط§طھ','Notifs'],['messages','ًں’¬','ط±ط³ط§ط¦ظ„','Messages'],['profile','ًں‘¤','ط¨ط±ظˆظپط§ظٹظ„','Profile'],['search','ًں”چ','ط¨ط­ط«','Search']].map(([k,ic,ar,en])=>(
           <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>setPage(k)}>
             <span style={{fontSize:22}}>{ic}</span>
             <span>{lang==='ar'?ar:en}</span>
