@@ -424,6 +424,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     if (r.ok) { setComments(c=>[...c, {id:r.data.comment_id,content:replyText,image_url:imgUrl,nickname:user?.nickname||t('أنت','You',lang),avatar_emoji:user?.avatar_emoji||'👑',avatar_url:user?.avatar_url,created_at:new Date().toISOString(),parent_id:replyTo?.id}]); setReplyText(''); setReplyImage(''); setReplyTo(null); }
   };
   const uploadReplyImg = async (e) => { const file=e.target.files[0]; if(!file) return; setReplyUploading(true); const url=await uploadToCloudinary(file); setReplyImage(url); setReplyUploading(false); };
+  const [likeAnim, setLikeAnim] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count||0);
   const [showCommentEmoji, setShowCommentEmoji] = useState(false);
 
@@ -1635,6 +1636,52 @@ function AdminDashboard({ lang, user, onBack }) {
   );
 }
 
+
+// -- AI ASSISTANT --
+function AIAssistant({ lang, user, onClose }) {
+  const [messages, setMessages] = useState([{ role: 'assistant', content: lang === 'ar' ? 'مرحباً! أنا رمسيس، مساعدك الذكي في كيمت. كيف يمكنني مساعدتك؟ 🔺' : 'Welcome! I am Ramesses, your AI guide at Kemet. Ask me about Egypt, tourism, or the 2027 Eclipse! 🔺' }]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const endRef = useRef(null);
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+  const send = async () => {
+    if (!input.trim() || loading) return;
+    const userMsg = input.trim();
+    setInput('');
+    setMessages(m => [...m, { role: 'user', content: userMsg }]);
+    setLoading(true);
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': import.meta.env.VITE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1024, system: 'You are Ramesses, an AI assistant for Kemet Social - Egyptian tourism and culture platform. Help users with Egyptian tourism, pharaonic civilization, 2027 Solar Eclipse in Luxor, travel tips, medical tourism, and Nile cruises. Be helpful and enthusiastic about Egyptian heritage. Respond in the same language as the user.', messages: messages.concat({ role: 'user', content: userMsg }).map(m => ({ role: m.role, content: m.content })) })
+      });
+      const d = await r.json();
+      setMessages(m => [...m, { role: 'assistant', content: d.content?.[0]?.text || 'عذراً، حدث خطأ.' }]);
+    } catch(e) { setMessages(m => [...m, { role: 'assistant', content: 'عذراً، حدث خطأ في الاتصال.' }]); }
+    setLoading(false);
+  };
+  return (
+    <div style={{position:'fixed',bottom:80,left:20,width:320,height:460,background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:16,display:'flex',flexDirection:'column',zIndex:1500,boxShadow:'0 8px 40px rgba(201,168,76,0.2)',overflow:'hidden'}}>
+      <div style={{padding:'12px 16px',background:'linear-gradient(135deg,var(--gd),var(--g))',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <span style={{fontSize:20}}>👑</span>
+          <div><div style={{fontFamily:'Cinzel,serif',fontSize:13,fontWeight:700,color:'#000'}}>RAMESSES AI</div><div style={{fontSize:10,color:'rgba(0,0,0,0.6)'}}>مساعدك الذكي</div></div>
+        </div>
+        <button onClick={onClose} style={{background:'none',border:'none',color:'#000',fontSize:20,cursor:'pointer'}}>×</button>
+      </div>
+      <div style={{flex:1,overflowY:'auto',padding:12,display:'flex',flexDirection:'column',gap:8}}>
+        {messages.map((m,i) => (<div key={i} style={{display:'flex',justifyContent:m.role==='user'?'flex-end':'flex-start'}}><div style={{maxWidth:'85%',padding:'8px 12px',borderRadius:m.role==='user'?'12px 12px 0 12px':'12px 12px 12px 0',background:m.role==='user'?'linear-gradient(135deg,var(--gd),var(--g))':'var(--bb)',color:m.role==='user'?'#000':'var(--gl)',fontSize:13,lineHeight:1.6}}>{m.content}</div></div>))}
+        {loading && <div style={{display:'flex',gap:4,padding:8}}><span style={{color:'var(--gd)'}}>⏳</span></div>}
+        <div ref={endRef}/>
+      </div>
+      <div style={{padding:10,borderTop:'1px solid var(--bb)',display:'flex',gap:8}}>
+        <input className="inp" placeholder={lang==='ar'?'اسألني عن مصر...':'Ask about Egypt...'} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
+        <button className="btn btn-g" onClick={send} disabled={loading} style={{padding:'8px 14px'}}>➤</button>
+      </div>
+    </div>
+  );
+}
 // -- MAIN APP --
 export default function App() {
   const [screen, setScreen] = useState('landing');
@@ -1654,6 +1701,7 @@ export default function App() {
     };
   },[]);
   const [toast, setToast] = useState(null);
+  const [showAI, setShowAI] = useState(false);
 
  useEffect(()=>{
     const u = storage.getUser();
@@ -1705,6 +1753,8 @@ export default function App() {
       {modal==='login'    && <LoginModal    lang={lang} onClose={()=>setModal(null)} onSuccess={handleLogin} />}
       {modal==='register' && <RegisterModal lang={lang} onClose={()=>setModal(null)} onSuccess={handleReg} />}
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
+      {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
+      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:20,left:20,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:24,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
 
     </>
   );
@@ -1750,6 +1800,8 @@ export default function App() {
       </div>
 
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
+      {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
+      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:20,left:20,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:24,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
 
       <div className='bottom-nav'>
         {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
