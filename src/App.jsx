@@ -503,7 +503,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
           {liked ? '❤' : '♡'} {t('Like','Like',lang)} {likesCount>0&&<span style={{fontSize:11,opacity:.7}}>({likesCount})</span>}
         </button>
         <button className='btn btn-gh' onClick={loadComments} style={{ flex:1, fontSize:13 }}>
-          ًں’¬ {t('طھط¹ظ„ظٹظ‚','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
+               {"✦ "} {t('Comment','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
         </button>
       <button className="btn btn-gh" style={{ flex:1, fontSize:13 }} onClick={async()=>{
         const r = await postsAPI.createPost({
@@ -512,7 +512,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
        });
         if (r.ok) onToast && onToast(t('طھظ…طھ ط§ظ„ظ…ط´ط§ط±ظƒط©','Shared',lang));
       }}>
-      ًں”پ {t('ظ…ط´ط§ط±ظƒط©','Share',lang)}
+             {"↗ "} {t('Share','Share',lang)}
     </button>
 
       </div>
