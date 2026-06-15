@@ -1689,7 +1689,7 @@ function AIAssistant({ lang, user, onClose }) {
     setLoading(false);
   };
   return (
-    <div style={{position:'fixed',bottom:80,left:20,width:320,height:460,background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:16,display:'flex',flexDirection:'column',zIndex:1500,boxShadow:'0 8px 40px rgba(201,168,76,0.2)',overflow:'hidden'}}>
+    <div style={{position:'fixed',bottom:130,right:16,width:320,height:460,background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:16,display:'flex',flexDirection:'column',zIndex:1500,boxShadow:'0 8px 40px rgba(201,168,76,0.2)',overflow:'hidden'}}>
       <div style={{padding:'12px 16px',background:'linear-gradient(135deg,var(--gd),var(--g))',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div style={{display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontSize:20}}>👑</span>
@@ -1817,7 +1817,7 @@ export default function App() {
       {modal==='register' && <RegisterModal lang={lang} onClose={()=>setModal(null)} onSuccess={handleReg} />}
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
       {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
-      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:20,left:20,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:24,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
+      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:70,right:16,width:48,height:48,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
 
 
     </>
@@ -1867,12 +1867,12 @@ export default function App() {
 
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
       {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
-      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:20,left:20,width:52,height:52,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:24,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
+      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:70,right:16,width:48,height:48,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
 
 
       <div className='bottom-nav'>
-        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search'],['sos','🆘','طوارئ','SOS'],['theme','☀️','ثيم','Theme'],['lang_toggle','🌐','لغة','Lang']].map(([k,ic,ar,en])=>(
-          <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>{ if(k==='theme') setTheme(t=>t==='dark'?'light':t==='light'?'gold':'dark'); else if(k==='lang_toggle') setLang(l=>l==='ar'?'en':'ar'); else if(k==='sos') window.open('https://wa.me/201000255809?text=SOS+I+need+help+in+Egypt','_blank'); else setPage(k); }}>
+        {[['feed','🏠','الرئيسية','Home'],['store','🏛️','المتجر','Store'],['notifications','🔔','إشعارات','Notifs'],['messages','💬','رسائل','Messages'],['profile','👤','بروفايل','Profile'],['search','🔍','بحث','Search']].map(([k,ic,ar,en])=>(
+          <button key={k} className={`bottom-nav-btn ${page===k?'on':''}`} onClick={()=>{ setPage(k); }}>
             <span style={{fontSize:22}}>{ic}</span>
             <span>{lang==='ar'?ar:en}</span>
           </button>
