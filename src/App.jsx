@@ -806,6 +806,12 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
           <span>{t('الإدارة','Admin',lang)}</span>
         </div>
       )}
+      {isAdmin && (
+        <div className={page==='news_admin'?'si on':'si'} onClick={()=>setPage('news_admin')}>
+          <span style={{ fontSize:17, width:22, textAlign:'center' }}>🗞️</span>
+          <span>{t('الأخبار','News',lang)}</span>
+        </div>
+      )}
       {isStoreManager && (
         <div className={`si ${page===('store_manager')?'on':''}`} onClick={()=>setPage('store_manager')}>
           <span style={{ fontSize:17, width:22, textAlign:'center' }}>🏛️</span>
