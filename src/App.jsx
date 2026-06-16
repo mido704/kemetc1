@@ -1769,7 +1769,7 @@ function EgyptNewsTab({ lang }) {
       </div>
       {filtered.map(news=>(
         <div key={news.id} className="post-card" style={{cursor:'pointer',display:'flex',gap:14,alignItems:'flex-start'}} onClick={()=>setSelected(news)}>
-          <div style={{fontSize:40,flexShrink:0,width:56,height:56,background:'linear-gradient(135deg,#0D0A02,#1A1200)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}>{news.image}</div>
+          <div style={{fontSize:40,flexShrink:0,width:56,height:56,background:'linear-gradient(135deg,#0D0A02,#1A1200)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden',position:'relative'}}>{news.image_url ? <img src={news.image_url} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',borderRadius:10}} /> : <span style={{position:'relative',zIndex:1}}>{news.image}</span>}</div>
           <div style={{flex:1,minWidth:0}}>
             <div style={{fontSize:10,color:'var(--gd)',marginBottom:4,letterSpacing:1}}>{news.category.toUpperCase()} • {news.date}</div>
             <div style={{fontSize:14,fontWeight:700,color:'var(--g)',lineHeight:1.4,marginBottom:6}}>{lang==='ar'?news.title_ar:news.title_en}</div>
