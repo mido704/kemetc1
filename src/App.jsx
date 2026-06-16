@@ -1804,7 +1804,7 @@ function NewsAdminPage({ lang, user, onToast }) {
   const [news, setNews] = useState([]);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️'});
+  const [form, setForm] = useState({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️',keywords:''});
   const token = localStorage.getItem('kemet_token');
   const API = 'https://kemetc1-production.up.railway.app/api';
 
@@ -1832,7 +1832,7 @@ function NewsAdminPage({ lang, user, onToast }) {
   };
 
   const startEdit = (n) => {
-    setForm({title_ar:n.title_ar||'',title_en:n.title_en||'',summary_ar:n.summary_ar||'',summary_en:n.summary_en||'',content_ar:n.content_ar||'',content_en:n.content_en||'',category:n.category||'tourism',image:n.image||'🏛️'});
+    setForm({title_ar:n.title_ar||'',title_en:n.title_en||'',summary_ar:n.summary_ar||'',summary_en:n.summary_en||'',content_ar:n.content_ar||'',content_en:n.content_en||'',category:n.category||'tourism',image:n.image||'🏛️',keywords:n.keywords||''});
     setEditing(n); setAdding(true);
   };
 
@@ -1859,6 +1859,7 @@ function NewsAdminPage({ lang, user, onToast }) {
               {cats.map(([k,l])=><option key={k} value={k}>{l}</option>)}
             </select>
             <input className='inp' placeholder='Emoji (مثال: 🏛️)' value={form.image} onChange={e=>setForm(f=>({...f,image:e.target.value}))} />
+            <input className='inp' placeholder='Keywords (مفصولة بفواصل) - للـ SEO' value={form.keywords} onChange={e=>setForm(f=>({...f,keywords:e.target.value}))} style={{gridColumn:'1/-1'}} />
           </div>
           <div style={{display:'flex',gap:10,marginTop:14}}>
             <button className='btn btn-o' onClick={()=>{setAdding(false);setEditing(null);}} style={{flex:1}}>إلغاء</button>
