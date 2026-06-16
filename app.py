@@ -686,7 +686,8 @@ def create_news():
         """, (b.get('title_ar'), b.get('title_en'), b.get('summary_ar',''), b.get('summary_en',''),
               b.get('content_ar',''), b.get('content_en',''), b.get('category','tourism'),
               b.get('image',''), b.get('image_url',''), b.get('keywords','')))
-        news_id = cur.fetchone()[0]
+        row = cur.fetchone()
+        news_id = row['id'] if isinstance(row, dict) else row[0]
         db.conn.commit()
         return ok({'news_id': news_id}), 201
     except Exception as e:
