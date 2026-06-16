@@ -703,10 +703,10 @@ def update_news(news_id):
         cur = db.conn.cursor()
         cur.execute("""
             UPDATE news SET title_ar=%s, title_en=%s, summary_ar=%s, summary_en=%s,
-            content_ar=%s, content_en=%s, category=%s, image=%s, keywords=%s WHERE id=%s
+            content_ar=%s, content_en=%s, category=%s, image=%s, image_url=%s, keywords=%s WHERE id=%s
         """, (b.get('title_ar'), b.get('title_en'), b.get('summary_ar',''), b.get('summary_en',''),
               b.get('content_ar',''), b.get('content_en',''), b.get('category','tourism'),
-              b.get('image',''), b.get('keywords',''), news_id))
+              b.get('image',''), b.get('image_url',''), b.get('keywords',''), news_id))
         db.conn.commit()
         return ok({'updated': True})
     except Exception as e:
