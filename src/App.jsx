@@ -553,7 +553,6 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
               <div style={{flex:1}}>
                 <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
-                <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
                 {c.image_url && <img src={c.image_url} style={{width:'100%',maxHeight:400,objectFit:'contain',borderRadius:8,marginTop:6,background:'var(--bi)'}} />}
               </div>
             </div>
