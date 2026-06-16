@@ -471,7 +471,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     setNewComment(''); setCommentImage('');
     const r = await postsAPI.addComment(post.id, txt, null, imgUrl);
     if (r.ok) {
-      setComments(c=>[...c, { id:r.data?.comment_id||Date.now(), content:txt, image_url:imgUrl, nickname:user?.nickname||'You', avatar_emoji:user?.avatar_emoji||'👑', avatar_url:user?.avatar_url, created_at:new Date().toISOString() }]);
+      const r2 = await postsAPI.getComments(post.id); if(r2.ok) setComments(r2.data||[]);
     }
   };
   const tags = ts(post.hashtags);
