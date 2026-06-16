@@ -1736,7 +1736,7 @@ const EGYPT_NEWS = [
 function EgyptNewsTab({ lang }) {
   const [selected, setSelected] = useState(null);
   const [catFilter, setCatFilter] = useState('all');
-  const [newsData, setNewsData] = useState(EGYPT_NEWS);
+  const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [translatedNews, setTranslatedNews] = useState({});
   const [translatingId, setTranslatingId] = useState(null);
