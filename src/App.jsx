@@ -866,16 +866,7 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   const [feedTab, setFeedTab] = useState('foryou');
   const [followingPosts, setFollowingPosts] = useState([]);
   const [loadingFollowing, setLoadingFollowing] = useState(false);
-
-  const loadFollowing = async () => {
-    if (followingPosts.length > 0) return;
-    setLoadingFollowing(true);
-    const token = localStorage.getItem('kemet_token');
-    const r = await fetch('https://kemetc1-production.up.railway.app/api/posts/following', {headers:{'Authorization':'Bearer '+token}});
-    const d = await r.json();
-    if (d.ok) setFollowingPosts(d.data||[]);
-    setLoadingFollowing(false);
-  };
+  const loadFollowing = async () => { if(followingPosts.length>0) return; setLoadingFollowing(true); const token=localStorage.getItem('kemet_token'); const r=await fetch('https://kemetc1-production.up.railway.app/api/posts/following',{headers:{'Authorization':'Bearer '+token}}); const d=await r.json(); if(d.ok) setFollowingPosts(d.data||[]); setLoadingFollowing(false); };
   const [visibleCount, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
   useEffect(()=>{ window.setHashtagFilter=(h)=>setHashFilter(h); return ()=>delete window.setHashtagFilter; },[]);
@@ -899,9 +890,9 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
-        <button className="tab on">{t('لك','For You',lang)}</button>
-        <button className="tab">{t('الأصدقاء','Following',lang)}</button>
-        <button className="tab">{t('مصر','Egypt',lang)}</button>
+        <button className={feedTab==='foryou'?'tab on':'tab'} onClick={()=>setFeedTab('foryou')}>{t('لك','For You',lang)}</button>
+        <button className={feedTab==='following'?'tab on':'tab'} onClick={()=>{setFeedTab('following');loadFollowing();}}>{t('الأصدقاء','Following',lang)}</button>
+        <button className={feedTab==='egypt'?'tab on':'tab'} onClick={()=>setFeedTab('egypt')}>{t('مصر','Egypt',lang)}</button>
       </div>
       {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>✕</button></div>}
       <CreatePost user={user} lang={lang} onPosted={handlePosted} />
