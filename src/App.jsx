@@ -1804,7 +1804,7 @@ function NewsAdminPage({ lang, user, onToast }) {
   const [news, setNews] = useState([]);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️',keywords:''});
+  const [form, setForm] = useState({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️',image_url:'',keywords:''});
   const token = localStorage.getItem('kemet_token');
   const API = 'https://kemetc1-production.up.railway.app/api';
 
