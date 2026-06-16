@@ -342,6 +342,81 @@ def get_stats():
 # ══════════════════════════════════════════════════════════
 # HEALTH CHECK
 # ══════════════════════════════════════════════════════════
+
+# NEWS ENDPOINTS
+@app.route('/api/news', methods=['GET'])
+def get_news():
+    try:
+        conn = get_db_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM news ORDER BY created_at DESC LIMIT 50")
+        rows = cur.fetchall()
+        cols = [d[0] for d in cur.description]
+        news = [dict(zip(cols, row)) for row in rows]
+        conn.close()
+        return ok(news)
+    except Exception as e:
+        return ok([])
+
+@app.route('/api/news', methods=['POST'])
+@require_auth
+def create_news():
+    if request.current_user.get('email') != 'mido704@gmail.com':
+        return err('غير مصرح', 403)
+    b = request.json or {}
+    if not b.get('title_ar') or not b.get('title_en'):
+        return err('العنوان مطلوب')
+    try:
+        conn = get_db_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO news (title_ar, title_en, summary_ar, summary_en, content_ar, content_en, category, image, image_url, keywords, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW()) RETURNING id
+        """, (b.get('title_ar'), b.get('title_en'), b.get('summary_ar',''), b.get('summary_en',''),
+              b.get('content_ar',''), b.get('content_en',''), b.get('category','tourism'),
+              b.get('image','🏛️'), b.get('image_url',''), b.get('keywords','')))
+        news_id = cur.fetchone()[0]
+        conn.commit()
+        conn.close()
+        return ok({'news_id': news_id}), 201
+    except Exception as e:
+        return err(str(e))
+
+@app.route('/api/news/<int:news_id>', methods=['PUT'])
+@require_auth
+def update_news(news_id):
+    if request.current_user.get('email') != 'mido704@gmail.com':
+        return err('غير مصرح', 403)
+    b = request.json or {}
+    try:
+        conn = get_db_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE news SET title_ar=%s, title_en=%s, summary_ar=%s, summary_en=%s,
+            content_ar=%s, content_en=%s, category=%s, image=%s, keywords=%s WHERE id=%s
+        """, (b.get('title_ar'), b.get('title_en'), b.get('summary_ar'), b.get('summary_en'),
+              b.get('content_ar'), b.get('content_en'), b.get('category'), b.get('image'),
+              b.get('keywords',''), news_id))
+        conn.commit()
+        conn.close()
+        return ok({'updated': True})
+    except Exception as e:
+        return err(str(e))
+
+@app.route('/api/news/<int:news_id>', methods=['DELETE'])
+@require_auth
+def delete_news(news_id):
+    if request.current_user.get('email') != 'mido704@gmail.com':
+        return err('غير مصرح', 403)
+    try:
+        conn = get_db_conn()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM news WHERE id=%s", (news_id,))
+        conn.commit()
+        conn.close()
+        return ok({'deleted': True})
+    except Exception as e:
+        return err(str(e))
 @app.route('/api/health', methods=['GET'])
 def health():
     return ok({'status': 'online', 'service': 'Kemet Social API', 'version': '1.0.0'})
