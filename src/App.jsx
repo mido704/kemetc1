@@ -1853,8 +1853,15 @@ function NewsAdminPage({ lang, user, onToast }) {
             <select className='inp' value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))}>
               {cats.map(([k,l])=><option key={k} value={k}>{l}</option>)}
             </select>
-            <input className='inp' placeholder='Emoji (مثال: 🏛️)' value={form.image} onChange={e=>setForm(f=>({...f,image:e.target.value}))} />
-            <input className='inp' placeholder='Keywords (مفصولة بفواصل) - للـ SEO' value={form.keywords} onChange={e=>setForm(f=>({...f,keywords:e.target.value}))} style={{gridColumn:'1/-1'}} />
+            <input className='inp' placeholder='Emoji فقط (مثال: 🏛️ أو ✈️)' value={form.image} onChange={e=>setForm(f=>({...f,image:e.target.value}))} />
+            <div style={{display:'flex',gap:8,alignItems:'center',gridColumn:'1/-1'}}>
+              <input className='inp' placeholder='رابط الصورة (اختياري)' value={form.image_url} onChange={e=>setForm(f=>({...f,image_url:e.target.value}))} style={{flex:1}} />
+              <label className='btn btn-gh' style={{cursor:'pointer',border:'1px solid var(--gd)',padding:'8px 12px',whiteSpace:'nowrap'}}>
+                📷 رفع صورة
+                <input type='file' accept='image/*' onChange={async(e)=>{ const file=e.target.files[0]; if(!file) return; const url=await uploadToCloudinary(file); setForm(f=>({...f,image_url:url})); }} style={{display:'none'}} />
+              </label>
+            </div>
+            <input className='inp' placeholder='Keywords للـ SEO (مفصولة بفواصل)' value={form.keywords} onChange={e=>setForm(f=>({...f,keywords:e.target.value}))} style={{gridColumn:'1/-1'}} />
           </div>
           <div style={{display:'flex',gap:10,marginTop:14}}>
             <button className='btn btn-o' onClick={()=>{setAdding(false);setEditing(null);}} style={{flex:1}}>إلغاء</button>
