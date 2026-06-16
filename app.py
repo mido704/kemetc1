@@ -663,8 +663,7 @@ def get_news():
         cur = db.conn.cursor()
         cur.execute("SELECT * FROM news ORDER BY created_at DESC LIMIT 50")
         rows = cur.fetchall()
-        cols = [d[0] for d in cur.description]
-        news = [dict(zip(cols, row)) for row in rows]
+        news = [dict(row) for row in rows]
         return ok(news)
     except Exception as e:
         return ok([])
