@@ -1817,7 +1817,7 @@ export default function App() {
       {modal==='register' && <RegisterModal lang={lang} onClose={()=>setModal(null)} onSuccess={handleReg} />}
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
       {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
-      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:70,right:16,width:48,height:48,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
+      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:70,right:16,width:48,height:48,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>}
 
 
     </>
@@ -1867,7 +1867,7 @@ export default function App() {
 
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
       {showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
-      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:70,right:16,width:48,height:48,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>
+      <button onClick={()=>setShowAI(v=>!v)} style={{position:'fixed',bottom:70,right:16,width:48,height:48,borderRadius:'50%',background:'linear-gradient(135deg,var(--gd),var(--g))',border:'none',fontSize:22,cursor:'pointer',zIndex:1400,boxShadow:'0 4px 20px rgba(201,168,76,0.4)',display:'flex',alignItems:'center',justifyContent:'center'}}>👑</button>}
 
 
       <div className='bottom-nav'>
