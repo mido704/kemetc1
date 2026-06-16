@@ -1738,6 +1738,10 @@ function EgyptNewsTab({ lang }) {
   const [catFilter, setCatFilter] = useState('all');
   const [newsData, setNewsData] = useState(EGYPT_NEWS);
   const [loading, setLoading] = useState(true);
+  const [translatedNews, setTranslatedNews] = useState({});
+  const [translatingId, setTranslatingId] = useState(null);
+  const [showLangMenu, setShowLangMenu] = useState(null);
+  const translateNews = async (newsItem, targetLang) => { setShowLangMenu(null); setTranslatingId(newsItem.id); try { const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'Content-Type':'application/json','x-api-key':import.meta.env.VITE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:'Translate to '+targetLang+' only: '+newsItem.title_en+' - '+newsItem.summary_en}]})}); const d=await r.json(); setTranslatedNews(t=>({...t,[newsItem.id]:d.content?.[0]?.text||''})); } catch(e){} setTranslatingId(null); };
   useEffect(()=>{ fetch('https://kemetc1-production.up.railway.app/api/news').then(r=>r.json()).then(d=>{ if(d.ok && d.data?.length) setNewsData(d.data); setLoading(false); }).catch(()=>setLoading(false)); },[]);
   const cats = [['all', t('الكل','All',lang)], ['eclipse', t('كسوف','Eclipse',lang)], ['tourism', t('سياحة','Tourism',lang)], ['culture', t('ثقافة','Culture',lang)]];
   const filtered = catFilter==='all' ? newsData : newsData.filter(n=>n.category===catFilter);
@@ -1778,8 +1782,18 @@ function EgyptNewsTab({ lang }) {
             <div style={{fontSize:14,fontWeight:700,color:'var(--g)',lineHeight:1.4,marginBottom:6}}>{lang==='ar'?news.title_ar:news.title_en}</div>
             <div style={{fontSize:12,color:'var(--tm)',lineHeight:1.6,overflow:'hidden',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical'}}>{lang==='ar'?news.summary_ar:news.summary_en}</div>
           </div>
-          <span style={{color:'var(--gd)',fontSize:18,flexShrink:0}}>›</span>
+          <div style={{display:'flex',flexDirection:'column',gap:4,alignItems:'flex-end',flexShrink:0}}>
+            <span style={{color:'var(--gd)',fontSize:18}}>›</span>
+            <div style={{position:'relative'}}>
+              <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',border:'1px solid rgba(201,168,76,0.3)',borderRadius:10}} onClick={e=>{e.stopPropagation();setShowLangMenu(showLangMenu===news.id?null:news.id);}}>🌐</button>
+              {showLangMenu===news.id && <div style={{position:'absolute',right:0,bottom:'100%',background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:8,padding:4,zIndex:100,minWidth:90}}>{[['English','EN'],['Arabic','AR'],['French','FR'],['German','DE'],['Italian','IT'],['Russian','RU']].map(([l,c])=>(<button key={c} className='btn btn-gh' style={{width:'100%',fontSize:11,padding:'3px 6px'}} onClick={e=>{e.stopPropagation();translateNews(news,l);}}>{c}</button>))}</div>}
+
+
+            </div>
+          </div>
+        {translatingId===news.id && <div style={{fontSize:11,color:'var(--tm)',padding:'4px 0'}}>Translating...</div>}
         </div>
+
       ))}
     </div>
   );
