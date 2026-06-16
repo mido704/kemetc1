@@ -1743,7 +1743,10 @@ function EgyptNewsTab({ lang }) {
     <div className="fi" style={{maxWidth:600,margin:'0 auto',padding:'0 0 14px'}}>
       <button className="btn btn-gh" onClick={()=>setSelected(null)} style={{marginBottom:14}}>← {t('رجوع','Back',lang)}</button>
       <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:14,overflow:'hidden'}}>
-        <div style={{textAlign:'center',padding:'32px 16px',background:'linear-gradient(135deg,#0D0A02,#1A1200)',fontSize:72}}>{selected.image}</div>
+        <div style={{textAlign:'center',padding:'32px 16px',background:'linear-gradient(135deg,#0D0A02,#1A1200)',fontSize:72,position:'relative',minHeight:200,overflow:'hidden'}}>
+          {selected.image_url ? <img src={selected.image_url} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',opacity:0.7}} /> : null}
+          <span style={{position:'relative',zIndex:1}}>{selected.image}</span>
+        </div>
         <div style={{padding:20}}>
           <span style={{fontSize:10,color:'var(--gd)',letterSpacing:2,textTransform:'uppercase'}}>{selected.category} • {selected.date}</span>
           <h2 style={{color:'var(--g)',fontSize:20,fontWeight:800,margin:'10px 0',lineHeight:1.4}}>{lang==='ar'?selected.title_ar:selected.title_en}</h2>
