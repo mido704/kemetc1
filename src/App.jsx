@@ -1817,8 +1817,10 @@ function NewsAdminPage({ lang, user, onToast }) {
   };
 
   const saveNews = async () => {
-    const url = editing ? API+'/news/'+editing.id : API+'/news';
-    const method = editing ? 'PUT' : 'POST';
+    const newsId = editing?.news_id || editing?.id;
+    const url = newsId ? API+'/news/'+newsId : API+'/news';
+    const method = newsId ? 'PUT' : 'POST';
+
     const r = await fetch(url, {method, headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body:JSON.stringify(form)});
     const d = await r.json();
     if(d.ok){ onToast(editing?'تم التحديث!':'تم النشر!'); setAdding(false); setEditing(null); setForm({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️'}); loadNews(); }
