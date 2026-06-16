@@ -863,6 +863,19 @@ function RightSidebar({ lang }) {
 // ── PAGES ─────────────────────────────────────────────────
 function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   const [hashFilter, setHashFilter] = useState('');
+  const [feedTab, setFeedTab] = useState('foryou');
+  const [followingPosts, setFollowingPosts] = useState([]);
+  const [loadingFollowing, setLoadingFollowing] = useState(false);
+
+  const loadFollowing = async () => {
+    if (followingPosts.length > 0) return;
+    setLoadingFollowing(true);
+    const token = localStorage.getItem('kemet_token');
+    const r = await fetch('https://kemetc1-production.up.railway.app/api/posts/following', {headers:{'Authorization':'Bearer '+token}});
+    const d = await r.json();
+    if (d.ok) setFollowingPosts(d.data||[]);
+    setLoadingFollowing(false);
+  };
   const [visibleCount, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
   useEffect(()=>{ window.setHashtagFilter=(h)=>setHashFilter(h); return ()=>delete window.setHashtagFilter; },[]);
@@ -1706,6 +1719,65 @@ function AIAssistant({ lang, user, onClose }) {
         <input className="inp" placeholder={lang==='ar'?'اسألني عن مصر...':'Ask about Egypt...'} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{flex:1,padding:'8px 12px',fontSize:13}} />
         <button className="btn btn-g" onClick={send} disabled={loading} style={{padding:'8px 14px'}}>➤</button>
       </div>
+    </div>
+  );
+}
+
+// ── EGYPT NEWS TAB ────────────────────────────────────────
+const EGYPT_NEWS = [
+  { id:1, title_ar:"كسوف الشمس 2027 - الأقصر تستعد لأضخم حدث فلكي في التاريخ", title_en:"Solar Eclipse 2027 - Luxor Prepares for the Biggest Astronomical Event in History", summary_ar:"تستعد مدينة الأقصر لاستقبال ملايين السياح من حول العالم لمشاهدة كسوف الشمس الكلي في أغسطس 2027، والذي سيكون الأطول في القرن الحادي والعشرين.", summary_en:"Luxor is preparing to welcome millions of tourists from around the world to witness the total solar eclipse in August 2027, which will be the longest in the 21st century.", date:"2026-06-15", category:"eclipse", image:"🌑" },
+  { id:2, title_ar:"السياحة المصرية تسجل أرقاماً قياسية في 2026", title_en:"Egyptian Tourism Records Historic Numbers in 2026", summary_ar:"أعلنت وزارة السياحة المصرية عن تسجيل أرقام قياسية في عدد الزوار خلال الربع الأول من 2026، مع توقعات بتجاوز 15 مليون سائح بنهاية العام.", summary_en:"Egypt's Ministry of Tourism announced record-breaking visitor numbers in the first quarter of 2026, with expectations to exceed 15 million tourists by year end.", date:"2026-06-14", category:"tourism", image:"✈️" },
+  { id:3, title_ar:"متحف الحضارة المصرية يستقبل مليون زائر", title_en:"Egyptian Civilization Museum Welcomes One Million Visitors", summary_ar:"وصل عدد زوار متحف الحضارة المصرية بالفسطاط إلى مليون زائر، مما يجعله من أبرز الوجهات السياحية الجديدة في القاهرة.", summary_en:"The Egyptian Civilization Museum in Fustat reached one million visitors, making it one of Cairo's most prominent new tourist destinations.", date:"2026-06-13", category:"culture", image:"🏛️" },
+  { id:4, title_ar:"الغردقة - الوجهة البديلة الذكية لمشاهدة كسوف 2027", title_en:"Hurghada - The Smart Alternative for Viewing the 2027 Eclipse", summary_ar:"مع اكتمال حجز فنادق الأقصر وأسوان، تبرز الغردقة كأفضل بديل للإقامة مع إمكانية الانتقال لمشاهدة الكسوف والعودة في نفس اليوم.", summary_en:"With Luxor and Aswan hotels fully booked, Hurghada emerges as the best accommodation alternative with the ability to travel to see the eclipse and return the same day.", date:"2026-06-12", category:"eclipse", image:"🏖️" },
+  { id:5, title_ar:"أبو سمبل يفتح أبوابه لتوافق الشمس في أكتوبر القادم", title_en:"Abu Simbel Opens for Sun Alignment Phenomenon Next October", summary_ar:"تستعد محافظة أسوان لاستقبال آلاف الزوار لمشاهدة ظاهرة تعامد الشمس على وجه رمسيس الثاني في معبد أبو سمبل في أكتوبر القادم.", summary_en:"Aswan governorate is preparing to welcome thousands of visitors to witness the sun alignment phenomenon on Ramesses II's face at Abu Simbel Temple next October.", date:"2026-06-11", category:"culture", image:"🌅" },
+  { id:6, title_ar:"كروز النيل الفاخر - تجربة لا تُنسى بين الأقصر وأسوان", title_en:"Luxury Nile Cruise - An Unforgettable Experience Between Luxor and Aswan", summary_ar:"تقرير شامل عن أفضل باخرات النيل الفاخرة التي تجمع بين الراحة والتاريخ في رحلة ساحرة على ضفاف أقدم نهر في العالم.", summary_en:"A comprehensive report on the best luxury Nile steamers that combine comfort and history in an enchanting journey along the banks of the world's oldest river.", date:"2026-06-10", category:"tourism", image:"🛳️" },
+];
+
+function EgyptNewsTab({ lang }) {
+  const [selected, setSelected] = useState(null);
+  const [catFilter, setCatFilter] = useState('all');
+  const cats = [['all', t('الكل','All',lang)], ['eclipse', t('كسوف','Eclipse',lang)], ['tourism', t('سياحة','Tourism',lang)], ['culture', t('ثقافة','Culture',lang)]];
+  const filtered = catFilter==='all' ? EGYPT_NEWS : EGYPT_NEWS.filter(n=>n.category===catFilter);
+
+  if (selected) return (
+    <div className="fi" style={{maxWidth:600,margin:'0 auto',padding:'0 0 14px'}}>
+      <button className="btn btn-gh" onClick={()=>setSelected(null)} style={{marginBottom:14}}>← {t('رجوع','Back',lang)}</button>
+      <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:14,overflow:'hidden'}}>
+        <div style={{textAlign:'center',padding:'32px 16px',background:'linear-gradient(135deg,#0D0A02,#1A1200)',fontSize:72}}>{selected.image}</div>
+        <div style={{padding:20}}>
+          <span style={{fontSize:10,color:'var(--gd)',letterSpacing:2,textTransform:'uppercase'}}>{selected.category} • {selected.date}</span>
+          <h2 style={{color:'var(--g)',fontSize:20,fontWeight:800,margin:'10px 0',lineHeight:1.4}}>{lang==='ar'?selected.title_ar:selected.title_en}</h2>
+          <div className="gdiv"/>
+          <p style={{color:'var(--gl)',fontSize:14,lineHeight:1.9}}>{lang==='ar'?selected.summary_ar:selected.summary_en}</p>
+          <div style={{marginTop:20,padding:16,background:'rgba(201,168,76,0.05)',borderRadius:10,border:'1px solid rgba(201,168,76,0.15)'}}>
+            <div style={{fontSize:12,color:'var(--gd)',marginBottom:8}}>🔺 {t('هل تريد معرفة المزيد؟','Want to know more?',lang)}</div>
+            <div style={{fontSize:13,color:'var(--tm)'}}>{t('تحدث مع رمسيس AI للحصول على معلومات تفصيلية','Talk to Ramesses AI for detailed information',lang)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{maxWidth:600,margin:'0 auto',padding:'0 0 14px'}}>
+      <div style={{textAlign:'center',padding:'16px 0 20px'}}>
+        <div style={{fontSize:13,color:'var(--gd)',letterSpacing:3,marginBottom:6}}>🗞️ {t('أخبار مصر السياحية','Egypt Tourism News',lang)}</div>
+        <div style={{fontSize:11,color:'var(--tm)'}}>{t('آخر الأخبار والتقارير السياحية','Latest tourism news and reports',lang)}</div>
+      </div>
+      <div style={{display:'flex',gap:6,marginBottom:16,overflowX:'auto',paddingBottom:4}}>
+        {cats.map(([k,l])=>(<button key={k} className={`tab ${catFilter===k?'on':''}`} onClick={()=>setCatFilter(k)} style={{whiteSpace:'nowrap',padding:'6px 14px'}}>{l}</button>))}
+      </div>
+      {filtered.map(news=>(
+        <div key={news.id} className="post-card" style={{cursor:'pointer',display:'flex',gap:14,alignItems:'flex-start'}} onClick={()=>setSelected(news)}>
+          <div style={{fontSize:40,flexShrink:0,width:56,height:56,background:'linear-gradient(135deg,#0D0A02,#1A1200)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}>{news.image}</div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:10,color:'var(--gd)',marginBottom:4,letterSpacing:1}}>{news.category.toUpperCase()} • {news.date}</div>
+            <div style={{fontSize:14,fontWeight:700,color:'var(--g)',lineHeight:1.4,marginBottom:6}}>{lang==='ar'?news.title_ar:news.title_en}</div>
+            <div style={{fontSize:12,color:'var(--tm)',lineHeight:1.6,overflow:'hidden',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical'}}>{lang==='ar'?news.summary_ar:news.summary_en}</div>
+          </div>
+          <span style={{color:'var(--gd)',fontSize:18,flexShrink:0}}>›</span>
+        </div>
+      ))}
     </div>
   );
 }
