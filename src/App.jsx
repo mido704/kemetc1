@@ -790,6 +790,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'🌑', ar:'كسوف 2027', en:'Eclipse 2027', key:'eclipse' },
   ];
   const isAdmin = user?.email === 'mido704@gmail.com';
+  const isNewsAdmin = isAdmin;
   const isStoreManager = user?.role === 'store_manager' || isAdmin;
        
   return (
@@ -1774,6 +1775,97 @@ function EgyptNewsTab({ lang }) {
     </div>
   );
 }
+
+// ── NEWS ADMIN PAGE ───────────────────────────────────────
+function NewsAdminPage({ lang, user, onToast }) {
+  const [news, setNews] = useState([]);
+  const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️'});
+  const token = localStorage.getItem('kemet_token');
+  const API = 'https://kemetc1-production.up.railway.app/api';
+
+  useEffect(()=>{ loadNews(); },[]);
+
+  const loadNews = async () => {
+    const r = await fetch(API+'/news');
+    const d = await r.json();
+    if(d.ok) setNews(d.data||[]);
+  };
+
+  const saveNews = async () => {
+    const url = editing ? API+'/news/'+editing.id : API+'/news';
+    const method = editing ? 'PUT' : 'POST';
+    const r = await fetch(url, {method, headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body:JSON.stringify(form)});
+    const d = await r.json();
+    if(d.ok){ onToast(editing?'تم التحديث!':'تم النشر!'); setAdding(false); setEditing(null); setForm({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️'}); loadNews(); }
+    else onToast('خطأ: '+d.error);
+  };
+
+  const deleteNews = async (id) => {
+    if(!confirm('حذف هذا الخبر؟')) return;
+    await fetch(API+'/news/'+id, {method:'DELETE', headers:{'Authorization':'Bearer '+token}});
+    onToast('تم الحذف'); loadNews();
+  };
+
+  const startEdit = (n) => {
+    setForm({title_ar:n.title_ar||'',title_en:n.title_en||'',summary_ar:n.summary_ar||'',summary_en:n.summary_en||'',content_ar:n.content_ar||'',content_en:n.content_en||'',category:n.category||'tourism',image:n.image||'🏛️'});
+    setEditing(n); setAdding(true);
+  };
+
+  const cats = [['tourism','سياحة'],['eclipse','كسوف'],['culture','ثقافة'],['medical','طبي'],['news','أخبار']];
+
+  return (
+    <div style={{maxWidth:700,margin:'0 auto',padding:14}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
+        <div style={{fontWeight:800,fontSize:20,color:'var(--g)'}}>🗞️ إدارة الأخبار</div>
+        <button className='btn btn-g' style={{marginRight:'auto'}} onClick={()=>{setEditing(null);setForm({title_ar:'',title_en:'',summary_ar:'',summary_en:'',content_ar:'',content_en:'',category:'tourism',image:'🏛️'});setAdding(true);}}>+ خبر جديد</button>
+      </div>
+
+      {adding && (
+        <div className='card' style={{padding:20,marginBottom:20}}>
+          <div style={{fontWeight:700,color:'var(--g)',marginBottom:14}}>{editing?'تعديل خبر':'خبر جديد'}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+            <input className='inp' placeholder='العنوان بالعربي *' value={form.title_ar} onChange={e=>setForm(f=>({...f,title_ar:e.target.value}))} />
+            <input className='inp' placeholder='Title in English *' value={form.title_en} onChange={e=>setForm(f=>({...f,title_en:e.target.value}))} />
+            <textarea className='inp' placeholder='الملخص بالعربي' value={form.summary_ar} onChange={e=>setForm(f=>({...f,summary_ar:e.target.value}))} rows={3} />
+            <textarea className='inp' placeholder='Summary in English' value={form.summary_en} onChange={e=>setForm(f=>({...f,summary_en:e.target.value}))} rows={3} />
+            <textarea className='inp' placeholder='المحتوى الكامل بالعربي' value={form.content_ar} onChange={e=>setForm(f=>({...f,content_ar:e.target.value}))} rows={4} />
+            <textarea className='inp' placeholder='Full content in English' value={form.content_en} onChange={e=>setForm(f=>({...f,content_en:e.target.value}))} rows={4} />
+            <select className='inp' value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))}>
+              {cats.map(([k,l])=><option key={k} value={k}>{l}</option>)}
+            </select>
+            <input className='inp' placeholder='Emoji (مثال: 🏛️)' value={form.image} onChange={e=>setForm(f=>({...f,image:e.target.value}))} />
+          </div>
+          <div style={{display:'flex',gap:10,marginTop:14}}>
+            <button className='btn btn-o' onClick={()=>{setAdding(false);setEditing(null);}} style={{flex:1}}>إلغاء</button>
+            <button className='btn btn-g' onClick={saveNews} style={{flex:1}}>🔺 {editing?'تحديث':'نشر الخبر'}</button>
+          </div>
+        </div>
+      )}
+
+      {news.length===0 && !adding && (
+        <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>
+          <div style={{fontSize:48,marginBottom:10}}>🗞️</div>
+          <div>لا توجد أخبار بعد. اضغط "+ خبر جديد" للبدء</div>
+        </div>
+      )}
+
+      {news.map(n=>(
+        <div key={n.id} className='card' style={{padding:14,marginBottom:10,display:'flex',gap:12,alignItems:'center'}}>
+          <div style={{fontSize:32}}>{n.image||'🏛️'}</div>
+          <div style={{flex:1}}>
+            <div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{n.title_ar}</div>
+            <div style={{fontSize:11,color:'var(--tm)'}}>{n.title_en}</div>
+            <div style={{fontSize:11,color:'var(--gd)',marginTop:2}}>{n.category} • {n.created_at?.split('T')[0]}</div>
+          </div>
+          <button className='btn btn-gh' style={{fontSize:12,border:'1px solid var(--gd)',color:'var(--g)'}} onClick={()=>startEdit(n)}>✏️ تعديل</button>
+          <button className='btn btn-o' style={{fontSize:12,borderColor:'var(--red)',color:'var(--red)'}} onClick={()=>deleteNews(n.id)}>🗑 حذف</button>
+        </div>
+      ))}
+    </div>
+  );
+}
 // -- MAIN APP --
 export default function App() {
   const [screen, setScreen] = useState('landing');
@@ -1919,6 +2011,7 @@ export default function App() {
           {page==='view_profile' && viewUserId && <ViewProfilePage userId={viewUserId} lang={lang} user={user} onBack={()=>setPage('feed')} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
+          {page==='news_admin' && isAdmin && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTimeout(()=>{ const el=document.getElementById('post-'+postId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },500); }} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
