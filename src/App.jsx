@@ -2020,7 +2020,7 @@ export default function App() {
           {page==='view_profile' && viewUserId && <ViewProfilePage userId={viewUserId} lang={lang} user={user} onBack={()=>setPage('feed')} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
           {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
-          {page==='news_admin' && isAdmin && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
+          {page==='news_admin' && user?.email==='mido704@gmail.com' && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTimeout(()=>{ const el=document.getElementById('post-'+postId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },500); }} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
