@@ -778,7 +778,8 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
 }
 
 // ── LEFT SIDEBAR ──────────────────────────────────────────
-function LeftSidebar({ user, page, setPage, lang, onLogout, theme, setTheme, setLang }) {
+function LeftSidebar({ user, page, setPage, lang, onLogout }) {
+  const isAdmin = user?.email === 'mido704@gmail.com';
   const navItems = [
     { icon:'🏠', ar:'الرئيسية',   en:'Home',          key:'feed' },
     { icon:'👤', ar:'البروفايل',  en:'Profile',       key:'profile' },
@@ -789,7 +790,6 @@ function LeftSidebar({ user, page, setPage, lang, onLogout, theme, setTheme, set
     { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
     { icon:'🌑', ar:'كسوف 2027', en:'Eclipse 2027', key:'eclipse' },
   ];
-  const isAdmin = user?.email === 'mido704@gmail.com';
   const isNewsAdmin = isAdmin;
   const isStoreManager = user?.role === 'store_manager' || isAdmin;
        
