@@ -1730,8 +1730,11 @@ const EGYPT_NEWS = [
 function EgyptNewsTab({ lang }) {
   const [selected, setSelected] = useState(null);
   const [catFilter, setCatFilter] = useState('all');
+  const [newsData, setNewsData] = useState(EGYPT_NEWS);
+  const [loading, setLoading] = useState(true);
+  useEffect(()=>{ fetch('https://kemetc1-production.up.railway.app/api/news').then(r=>r.json()).then(d=>{ if(d.ok && d.data?.length) setNewsData(d.data); setLoading(false); }).catch(()=>setLoading(false)); },[]);
   const cats = [['all', t('الكل','All',lang)], ['eclipse', t('كسوف','Eclipse',lang)], ['tourism', t('سياحة','Tourism',lang)], ['culture', t('ثقافة','Culture',lang)]];
-  const filtered = catFilter==='all' ? EGYPT_NEWS : EGYPT_NEWS.filter(n=>n.category===catFilter);
+  const filtered = catFilter==='all' ? newsData : newsData.filter(n=>n.category===catFilter);
 
   if (selected) return (
     <div className="fi" style={{maxWidth:600,margin:'0 auto',padding:'0 0 14px'}}>
