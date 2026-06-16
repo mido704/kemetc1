@@ -778,7 +778,7 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
 }
 
 // ── LEFT SIDEBAR ──────────────────────────────────────────
-function LeftSidebar({ user, page, setPage, lang, onLogout }) {
+function LeftSidebar({ user, page, setPage, lang, onLogout, theme, setTheme, setLang }) {
   const navItems = [
     { icon:'🏠', ar:'الرئيسية',   en:'Home',          key:'feed' },
     { icon:'👤', ar:'البروفايل',  en:'Profile',       key:'profile' },
