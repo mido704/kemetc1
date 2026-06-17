@@ -302,6 +302,8 @@ function LoginModal({ onClose, onSuccess, lang }) {
 // ── REGISTER MODAL ────────────────────────────────────────
 function RegisterModal({ onClose, onSuccess, lang }) {
   const [step, setStep] = useState(1);
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const [showPrivacyFromSignup, setShowPrivacyFromSignup] = useState(false);
   const [form, setForm] = useState({ name:'', email:'', password:'', country:'', phone:'', selectedPharaoh:null, customNick:'' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -664,6 +666,8 @@ function TourCard({ tour, lang, onBuy }) {
 // ── PAYMENT MODAL ─────────────────────────────────────────
 function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
   const [step, setStep] = useState(1);
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const [showPrivacyFromSignup, setShowPrivacyFromSignup] = useState(false);
   const [method, setMethod] = useState('');
   const [card, setCard] = useState({ num:'', exp:'', cvv:'', name:'' });
   const [guests, setGuests] = useState(1);
@@ -1891,6 +1895,115 @@ function NewsAdminPage({ lang, user, onToast }) {
           <button className='btn btn-o' style={{fontSize:12,borderColor:'var(--red)',color:'var(--red)'}} onClick={()=>deleteNews(n.id)}>🗑 حذف</button>
         </div>
       ))}
+    </div>
+  );
+}
+
+// -- PRIVACY POLICY PAGE --
+function PrivacyPolicyPage({ lang, onBack }) {
+  const ar = `
+سياسة الخصوصية — كيمت سوشيال
+
+آخر تحديث: يونيو 2026
+
+1. مقدمة
+تُدار منصة "كيمت سوشيال" من قِبل شركة GEO 14، وهي شركة ذات مسئولية محدودة مسجلة في جمهورية مصر العربية. توضح سياسة الخصوصية هذه كيفية جمعنا واستخدامنا وتخزيننا وحمايتنا لمعلوماتك الشخصية عند استخدامك للخدمة.
+
+2. المعلومات التي نجمعها
+- معلومات الحساب: الاسم، البريد الإلكتروني، كلمة المرور (مشفّرة)، الصورة الشخصية
+- محتوى الملف الشخصي: المنشورات والتعليقات والصور والفيديوهات
+- الاتصالات: رسائل المحادثة ومكالمات الفيديو والصوت
+- طلبات الدعم وميزة الطوارئ (SOS)
+- معلومات الحجز والتقييمات في المتجر
+- بيانات الاستخدام التلقائية: الجهاز، المتصفح، عنوان IP، ملفات تعريف الارتباط
+
+نحن لا نجمع أو نخزّن بيانات بطاقتك البنكية مباشرة؛ تتم كل عمليات الدفع عبر بوابات دفع خارجية آمنة.
+
+3. كيف نستخدم معلوماتك
+لإنشاء وإدارة حسابك، تشغيل ميزات المنصة، معالجة الحجوزات، الرد على طلبات الدعم والطوارئ، تحسين تجربتك، والامتثال للقانون المصري.
+
+4. مشاركة المعلومات
+لا نبيع بياناتك لأي طرف ثالث. قد نشاركها فقط مع مزوّدي الخدمات (الاستضافة، تخزين الصور، بوابات الدفع) أو عند الالتزام القانوني أو لحماية السلامة في حالات الطوارئ. لا نشارك بياناتك حاليًا مع شركات إعلانات أو تحليلات.
+
+5. تخزين البيانات وأمانها
+تُخزَّن بياناتك على خوادم سحابية آمنة مع تشفير كلمات المرور ونقل آمن للبيانات، دون ضمان أمان مطلق.
+
+6. الاحتفاظ بالبيانات
+نحتفظ ببياناتك طالما حسابك نشط، ويمكنك طلب حذف حسابك وبياناتك في أي وقت بالتواصل معنا.
+
+7. حقوقك
+الوصول لبياناتك، تصحيحها، حذفها، سحب موافقتك، أو الاعتراض على استخدامها — بالتواصل معنا.
+
+8. خصوصية الأطفال والحد العمري
+المنصة مخصصة لمن هم 13 عامًا فأكثر. يُنصح من تتراوح أعمارهم بين 13 و18 عامًا باستخدام المنصة بتوجيه ولي الأمر.
+
+9. المستخدمون الدوليون
+قد تتم معالجة وتخزين بياناتك على خوادم خارج بلد إقامتك، بما في ذلك مصر.
+
+10. التواصل معنا
+البريد الإلكتروني: mido704@gmail.com
+واتساب: 201000255809+
+
+11. التغييرات على هذه السياسة
+قد نحدّث هذه السياسة من وقت لآخر، وسنشعرك بالتغييرات الجوهرية. استمرارك في استخدام الخدمة يُعد قبولًا للسياسة المُحدّثة.
+`.trim();
+
+  const en = `
+Privacy Policy — Kemet Social
+
+Last Updated: June 2026
+
+1. Introduction
+Kemet Social is operated by GEO 14, a limited liability company registered in Egypt. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use the Service.
+
+2. Information We Collect
+- Account info: name, email, encrypted password, profile photo
+- Profile content: posts, comments, photos, videos
+- Communications: in-app messages, video/audio calls
+- Support requests and SOS emergency feature
+- Booking info and reviews on the Store
+- Automatic usage data: device, browser, IP address, cookies
+
+We do not collect or store your payment card details directly; all payments go through secure third-party gateways.
+
+3. How We Use Your Information
+To create and manage your account, operate Platform features, process bookings, respond to support and emergency requests, improve your experience, and comply with Egyptian law.
+
+4. Sharing of Information
+We do not sell your data. We may share limited info with service providers (hosting, image storage, payment gateways), when legally required, or to protect safety in emergencies. We do not currently share data with advertisers or analytics companies.
+
+5. Data Storage and Security
+Your data is stored on secure cloud servers with encrypted passwords and secure transmission, though no system is 100% secure.
+
+6. Data Retention
+We retain your data while your account is active. You may request account and data deletion anytime by contacting us.
+
+7. Your Rights
+Access, correction, deletion of your data, withdrawal of consent, or objection to certain uses — by contacting us.
+
+8. Children's Privacy and Age Requirement
+The Platform is intended for users 13+. Users aged 13-18 should use it with parental guidance.
+
+9. International Users
+Your data may be processed and stored on servers outside your country of residence, including Egypt.
+
+10. Contact Us
+Email: mido704@gmail.com
+WhatsApp: +20 100 025 5809
+
+11. Changes to This Policy
+We may update this Policy and will notify users of material changes. Continued use after changes means acceptance.
+`.trim();
+
+  return (
+    <div style={{maxWidth:680,margin:'0 auto',padding:'18px 16px 60px'}}>
+      <button className='btn btn-gh' onClick={onBack} style={{marginBottom:16}}>← {t('رجوع','Back',lang)}</button>
+      <div className='card' style={{padding:'22px 20px'}}>
+        <div className='logo' style={{fontSize:20,marginBottom:14}}>KEMET</div>
+        <pre style={{whiteSpace:'pre-wrap',fontFamily:"'Cairo',sans-serif",fontSize:13.5,lineHeight:1.9,color:'var(--gl)',direction:lang==='ar'?'rtl':'ltr'}}>
+          {lang==='ar' ? ar : en}
+        </pre>
+      </div>
     </div>
   );
 }
