@@ -1807,6 +1807,7 @@ function EgyptNewsTab({ lang }) {
             </div>
           </div>
         {translatingId===news.id && <div style={{fontSize:11,color:'var(--tm)',padding:'4px 0'}}>Translating...</div>}
+        {translatedNews[news.id] && <div style={{fontSize:12,lineHeight:1.7,color:'#8BC4E0',padding:'8px 0',background:'rgba(139,196,224,0.06)',borderRadius:8,marginTop:4}}>{translatedNews[news.id]}<button onClick={e=>{e.stopPropagation();setTranslatedNews(t=>({...t,[news.id]:''}));}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:10,marginRight:6}}>×</button></div>}
         </div>
 
       ))}
