@@ -395,12 +395,30 @@ function RegisterModal({ onClose, onSuccess, lang }) {
               ✦ {t('مرحباً بك في مملكة كيمت','Welcome to the Kingdom of Kemet',lang)}<br/>
               ✦ {t('حسابك على وشك الإنشاء','Your account is ready to be created',lang)}
             </div>
+            <div style={{ display:'flex', alignItems:'flex-start', gap:8, marginTop:14, textAlign:lang==='ar'?'right':'left' }}>
+              <input type='checkbox' checked={agreedToPrivacy} onChange={e=>setAgreedToPrivacy(e.target.checked)} style={{ marginTop:3, width:16, height:16, flexShrink:0, accentColor:'var(--g)' }} />
+              <span style={{ fontSize:12.5, color:'var(--tm)', lineHeight:1.7 }}>
+                {t('أوافق على ','I agree to the ',lang)}
+                <span onClick={()=>setShowPrivacyFromSignup(true)} style={{ color:'var(--g)', textDecoration:'underline', cursor:'pointer', fontWeight:700 }}>
+                  {t('سياسة الخصوصية','Privacy Policy',lang)}
+                </span>
+                {t(' الخاصة بكيمت سوشيال',' of Kemet Social',lang)}
+              </span>
+            </div>
             <div style={{ display:'flex', gap:10, marginTop:8 }}>
               <button className="btn btn-o" onClick={()=>setStep(2)} style={{ flex:1 }}>{t('← رجوع','← Back',lang)}</button>
-              <button className="btn btn-g" onClick={finish} disabled={loading} style={{ flex:1 }}>
+              <button className="btn btn-g" onClick={finish} disabled={loading || !agreedToPrivacy} style={{ flex:1 }}>
                 {loading?'⏳':t('إنشاء الحساب 🔺','Create Account 🔺',lang)}
               </button>
             </div>
+            {!agreedToPrivacy && <div style={{ fontSize:11, color:'var(--tm)', marginTop:6 }}>{t('يجب الموافقة على سياسة الخصوصية للمتابعة','You must agree to the Privacy Policy to continue',lang)}</div>}
+            {showPrivacyFromSignup && (
+              <div className='modal-bg' onClick={()=>setShowPrivacyFromSignup(false)}>
+                <div className='modal' onClick={e=>e.stopPropagation()} style={{ maxWidth:560 }}>
+                  <PrivacyPolicyPage lang={lang} onBack={()=>setShowPrivacyFromSignup(false)} />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -666,8 +684,6 @@ function TourCard({ tour, lang, onBuy }) {
 // ── PAYMENT MODAL ─────────────────────────────────────────
 function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
   const [step, setStep] = useState(1);
-  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-  const [showPrivacyFromSignup, setShowPrivacyFromSignup] = useState(false);
   const [method, setMethod] = useState('');
   const [card, setCard] = useState({ num:'', exp:'', cvv:'', name:'' });
   const [guests, setGuests] = useState(1);
