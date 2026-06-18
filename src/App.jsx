@@ -2276,7 +2276,7 @@ export default function App() {
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTimeout(()=>{ const el=document.getElementById('post-'+postId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },500); }} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='search' && <SearchPage lang={lang} onViewProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onStartChat={(u)=>{ setActiveChatUser(u); setPage('messages'); }} />}
-          {page==='settings'      && <SettingsPage      lang={lang} setLang={setLang} onLogout={handleLogout} />}
+          {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ if(tour){ setPage('store'); } else { setPage('store'); } }} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
         </div>
 

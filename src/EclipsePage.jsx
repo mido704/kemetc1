@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { storeAPI } from "./utils/api.js";
 
 const DEFAULT_EPISODES = [];
 
@@ -6,6 +7,9 @@ export default function EclipsePage({ lang, user, onToast, onBook }) {
   const [episodes, setEpisodes] = useState(() => {
     try { const s = localStorage.getItem('eclipse_episodes'); return s ? JSON.parse(s) : DEFAULT_EPISODES; } catch { return DEFAULT_EPISODES; }
   });
+  const [tours, setTours] = useState([]);
+  const [selectedTour, setSelectedTour] = useState(null);
+  useEffect(()=>{ storeAPI.getTours().then(r=>{ if(r.ok && r.data?.length) setTours(r.data); }); },[]);
   const [adminMode, setAdminMode] = useState(false);
   const [modal, setModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -157,6 +161,40 @@ export default function EclipsePage({ lang, user, onToast, onBook }) {
         )}
         {adminMode && <button className="ecl-add" onClick={()=>openModal()}>+ Add New Episode</button>}
       </div>
+      {tours.length>0 && (
+      <div className="ecl-sec">
+        <div className="ecl-stitle">✦ Eclipse Travel Packages ✦</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:14,padding:'0 4px'}}>
+          {tours.map(tour=>(
+            <div key={tour.id} style={{background:'var(--bc,#0d0a02)',border:'1px solid rgba(201,168,76,0.25)',borderRadius:12,overflow:'hidden',cursor:'pointer'}} onClick={()=>setSelectedTour(tour)}>
+              <div style={{height:140,position:'relative',background:'linear-gradient(135deg,#0D0A02,#1A1200)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:48}}>
+                {tour.image_url ? <img src={tour.image_url} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} /> : (tour.image_emoji||'🏛')}
+              </div>
+              <div style={{padding:'12px 14px'}}>
+                <div style={{fontSize:13,fontWeight:700,color:'#F0D080',lineHeight:1.4,marginBottom:6}}>{lang==='ar'?tour.title_ar:tour.title_en}</div>
+                <div style={{fontSize:11,color:'#666',marginBottom:10}}>📅 {tour.duration_days} days</div>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontSize:16,fontWeight:800,color:'#C9A84C'}}>${tour.price}<span style={{fontSize:10,color:'#555'}}>/person</span></span>
+                  <button style={{background:'linear-gradient(135deg,#8B6914,#C9A84C)',color:'#000',border:'none',borderRadius:8,padding:'6px 12px',fontSize:11,fontWeight:700,cursor:'pointer'}} onClick={e=>{e.stopPropagation();setSelectedTour(tour);}}>Book Now</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      )}
+      {selectedTour && <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.8)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16}} onClick={e=>e.target===e.currentTarget&&setSelectedTour(null)}>
+        <div style={{background:'#0d0a02',border:'1px solid rgba(201,168,76,0.3)',borderRadius:16,padding:20,maxWidth:480,width:'100%',maxHeight:'80vh',overflowY:'auto'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+            <div style={{fontSize:15,fontWeight:700,color:'#F0D080'}}>{lang==='ar'?selectedTour.title_ar:selectedTour.title_en}</div>
+            <button onClick={()=>setSelectedTour(null)} style={{background:'none',border:'none',color:'#888',fontSize:20,cursor:'pointer'}}>×</button>
+          </div>
+          <p style={{fontSize:13,color:'#888',lineHeight:1.8,marginBottom:14}}>{lang==='ar'?selectedTour.description_ar:selectedTour.description_en}</p>
+          <div style={{fontSize:18,fontWeight:800,color:'#C9A84C',marginBottom:14}}>${selectedTour.price} <span style={{fontSize:11,color:'#555'}}>/ person</span></div>
+          <button style={{width:'100%',background:'linear-gradient(135deg,#8B6914,#C9A84C)',color:'#000',border:'none',borderRadius:10,padding:'12px',fontSize:14,fontWeight:700,cursor:'pointer'}} onClick={()=>{setSelectedTour(null);onBook&&onBook();}}>🔺 Book This Package</button>
+        </div>
+      </div>}
+
 
       <div className="ecl-banner">
         <h3>🔺 Reserve Your Eclipse Experience</h3>
