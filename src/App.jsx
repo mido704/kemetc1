@@ -1117,15 +1117,16 @@ function HotelSearch({ lang }) {
     </div>
   );
 }
-function StorePage({ lang, user, onToast }) {
-  const [tours, setTours] = useState(DEMO_TOURS);
+function StorePage({ lang, user, onToast, initialTour, onTourViewed }) {
+  const [tours, setTours] = useState([]);
   const [tab, setTab] = useState('all');
-  const [selectedTour, setSelectedTour] = useState(null);
+  const [selectedTour, setSelectedTour] = useState(initialTour||null);
   const [buyTour, setBuyTour] = useState(null);
 
   useEffect(()=>{
     storeAPI.getTours().then(r=>{ if(r.ok && r.data?.length) setTours(r.data); });
   },[]);
+  useEffect(()=>{ if(initialTour){ setSelectedTour(initialTour); onTourViewed&&onTourViewed(); } },[initialTour]);
 
   const filtered = tab==='all' ? tours : tours.filter(t2=>t2.category_id===`cat_${tab}`);
 
@@ -2130,6 +2131,7 @@ We may update this Policy and will notify users of material changes. Continued u
 export default function App() {
   const [screen, setScreen] = useState(()=>{ const p = window.location.pathname; if (p==='/eclipse' || p==='/store') return 'app'; return 'landing'; });
   const [page, setPage] = useState(()=>{ const p = window.location.pathname; if (p==='/eclipse') return 'eclipse'; if (p==='/store') return 'store'; return 'feed'; });
+  const [eclipseTour, setEclipseTour] = useState(null);
   const [activeChatUser, setActiveChatUser] = useState(null);
   const [user, setUser] = useState(()=>storage.getUser());
   const [viewUserId, setViewUserId] = useState(null);
@@ -2269,14 +2271,14 @@ export default function App() {
           {page==='feed' && <FeedPage user={user} lang={lang} posts={posts} setPosts={setPosts} onToast={showToast} onViewProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} />}
           {page==='profile'        && <ProfilePage        user={user} lang={lang} posts={posts} onToast={showToast} onUpdateUser={(u)=>{setUser(u); storage.setUser(u);}} onSetPage={setPage} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
           {page==='view_profile' && viewUserId && <ViewProfilePage userId={viewUserId} lang={lang} user={user} onBack={()=>setPage('feed')} onStartChat={(friend)=>{ setActiveChatUser(friend); setPage('messages'); }} />}
-          {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} />}
+          {page==='store'         && <StorePage         lang={lang} user={user} onToast={showToast} initialTour={eclipseTour} onTourViewed={()=>setEclipseTour(null)} />}
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='news_admin' && user?.email==='mido704@gmail.com' && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTimeout(()=>{ const el=document.getElementById('post-'+postId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },500); }} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
-          {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ if(tour){ setPage('store'); } else { setPage('store'); } }} />}
+          {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
         </div>
 
         <RightSidebar lang={lang} />

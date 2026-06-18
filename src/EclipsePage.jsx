@@ -175,7 +175,7 @@ export default function EclipsePage({ lang, user, onToast, onBook }) {
                 <div style={{fontSize:11,color:'#666',marginBottom:10}}>📅 {tour.duration_days} days</div>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <span style={{fontSize:16,fontWeight:800,color:'#C9A84C'}}>\<span style={{fontSize:10,color:'#555'}}>/person</span></span>
-                  <button style={{background:'linear-gradient(135deg,#8B6914,#C9A84C)',color:'#000',border:'none',borderRadius:8,padding:'6px 12px',fontSize:11,fontWeight:700,cursor:'pointer'}} onClick={e=>{e.stopPropagation();onBook&&onBook();}}>Book Now</button>
+                  <button style={{background:'linear-gradient(135deg,#8B6914,#C9A84C)',color:'#000',border:'none',borderRadius:8,padding:'6px 12px',fontSize:11,fontWeight:700,cursor:'pointer'}} onClick={e=>{e.stopPropagation();onBook&&onBook(tour);}}>Book Now</button>
                 </div>
               </div>
             </div>
