@@ -1782,6 +1782,7 @@ function EgyptNewsTab({ lang }) {
             <button onClick={()=>{const copy={...translatedNews};delete copy[selected.id];setTranslatedNews(copy);}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:11,marginRight:8,display:'block',marginTop:6}}>{t('إغلاق','Close',lang)}</button>
           </div>}
           <p style={{color:'var(--gl)',fontSize:14,lineHeight:1.9}}>{lang==='ar'?selected.summary_ar:selected.summary_en}</p>
+          {(lang==='ar'?selected.content_ar:selected.content_en) && <p style={{color:'var(--gl)',fontSize:14,lineHeight:2,marginTop:14,whiteSpace:'pre-wrap'}}>{lang==='ar'?selected.content_ar:selected.content_en}</p>}
           <div style={{marginTop:20,padding:16,background:'rgba(201,168,76,0.05)',borderRadius:10,border:'1px solid rgba(201,168,76,0.15)'}}>
             <div style={{fontSize:12,color:'var(--gd)',marginBottom:8}}>🔺 {t('هل تريد معرفة المزيد؟','Want to know more?',lang)}</div>
             <div style={{fontSize:13,color:'var(--tm)'}}>{t('تحدث مع رمسيس AI للحصول على معلومات تفصيلية','Talk to Ramesses AI for detailed information',lang)}</div>
