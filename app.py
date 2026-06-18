@@ -622,8 +622,8 @@ def create_tour():
     tour_id = 'tour_' + str(uuid.uuid4())[:8]
     try:
         cur = get_db().conn.cursor()
-        cur.execute('INSERT INTO tours (id,category_id,title_ar,title_en,description_ar,description_en,price,duration_days,image_emoji,image_url,badge_ar,badge_en,includes_ar,includes_en,itinerary_ar,itinerary_en,seo_keywords,is_featured,is_active) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)',
-            (tour_id, b.get('category_id','cat_tours'), b.get('title_ar',''), b.get('title_en',''), b.get('description_ar',''), b.get('description_en',''), b.get('price',0), b.get('duration_days',1), b.get('image_emoji','🏛'), b.get('image_url',''), b.get('badge_ar',''), b.get('badge_en',''), b.get('includes_ar','[]'), b.get('includes_en','[]'), b.get('itinerary_ar','[]'), b.get('itinerary_en','[]'), b.get('seo_keywords',''), b.get('is_featured',0)))
+        cur.execute('INSERT INTO tours (id,category_id,title_ar,title_en,description_ar,description_en,price,duration_days,image_emoji,image_url,badge_ar,badge_en,includes_ar,includes_en,itinerary_ar,itinerary_en,seo_keywords,is_featured,gallery,is_active) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)',
+            (tour_id, b.get('category_id','cat_tours'), b.get('title_ar',''), b.get('title_en',''), b.get('description_ar',''), b.get('description_en',''), b.get('price',0), b.get('duration_days',1), b.get('image_emoji','🏛'), b.get('image_url',''), b.get('badge_ar',''), b.get('badge_en',''), b.get('includes_ar','[]'), b.get('includes_en','[]'), b.get('itinerary_ar','[]'), b.get('itinerary_en','[]'), b.get('seo_keywords',''), b.get('is_featured',0), b.get('gallery','[]')))
         get_db().conn.commit()
         return ok({'id': tour_id}), 201
     except Exception as e:
@@ -634,7 +634,7 @@ def update_tour(tour_id):
     if not is_store_manager(request.current_user):
         return err('غير مصرح'), 403
     b = request.get_json() or {}
-    allowed = ['title_ar','title_en','description_ar','description_en','price','duration_days','image_emoji','image_url','badge_ar','badge_en','includes_ar','includes_en','itinerary_ar','itinerary_en','seo_keywords','is_featured','category_id']
+    allowed = ['title_ar','title_en','description_ar','description_en','price','duration_days','image_emoji','image_url','badge_ar','badge_en','includes_ar','includes_en','itinerary_ar','itinerary_en','seo_keywords','is_featured','category_id','gallery']
     updates = {k: v for k, v in b.items() if k in allowed}
     if not updates: return err('لا توجد بيانات')
     db = get_db()

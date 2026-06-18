@@ -978,7 +978,7 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
   const [guests, setGuests] = useState(1);
   const [buyTour, setBuyTour] = useState(null);
   const [activeImg, setActiveImg] = useState(0);
-  const allImages = [tour.image_url, ...(tour.gallery||[])].filter(Boolean);
+  const allImages = [tour.image_url, ...ts(tour.gallery)].filter(Boolean);
   const nextImg = () => setActiveImg(i => (i+1) % allImages.length);
   const prevImg = () => setActiveImg(i => (i-1+allImages.length) % allImages.length);
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
