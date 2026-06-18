@@ -977,25 +977,35 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
 function TourDetailPage({ tour, lang, user, onBack, onToast }) {
   const [guests, setGuests] = useState(1);
   const [buyTour, setBuyTour] = useState(null);
+  const [activeImg, setActiveImg] = useState(0);
+  const allImages = [tour.image_url, ...(tour.gallery||[])].filter(Boolean);
+  const nextImg = () => setActiveImg(i => (i+1) % allImages.length);
+  const prevImg = () => setActiveImg(i => (i-1+allImages.length) % allImages.length);
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
   const itin = ts(lang==='ar'?tour.itinerary_ar:tour.itinerary_en);
   const total = tour.price * guests;
   return (
     <div style={{ maxWidth:700, margin:'0 auto', padding:'14px 14px' }}>
       <button className="btn btn-gh" onClick={onBack} style={{ marginBottom:14 }}>← {t('رجوع','Back',lang)}</button>
-      <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', borderRadius:14, overflow:'hidden', marginBottom:16 }}>
-        {tour.image_url ? (
-          <img src={tour.image_url} style={{ width:'100%', maxHeight:280, objectFit:'cover' }} />
+      <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', borderRadius:14, overflow:'hidden', marginBottom:16, position:'relative' }}>
+        {allImages.length>0 ? (
+          <>
+            <img src={allImages[activeImg]} style={{ width:'100%', maxHeight:280, objectFit:'cover', display:'block' }} />
+            {allImages.length>1 && (
+              <>
+                <button onClick={prevImg} style={{ position:'absolute', top:'50%', left:10, transform:'translateY(-50%)', background:'rgba(0,0,0,0.45)', color:'#fff', border:'none', borderRadius:'50%', width:36, height:36, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>‹</button>
+                <button onClick={nextImg} style={{ position:'absolute', top:'50%', right:10, transform:'translateY(-50%)', background:'rgba(0,0,0,0.45)', color:'#fff', border:'none', borderRadius:'50%', width:36, height:36, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>›</button>
+                <div style={{ position:'absolute', bottom:10, left:0, right:0, display:'flex', justifyContent:'center', gap:6 }}>
+                  {allImages.map((_,idx)=>(<span key={idx} onClick={()=>setActiveImg(idx)} style={{ width:8, height:8, borderRadius:'50%', background:idx===activeImg?'var(--gd)':'rgba(255,255,255,0.4)', cursor:'pointer' }} />))}
+                </div>
+                <div style={{ position:'absolute', top:10, right:10, background:'rgba(0,0,0,0.5)', color:'#fff', fontSize:11, padding:'3px 9px', borderRadius:12 }}>{activeImg+1} / {allImages.length}</div>
+              </>
+            )}
+          </>
         ) : (
           <div style={{ textAlign:'center', padding:'40px 0', fontSize:80 }}>{tour.image_emoji||'🏛️'}</div>
         )}
-      </div>
-      {tour.gallery && tour.gallery.length>0 && (
-        <div style={{ display:'flex', gap:8, overflowX:'auto', padding:'8px 0', marginBottom:16 }}>
-          {tour.gallery.map((img,idx)=>(<img key={idx} src={img} style={{ height:120, minWidth:160, objectFit:'cover', borderRadius:10, border:'1px solid var(--bb)', cursor:'pointer', flexShrink:0 }} onClick={()=>window.open(img,'_blank')} />))}
-        </div>
-      )}
-      <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20, marginBottom:14 }}>
+      </div>      <div style={{ background:'var(--bc)', border:'1px solid var(--bb)', borderRadius:14, padding:20, marginBottom:14 }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10 }}>
           <div>
             <h2 style={{ color:'var(--g)', fontSize:20, fontWeight:800, marginBottom:6 }}>{t(tour.title_ar,tour.title_en,lang)}</h2>
@@ -1562,12 +1572,12 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
   const [tours, setTours] = useState([]);
   const [editing, setEditing] = useState(null);
   const [adding, setAdding] = useState(false);
-  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', seo_keywords:'', is_featured:0 });
+  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', seo_keywords:'', gallery:[], is_featured:0 });
   const token = storage.getToken();
   const [uploading, setUploading] = useState(false);
   const API = 'https://kemetc1-production.up.railway.app/api';
-  useEffect(()=>{ loadTours(); },[]);
   const loadTours = () => { storeAPI.getTours().then(r=>{ if(r.ok) setTours(r.data||[]); }); };
+  useEffect(()=>{ loadTours(); },[]);
   const uploadImg = async (e) => {
     const file = e.target.files[0]; if(!file) return;
     setUploading(true);
@@ -1576,12 +1586,29 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
     setUploading(false);
     onToast && onToast(t('تم رفع الصورة','Image uploaded',lang));
   };
+  const uploadGallery = async (e) => {
+    const files = Array.from(e.target.files||[]).slice(0,5);
+    if (files.length===0) return;
+    setUploading(true);
+    const urls = [];
+    for (const file of files) {
+      const url = await uploadToCloudinary(file);
+      if (url) urls.push(url);
+    }
+    setForm(f=>({ ...f, gallery: [...(f.gallery||[]), ...urls].slice(0,5) }));
+    setUploading(false);
+    onToast && onToast(t('تم رفع الصور','Images uploaded',lang));
+  };
+  const removeGalleryImage = (idx) => {
+    setForm(f=>({ ...f, gallery: (f.gallery||[]).filter((_,i)=>i!==idx) }));
+  };
   const saveTour = async () => {
     const body = {...form, price:Number(form.price), duration_days:Number(form.duration_days),
       includes_ar: JSON.stringify(form.includes_ar.split(',').map(s=>s.trim()).filter(Boolean)),
       includes_en: JSON.stringify(form.includes_en.split(',').map(s=>s.trim()).filter(Boolean)),
       itinerary_ar: JSON.stringify((form.itinerary_ar||'').split(new RegExp(String.fromCharCode(10)+'+')).map(p=>p.split(String.fromCharCode(10)).map(x=>x.trim()).filter(Boolean).join(' ')).filter(Boolean)),
-      itinerary_en: JSON.stringify((form.itinerary_en||'').split(new RegExp(String.fromCharCode(10)+'+')).map(p=>p.split(String.fromCharCode(10)).map(x=>x.trim()).filter(Boolean).join(' ')).filter(Boolean))
+      itinerary_en: JSON.stringify((form.itinerary_en||'').split(new RegExp(String.fromCharCode(10)+'+')).map(p=>p.split(String.fromCharCode(10)).map(x=>x.trim()).filter(Boolean).join(' ')).filter(Boolean)),
+      gallery: JSON.stringify(form.gallery||[])
     };
     if(editing) {
       await fetch(API+'/store/tours/'+editing.id, {method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body:JSON.stringify(body)});
@@ -1598,7 +1625,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
     loadTours();
   };
   const startEdit = (tour) => {
-    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:(tour.includes_ar?JSON.parse(tour.includes_ar):[]).join(','), includes_en:(tour.includes_en?JSON.parse(tour.includes_en):[]).join(','), itinerary_ar:(tour.itinerary_ar?JSON.parse(tour.itinerary_ar):[]).join(String.fromCharCode(10,10)), itinerary_en:(tour.itinerary_en?JSON.parse(tour.itinerary_en):[]).join(String.fromCharCode(10,10)), seo_keywords:tour.seo_keywords||'', is_featured:tour.is_featured||0 });
+    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:(tour.includes_ar?JSON.parse(tour.includes_ar):[]).join(','), includes_en:(tour.includes_en?JSON.parse(tour.includes_en):[]).join(','), itinerary_ar:(tour.itinerary_ar?JSON.parse(tour.itinerary_ar):[]).join(String.fromCharCode(10,10)), itinerary_en:(tour.itinerary_en?JSON.parse(tour.itinerary_en):[]).join(String.fromCharCode(10,10)), seo_keywords:tour.seo_keywords||'', gallery:ts(tour.gallery), is_featured:tour.is_featured||0 });
     setEditing(tour); setAdding(true);
   };
   return (
@@ -1638,6 +1665,25 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
               {uploading?'...':t('رفع صورة','Upload Image',lang)}
               <input type='file' accept='image/*' onChange={uploadImg} style={{display:'none'}} />
             </label>
+          </div>
+          <div style={{marginTop:6}}>
+            <label style={{fontSize:12,color:'var(--tm)',marginBottom:6,display:'block'}}>{t('معرض الصور (حتى 5 صور)','Photo Gallery (up to 5 images)',lang)}</label>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+              {(form.gallery||[]).map((url,i)=>(
+                <div key={i} style={{position:'relative'}}>
+                  <img src={url} style={{height:60,width:60,objectFit:'cover',borderRadius:8,border:'1px solid var(--bb)'}} />
+                  <button onClick={()=>removeGalleryImage(i)} style={{position:'absolute',top:-6,right:-6,background:'var(--red)',color:'#fff',border:'none',borderRadius:'50%',width:20,height:20,fontSize:12,cursor:'pointer',lineHeight:1}}>x</button>
+                </div>
+              ))}
+              {(form.gallery||[]).length<5 && (
+                <label className='btn btn-gh' style={{cursor:'pointer',border:'1px solid var(--gd)',height:60,width:60,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,textAlign:'center'}}>
+                  {uploading?'...':'+ '+t('اضافة','Add',lang)}
+                  <input type='file' accept='image/*' multiple onChange={uploadGallery} style={{display:'none'}} />
+                </label>
+              )}
+            </div>
+          </div>
+          <div style={{marginTop:10,display:'flex',gap:10,alignItems:'center'}}>
             {form.image_url && <img src={form.image_url} style={{height:50,borderRadius:8}} />}
             <label style={{display:'flex',alignItems:'center',gap:6,color:'var(--tm)',fontSize:13}}>
               <input type='checkbox' checked={form.is_featured===1} onChange={e=>setForm(f=>({...f,is_featured:e.target.checked?1:0}))} />
