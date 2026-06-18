@@ -1770,6 +1770,17 @@ function EgyptNewsTab({ lang }) {
           <span style={{fontSize:10,color:'var(--gd)',letterSpacing:2,textTransform:'uppercase'}}>{selected.category} • {selected.date}</span>
           <h2 style={{color:'var(--g)',fontSize:20,fontWeight:800,margin:'10px 0',lineHeight:1.4}}>{lang==='ar'?selected.title_ar:selected.title_en}</h2>
           <div className="gdiv"/>
+          <div style={{display:'flex',justifyContent:'flex-end',position:'relative',marginTop:8}}>
+            <button className='btn btn-gh' style={{fontSize:12,padding:'4px 10px',border:'1px solid rgba(201,168,76,0.3)',borderRadius:20}} onClick={()=>setShowLangMenu(showLangMenu===selected.id?null:selected.id)}>{String.fromCodePoint(127760)} {t('ترجمة','Translate',lang)}</button>
+            {showLangMenu===selected.id && <div style={{position:'absolute',right:0,top:'100%',background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:8,padding:6,zIndex:100,minWidth:110,marginTop:4}}>
+              {[['English','EN'],['Arabic','AR'],['French','FR'],['German','DE'],['Italian','IT'],['Russian','RU']].map(([l,c])=>(<button key={c} className='btn btn-gh' style={{width:'100%',fontSize:12,padding:'5px 8px',textAlign:'right'}} onClick={()=>translateNews(selected,l)}>{c}</button>))}
+            </div>}
+          </div>
+          {translatingId===selected.id && <div style={{fontSize:12,color:'var(--tm)',padding:'8px 0',textAlign:'center'}}>{t('جاري الترجمة...','Translating...',lang)}</div>}
+          {translatedNews[selected.id] && <div style={{fontSize:14,lineHeight:1.8,color:'#8BC4E0',padding:'12px 14px',background:'rgba(139,196,224,0.06)',borderRadius:10,marginTop:10,borderRight:'3px solid #4A9EC4'}}>
+            {translatedNews[selected.id]}
+            <button onClick={()=>{const copy={...translatedNews};delete copy[selected.id];setTranslatedNews(copy);}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:11,marginRight:8,display:'block',marginTop:6}}>{t('إغلاق','Close',lang)}</button>
+          </div>}
           <p style={{color:'var(--gl)',fontSize:14,lineHeight:1.9}}>{lang==='ar'?selected.summary_ar:selected.summary_en}</p>
           <div style={{marginTop:20,padding:16,background:'rgba(201,168,76,0.05)',borderRadius:10,border:'1px solid rgba(201,168,76,0.15)'}}>
             <div style={{fontSize:12,color:'var(--gd)',marginBottom:8}}>🔺 {t('هل تريد معرفة المزيد؟','Want to know more?',lang)}</div>
@@ -1797,17 +1808,7 @@ function EgyptNewsTab({ lang }) {
             <div style={{fontSize:14,fontWeight:700,color:'var(--g)',lineHeight:1.4,marginBottom:6}}>{lang==='ar'?news.title_ar:news.title_en}</div>
             <div style={{fontSize:12,color:'var(--tm)',lineHeight:1.6,overflow:'hidden',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical'}}>{lang==='ar'?news.summary_ar:news.summary_en}</div>
           </div>
-          <div style={{display:'flex',flexDirection:'column',gap:4,alignItems:'flex-end',flexShrink:0}}>
-            <span style={{color:'var(--gd)',fontSize:18}}>›</span>
-            <div style={{position:'relative'}}>
-              <button className='btn btn-gh' style={{fontSize:10,padding:'2px 6px',border:'1px solid rgba(201,168,76,0.3)',borderRadius:10}} onClick={e=>{e.stopPropagation();setShowLangMenu(showLangMenu===news.id?null:news.id);}}>🌐</button>
-              {showLangMenu===news.id && <div style={{position:'absolute',right:0,bottom:'100%',background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:8,padding:4,zIndex:100,minWidth:90}}>{[['English','EN'],['Arabic','AR'],['French','FR'],['German','DE'],['Italian','IT'],['Russian','RU']].map(([l,c])=>(<button key={c} className='btn btn-gh' style={{width:'100%',fontSize:11,padding:'3px 6px'}} onClick={e=>{e.stopPropagation();translateNews(news,l);}}>{c}</button>))}</div>}
-
-
-            </div>
-          </div>
-        {translatingId===news.id && <div style={{fontSize:11,color:'var(--tm)',padding:'4px 0'}}>Translating...</div>}
-        {translatedNews[news.id] && <div style={{fontSize:12,lineHeight:1.7,color:'#8BC4E0',padding:'8px 0',background:'rgba(139,196,224,0.06)',borderRadius:8,marginTop:4}}>{translatedNews[news.id]}<button onClick={e=>{e.stopPropagation();setTranslatedNews(t=>({...t,[news.id]:''}));}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:10,marginRight:6}}>×</button></div>}
+          <span style={{color:'var(--gd)',fontSize:18,flexShrink:0}}>{String.fromCharCode(8249)}</span>
         </div>
 
       ))}
