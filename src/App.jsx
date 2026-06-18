@@ -436,6 +436,10 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const [replyText, setReplyText] = useState('');
   const [replyImage, setReplyImage] = useState('');
   const [replyUploading, setReplyUploading] = useState(false);
+  const [translatedComments, setTranslatedComments] = useState({});
+  const [translatingComment, setTranslatingComment] = useState(null);
+  const [showLangMenuComment, setShowLangMenuComment] = useState(null);
+  const translateComment = async (c, targetLang) => { setShowLangMenuComment(null); setTranslatingComment(c.id); try { const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'Content-Type':'application/json','x-api-key':import.meta.env.VITE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:'Translate to '+targetLang+' only: '+c.content}]})}); const d=await r.json(); setTranslatedComments(t=>({...t,[c.id]:d.content?.[0]?.text||''})); } catch(e){} setTranslatingComment(null); };
   const [showReplyEmoji, setShowReplyEmoji] = useState(false);
   const submitReply = async () => {
     if (!replyText.trim() && !replyImage) return;
@@ -574,6 +578,14 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
                 <span style={{color:'var(--g)',fontWeight:700,fontSize:12}}>{c.nickname} </span>
                 <span style={{color:'var(--gl)',fontSize:13}}>{c.content}</span>
                 {c.image_url && <img src={c.image_url} style={{width:'100%',maxHeight:400,objectFit:'contain',borderRadius:8,marginTop:6,background:'var(--bi)'}} />}
+                <div style={{position:'relative',display:'inline-block',marginTop:4}}>
+                  <button onClick={()=>setShowLangMenuComment(showLangMenuComment===c.id?null:c.id)} style={{background:'none',border:'1px solid rgba(201,168,76,0.2)',borderRadius:10,padding:'1px 6px',fontSize:10,color:'var(--tm)',cursor:'pointer'}}>{String.fromCodePoint(127760)}</button>
+                  {showLangMenuComment===c.id && <div style={{position:'absolute',left:0,top:'100%',background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:8,padding:4,zIndex:100,minWidth:90,marginTop:2}}>
+                    {[['English','EN'],['Arabic','AR'],['French','FR'],['German','DE'],['Italian','IT'],['Russian','RU']].map(([l,code])=>(<button key={code} className='btn btn-gh' style={{width:'100%',fontSize:11,padding:'3px 6px'}} onClick={()=>translateComment(c,l)}>{code}</button>))}
+                  </div>}
+                </div>
+                {translatingComment===c.id && <div style={{fontSize:11,color:'var(--tm)'}}>...</div>}
+                {translatedComments[c.id] && <div style={{fontSize:12,color:'#8BC4E0',marginTop:4,padding:'4px 8px',background:'rgba(139,196,224,0.06)',borderRadius:6}}>{translatedComments[c.id]}<button onClick={()=>{const cp={...translatedComments};delete cp[c.id];setTranslatedComments(cp);}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:10,marginRight:4}}>×</button></div>}
               </div>
             </div>
             {comments.filter(r=>r.parent_id===c.id).map(r=>(<div key={r.id} style={{marginRight:32,marginTop:6,padding:'6px 8px',background:'var(--bi)',borderRadius:8,borderRight:'2px solid var(--gd)'}}><span style={{color:'var(--g)',fontWeight:700,fontSize:11}}>{r.nickname} </span><span style={{color:'var(--gl)',fontSize:12}}>{r.content}</span></div>))}
