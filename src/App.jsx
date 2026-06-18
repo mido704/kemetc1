@@ -983,6 +983,10 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
   const prevImg = () => setActiveImg(i => (i-1+allImages.length) % allImages.length);
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
   const itin = ts(lang==='ar'?tour.itinerary_ar:tour.itinerary_en);
+  const [translatedTour, setTranslatedTour] = useState(null);
+  const [translatingTour, setTranslatingTour] = useState(false);
+  const [showLangMenuTour, setShowLangMenuTour] = useState(false);
+  const translateTour = async (targetLang) => { setShowLangMenuTour(false); setTranslatingTour(true); try { const fullText = (lang==='ar'?tour.title_ar:tour.title_en)+String.fromCharCode(10,10)+(lang==='ar'?tour.description_ar:tour.description_en)+(itin.length>0?(String.fromCharCode(10,10)+itin.join(String.fromCharCode(10))):''); const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'Content-Type':'application/json','x-api-key':import.meta.env.VITE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:'Translate to '+targetLang+' only, keep paragraph breaks: '+fullText}]})}); const d=await r.json(); setTranslatedTour(d.content?.[0]?.text||''); } catch(e){} setTranslatingTour(false); };
   const total = tour.price * guests;
   return (
     <div style={{ maxWidth:700, margin:'0 auto', padding:'14px 14px' }}>
@@ -1013,6 +1017,17 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
           </div>
           <span className="badge" style={{ fontSize:11 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>
         </div>
+        <div style={{ display:'flex', justifyContent:'flex-end', position:'relative', marginBottom:8 }}>
+          <button className='btn btn-gh' style={{ fontSize:12, padding:'4px 10px', border:'1px solid rgba(201,168,76,0.3)', borderRadius:20 }} onClick={()=>setShowLangMenuTour(!showLangMenuTour)}>{String.fromCodePoint(127760)} {t('ترجمة','Translate',lang)}</button>
+          {showLangMenuTour && <div style={{ position:'absolute', right:0, top:'100%', background:'var(--bc)', border:'1px solid var(--gd)', borderRadius:8, padding:6, zIndex:100, minWidth:110, marginTop:4 }}>
+            {[['English','EN'],['Arabic','AR'],['French','FR'],['German','DE'],['Italian','IT'],['Russian','RU']].map(([l,c])=>(<button key={c} className='btn btn-gh' style={{ width:'100%', fontSize:12, padding:'5px 8px', textAlign:'right' }} onClick={()=>translateTour(l)}>{c}</button>))}
+          </div>}
+        </div>
+        {translatingTour && <div style={{ fontSize:12, color:'var(--tm)', padding:'8px 0', textAlign:'center' }}>{t('جاري الترجمة...','Translating...',lang)}</div>}
+        {translatedTour && <div style={{ fontSize:14, lineHeight:1.8, color:'#8BC4E0', padding:'12px 14px', background:'rgba(139,196,224,0.06)', borderRadius:10, marginBottom:10, borderRight:'3px solid #4A9EC4' }}>
+          {translatedTour}
+          <button onClick={()=>setTranslatedTour(null)} style={{ background:'none', border:'none', color:'var(--tm)', cursor:'pointer', fontSize:11, marginRight:8, display:'block', marginTop:6 }}>{t('إغلاق','Close',lang)}</button>
+        </div>}
         <GoldDivider />
         {tour.duration_days && <div style={{ fontSize:13, color:'var(--tm)', marginBottom:10 }}>📅 {tour.duration_days} {t('أيام','days',lang)}</div>}
         <p style={{ fontSize:14, color:'#aaa', lineHeight:1.8, marginBottom:14 }}>{t(tour.description_ar,tour.description_en,lang)}</p>
