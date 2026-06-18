@@ -656,6 +656,7 @@ function CreatePost({ user, lang, onPosted }) {
 // ── TOUR CARD ─────────────────────────────────────────────
 function TourCard({ tour, lang, onBuy }) {
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
+  const itin = ts(lang==='ar'?tour.itinerary_ar:tour.itinerary_en);
   return (
     <div className='tour-card' onClick={()=>onBuy(tour)} style={{cursor:'pointer'}}>
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative', minHeight:160, overflow:'hidden' }}>
@@ -977,6 +978,7 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
   const [guests, setGuests] = useState(1);
   const [buyTour, setBuyTour] = useState(null);
   const incl = ts(lang==='ar'?tour.includes_ar:tour.includes_en);
+  const itin = ts(lang==='ar'?tour.itinerary_ar:tour.itinerary_en);
   const total = tour.price * guests;
   return (
     <div style={{ maxWidth:700, margin:'0 auto', padding:'14px 14px' }}>
@@ -1024,10 +1026,10 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
           </div>
           <div style={{ fontSize:12, color:'var(--tm)' }}>{t('(حد أقصى 9)','(max 9)',lang)}</div>
         </div>
-        {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en) && (
+        {itin.length>0 && (
           <div style={{ marginBottom:14 }}>
             <div style={{ fontSize:13, color:'var(--gd)', fontWeight:700, marginBottom:10 }}>🗓️ {t('البرنامج اليومي:','Daily Itinerary:',lang)}</div>
-            {(lang==='ar'?tour.itinerary_ar:tour.itinerary_en).map((day,i)=>(<div key={i} style={{ display:'flex', gap:10, marginBottom:8 }}><span style={{ background:'var(--gd)', color:'#000', borderRadius:'50%', width:22, height:22, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{i+1}</span><span style={{ fontSize:13, color:'var(--gl)', lineHeight:1.6 }}>{day}</span></div>))}
+            {itin.map((day,i)=>(<div key={i} style={{ display:'flex', gap:10, marginBottom:8 }}><span style={{ background:'var(--gd)', color:'#000', borderRadius:'50%', width:22, height:22, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0 }}>{i+1}</span><span style={{ fontSize:13, color:'var(--gl)', lineHeight:1.6 }}>{day}</span></div>))}
           </div>
         )}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:12 }}>
