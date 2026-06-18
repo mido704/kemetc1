@@ -690,6 +690,32 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
   const [date, setDate] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [paypalReady, setPaypalReady] = useState(false);
+  const [paypalOrderId, setPaypalOrderId] = useState('');
+  useEffect(() => {
+    if (method !== 'paypal') return;
+    if (window.paypal) { setPaypalReady(true); return; }
+    const script = document.createElement('script');
+    script.src = 'https://www.paypal.com/sdk/js?client-id=' + import.meta.env.VITE_PAYPAL_CLIENT_ID + '&currency=USD';
+    script.onload = () => setPaypalReady(true);
+    document.body.appendChild(script);
+  }, [method]);
+  useEffect(() => {
+    if (!paypalReady || method !== 'paypal' || step !== 2 || !window.paypal) return;
+    const container = document.getElementById('paypal-button-container');
+    if (!container) return;
+    container.innerHTML = '';
+    window.paypal.Buttons({
+      createOrder: (data, actions) => actions.order.create({
+        purchase_units: [{ amount: { value: String(total) } }]
+      }),
+      onApprove: (data, actions) => actions.order.capture().then((details) => {
+        setPaypalOrderId(details.id);
+        setTimeout(() => handlePay(), 50);
+      }),
+      onError: (err) => { setError(t('حدث خطأ في عملية الدفع عبر PayPal','PayPal payment error occurred',lang)); },
+    }).render('#paypal-button-container');
+  }, [paypalReady, method, step]);
 
   const methods = [
     { id:'card',     label:t('بطاقة ائتمان / خصم','Credit / Debit Card',lang), icon:'💳' },
@@ -708,7 +734,7 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
       payment_method:method, contact_phone:user?.phone||'', contact_email:user?.email||''
     });
     if (!bRes.ok) { setError(bRes.error); setLoading(false); return; }
-    const pRes = await bookingsAPI.payBooking(bRes.data.booking_id, method);
+    const pRes = await bookingsAPI.payBooking(bRes.data.booking_id, method, method==='paypal'?paypalOrderId:'');
     setLoading(false);
     if (pRes.ok) onSuccess();
     else setError(pRes.error||t('خطأ في الدفع','Payment error',lang));
@@ -774,7 +800,17 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
                 </div>
               </div>
             )}
-            {method!=='card' && (
+            {method==='paypal' && (
+              <div style={{ textAlign:'center', padding:'18px 0' }}>
+                <div style={{ fontSize:48, marginBottom:10 }}>{String.fromCodePoint(127185)}</div>
+                <div style={{ color:'var(--gl)', fontSize:13, lineHeight:1.7, marginBottom:14 }}>
+                  {t('اضغط على زر PayPal أدناه لإتمام الدفع بأمان','Click the PayPal button below to complete payment securely',lang)}
+                </div>
+                {!paypalReady && <div style={{ color:'var(--tm)', fontSize:12 }}>{t('جاري تحميل PayPal...','Loading PayPal...',lang)}</div>}
+                <div id='paypal-button-container' style={{ minHeight:45 }}></div>
+              </div>
+            )}
+            {method!=='card' && method!=='paypal' && (
               <div style={{ textAlign:'center', padding:'18px 0' }}>
                 <div style={{ fontSize:48, marginBottom:10 }}>{methods.find(m=>m.id===method)?.icon}</div>
                 <div style={{ color:'var(--gl)', fontSize:13, lineHeight:1.7 }}>
@@ -786,9 +822,9 @@ function PaymentModal({ tour, lang, user, onClose, onSuccess }) {
             )}
             <div style={{ display:'flex', gap:10, marginTop:14 }}>
               <button className="btn btn-o" onClick={()=>setStep(1)} style={{ flex:1 }}>{t('رجوع','Back',lang)}</button>
-              <button className="btn btn-g" onClick={handlePay} disabled={loading} style={{ flex:1 }}>
+              {method!=='paypal' && <button className="btn btn-g" onClick={handlePay} disabled={loading} style={{ flex:1 }}>
                 {loading?'⏳':t('تأكيد الحجز 🔺','Confirm 🔺',lang)}
-              </button>
+              </button>}
             </div>
           </div>
         )}
