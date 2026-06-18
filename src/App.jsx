@@ -1562,7 +1562,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
   const [tours, setTours] = useState([]);
   const [editing, setEditing] = useState(null);
   const [adding, setAdding] = useState(false);
-  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', is_featured:0 });
+  const [form, setForm] = useState({ title_ar:'', title_en:'', description_ar:'', description_en:'', price:0, duration_days:1, image_emoji:'🏛', image_url:'', badge_ar:'', badge_en:'', category_id:'cat_tours', includes_ar:'', includes_en:'', itinerary_ar:'', itinerary_en:'', seo_keywords:'', is_featured:0 });
   const token = storage.getToken();
   const [uploading, setUploading] = useState(false);
   const API = 'https://kemetc1-production.up.railway.app/api';
@@ -1598,7 +1598,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
     loadTours();
   };
   const startEdit = (tour) => {
-    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:(tour.includes_ar?JSON.parse(tour.includes_ar):[]).join(','), includes_en:(tour.includes_en?JSON.parse(tour.includes_en):[]).join(','), itinerary_ar:(tour.itinerary_ar?JSON.parse(tour.itinerary_ar):[]).join(String.fromCharCode(10,10)), itinerary_en:(tour.itinerary_en?JSON.parse(tour.itinerary_en):[]).join(String.fromCharCode(10,10)), is_featured:tour.is_featured||0 });
+    setForm({ title_ar:tour.title_ar||'', title_en:tour.title_en||'', description_ar:tour.description_ar||'', description_en:tour.description_en||'', price:tour.price||0, duration_days:tour.duration_days||1, image_emoji:tour.image_emoji||'🏛', image_url:tour.image_url||'', badge_ar:tour.badge_ar||'', badge_en:tour.badge_en||'', category_id:tour.category_id||'cat_tours', includes_ar:(tour.includes_ar?JSON.parse(tour.includes_ar):[]).join(','), includes_en:(tour.includes_en?JSON.parse(tour.includes_en):[]).join(','), itinerary_ar:(tour.itinerary_ar?JSON.parse(tour.itinerary_ar):[]).join(String.fromCharCode(10,10)), itinerary_en:(tour.itinerary_en?JSON.parse(tour.itinerary_en):[]).join(String.fromCharCode(10,10)), seo_keywords:tour.seo_keywords||'', is_featured:tour.is_featured||0 });
     setEditing(tour); setAdding(true);
   };
   return (
@@ -1615,6 +1615,7 @@ function StoreManagerPage({ lang, user, onBack, onToast }) {
             <input className='inp' placeholder='العنوان بالعربي' value={form.title_ar} onChange={e=>setForm(f=>({...f,title_ar:e.target.value}))} />
             <input className='inp' placeholder='Title EN' value={form.title_en} onChange={e=>setForm(f=>({...f,title_en:e.target.value}))} />
             <textarea className='inp' placeholder='الوصف بالعربي' value={form.description_ar} onChange={e=>setForm(f=>({...f,description_ar:e.target.value}))} rows={3} />
+            <input className='inp' placeholder='كلمات مفتاحية SEO (مخفية - مفصولة بفواصل)' value={form.seo_keywords} onChange={e=>setForm(f=>({...f,seo_keywords:e.target.value}))} />
             <textarea className='inp' placeholder='Description EN' value={form.description_en} onChange={e=>setForm(f=>({...f,description_en:e.target.value}))} rows={3} />
             <input className='inp' placeholder='السعر بالدولار $' type='number' value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} />
             <input className='inp' placeholder='عدد الايام' type='number' value={form.duration_days} onChange={e=>setForm(f=>({...f,duration_days:e.target.value}))} />
