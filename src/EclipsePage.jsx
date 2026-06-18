@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 
-const DEFAULT_EPISODES = [
-  {id:1, title:"Why Luxor? The Science Behind the Perfect Eclipse", presenter:"Dr. James Walker", institution:"NASA · Astrophysics", date:"Jul 2026"},
-  {id:2, title:"The Eclipse & Ancient Egyptian Astronomy", presenter:"Dr. Sarah Miller", institution:"MIT · Archaeology", date:"Aug 2026"},
-  {id:3, title:"How to Photograph a Total Solar Eclipse", presenter:"Dr. Robert Chen", institution:"UC Berkeley", date:"Sep 2026"},
-  {id:4, title:"The Solar Corona: Mysteries Revealed", presenter:"Dr. Amelia Grant", institution:"ESA · Solar Physics", date:"Oct 2026"},
-  {id:5, title:"Eclipse Tourism: Planning Your 2027 Trip", presenter:"Kemet Concierge Team", institution:"Official Tourism Partner", date:"Nov 2026"},
-  {id:6, title:"Diamond Ring & Baily's Beads Explained", presenter:"Dr. Liu Wei", institution:"Caltech · Astronomy", date:"Dec 2026"},
-];
+const DEFAULT_EPISODES = [];
 
 export default function EclipsePage({ lang, user, onToast, onBook }) {
   const [episodes, setEpisodes] = useState(() => {
@@ -140,9 +133,14 @@ export default function EclipsePage({ lang, user, onToast, onBook }) {
         <div className="ecl-stat"><div className="ecl-sn">10:08 AM</div><div className="ecl-sl">Local Eclipse Time</div></div>
         <div className="ecl-stat"><div className="ecl-sn">100%</div><div className="ecl-sl">Sun Coverage</div></div>
       </div>
-
       <div className="ecl-sec">
         <div className="ecl-stitle">✦ Weekly Podcast Schedule ✦</div>
+        {episodes.length===0 && !adminMode && (
+          <div style={{textAlign:'center',padding:'30px 20px',color:'#9a8158',fontSize:14,lineHeight:1.8}}>
+            🎙️ Podcast episodes covering eclipse science, ancient Egyptian astronomy, and travel tips will be announced soon — featuring leading experts in their fields.
+          </div>
+        )}
+        {(episodes.length>0 || adminMode) && (
         <div className="ecl-list">
           {episodes.map((ep,i)=>(
             <div key={ep.id} className="ecl-row">
@@ -156,6 +154,7 @@ export default function EclipsePage({ lang, user, onToast, onBook }) {
             </div>
           ))}
         </div>
+        )}
         {adminMode && <button className="ecl-add" onClick={()=>openModal()}>+ Add New Episode</button>}
       </div>
 
