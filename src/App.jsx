@@ -660,10 +660,10 @@ function TourCard({ tour, lang, onBuy }) {
   return (
     <div className='tour-card' onClick={()=>onBuy(tour)} style={{cursor:'pointer'}}>
       <div style={{ background:'linear-gradient(135deg,#0D0A02,#1A1200)', padding:'22px 16px', textAlign:'center', position:'relative', minHeight:160, overflow:'hidden' }}>
-        {tour.image_url && <img src={tour.image_url} style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',objectFit:'cover',opacity:0.4}} />}
+        {tour.image_url && <img src={tour.image_url} style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',objectFit:'cover'}} />}
         {(tour.badge_ar||tour.badge_en) && <span className='badge' style={{position:'absolute',top:10,right:10,fontSize:10,zIndex:2}}>{t(tour.badge_ar,tour.badge_en,lang)}</span>}
-        <div style={{fontSize:58,marginBottom:6,position:'relative',zIndex:1}}>{tour.image_emoji||'🏛️'}</div>
-        <div style={{color:'var(--g)',fontSize:12,position:'relative',zIndex:1}}>{'⭐'.repeat(Math.floor(tour.rating||0))} {tour.rating||0} ({tour.reviews_count||0})</div>
+        {!tour.image_url && <div style={{fontSize:58,marginBottom:6,position:'relative',zIndex:1}}>{tour.image_emoji||'🏛️'}</div>}
+        {!tour.image_url && tour.rating>0 && <div style={{color:'var(--g)',fontSize:12,position:'relative',zIndex:1}}>{'⭐'.repeat(Math.floor(tour.rating||0))} {tour.rating||0} ({tour.reviews_count||0})</div>}
       </div>
       <div style={{ padding:14 }}>
         <h3 style={{ color:'var(--g)', fontSize:15, fontWeight:700, lineHeight:1.4, marginBottom:4 }}>{t(tour.title_ar,tour.title_en,lang)}</h3>
@@ -999,7 +999,7 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10 }}>
           <div>
             <h2 style={{ color:'var(--g)', fontSize:20, fontWeight:800, marginBottom:6 }}>{t(tour.title_ar,tour.title_en,lang)}</h2>
-            <div style={{ color:'var(--g)', fontSize:13 }}>{'⭐'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count} {t('تقييم','reviews',lang)})</div>
+            {tour.rating>0 && <div style={{ color:'var(--g)', fontSize:13 }}>{'⭐'.repeat(Math.floor(tour.rating))} {tour.rating} ({tour.reviews_count} {t('تقييم','reviews',lang)})</div>}
           </div>
           <span className="badge" style={{ fontSize:11 }}>{t(tour.badge_ar,tour.badge_en,lang)}</span>
         </div>
