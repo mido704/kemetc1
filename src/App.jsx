@@ -622,15 +622,14 @@ function CreatePost({ user, lang, onPosted }) {
     const url = await uploadToCloudinary(file);
     setUploading(false);
   };
-    setUploading(false);
   const submit = async () => {
     if (!text.trim() && !imageUrl) return;
-    setPosting(true);
     const content = text.trim() || (isVideo ? '🎥' : '📷');
     const hashtags = JSON.stringify((content.match(/#[\w\u0600-\u06FF]+/g)||[]));
-    const r = await postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'', hashtags });
-    if (r.ok) { onPosted&&onPosted(content, r.data?.post_id, isVideo?'':imageUrl, isVideo?imageUrl:''); setText(''); setImageUrl(''); setIsVideo(false); }
-    setPosting(false);
+    const tempId = 'temp_'+Date.now();
+    onPosted&&onPosted(content, tempId, isVideo?'':imageUrl, isVideo?imageUrl:'');
+    setText(''); setImageUrl(''); setIsVideo(false);
+    postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'', hashtags });
   };
 
   return (
