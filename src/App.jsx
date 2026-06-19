@@ -1237,7 +1237,7 @@ function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
 }
 function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onStartChat }) {
   const [profileStats, setProfileStats] = useState({ followers_count: user?.followers_count||0, following_count: user?.following_count||0 });
-  useEffect(()=>{ usersAPI.getProfile(user?.id).then(r=>{ if(r.ok) setProfileStats({ followers_count: r.data?.followers_count||0, following_count: r.data?.following_count||0 }); }); },[user?.id]);
+  useEffect(()=>{ usersAPI.getUser(user?.id).then(r=>{ if(r.ok) setProfileStats({ followers_count: r.data?.followers_count||0, following_count: r.data?.following_count||0 }); }); },[user?.id]);
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'', cover_url: user?.cover_url||'' });
