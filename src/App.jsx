@@ -1883,7 +1883,6 @@ function EgyptNewsTab({ lang }) {
   const [translatedNews, setTranslatedNews] = useState({});
   const [translatingId, setTranslatingId] = useState(null);
   const [showLangMenu, setShowLangMenu] = useState(null);
-  useEffect(()=>{ fetch('https://kemetc1-production.up.railway.app/api/news').then(r=>r.json()).then(d=>{ const news=d.data||d; if(Array.isArray(news)&&news.length) setNewsData(news); else if(d.ok&&d.data?.length) setNewsData(d.data); setLoading(false); }).catch(()=>setLoading(false)); },[]);
   useEffect(()=>{ fetch('https://kemetc1-production.up.railway.app/api/news').then(r=>r.json()).then(d=>{ if(d.ok && d.data?.length) setNewsData(d.data); setLoading(false); }).catch(()=>setLoading(false)); },[]);
   const cats = [['all', t('الكل','All',lang)], ['eclipse', t('كسوف','Eclipse',lang)], ['tourism', t('سياحة','Tourism',lang)], ['culture', t('ثقافة','Culture',lang)]];
   const filtered = catFilter==='all' ? newsData : newsData.filter(n=>n.category===catFilter);
