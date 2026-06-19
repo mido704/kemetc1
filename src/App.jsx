@@ -2161,6 +2161,8 @@ export default function App() {
   const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
   useEffect(()=>{
+  const [targetPostId, setTargetPostId] = useState(null);
+  useEffect(()=>{ if(targetPostId && posts.length>0){ setTimeout(()=>{ const el=document.getElementById('post-'+targetPostId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.border='2px solid var(--gd)'; setTimeout(()=>el.style.border='',2000); } setTargetPostId(null); },800); } },[targetPostId, posts]);
     window.handleGoogleLogin = async (response) => {
       const r = await fetch('https://kemetc1-production.up.railway.app/api/auth/google', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
       const d = await r.json();
@@ -2296,7 +2298,7 @@ export default function App() {
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='news_admin' && user?.email==='mido704@gmail.com' && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTimeout(()=>{ const el=document.getElementById('post-'+postId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },500); }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTargetPostId(postId); }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
