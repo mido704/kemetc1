@@ -1273,6 +1273,9 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
   const [tab, setTab] = useState('posts');
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [loadingFollowers, setLoadingFollowers] = useState(false);
+  const loadFollowers = async () => { setLoadingFollowers(true); const token=storage.getToken(); const r=await fetch('https://kemetc1-production.up.railway.app/api/users/followers',{headers:{'Authorization':'Bearer '+token}}); const d=await r.json(); if(d.ok) setFollowers(d.data||[]); setLoadingFollowers(false); };
   const loadFriends = async () => {
     if (friends.length > 0) return;
     setLoadingFriends(true);
@@ -1336,8 +1339,8 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
         </div>
       </div>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
-        {[['posts',t('المنشورات','Posts',lang)],['friends',t('الأصدقاء','Friends',lang)],['inbox',t('صندوق الوارد','Inbox',lang)]].map(([k,l])=>(
-          <button key={k} className={`tab ${tab===k?'on':''}`} onClick={()=>{ setTab(k); if(k==="friends") loadFriends(); }}>{l}</button>
+        {[['posts',t('المنشورات','Posts',lang)],['friends',t('الأصدقاء','Friends',lang)],['followers',t('المتابعون','Followers',lang)],['inbox',t('صندوق الوارد','Inbox',lang)]].map(([k,l])=>(
+          <button key={k} className={'tab '+(tab===k?'on':'')} onClick={()=>{ setTab(k); if(k==='friends') loadFriends(); if(k==='followers') loadFollowers(); }}>{l}</button>
         ))}
       </div>
       {tab==='posts' && (myPosts.length===0 ? (
@@ -1355,6 +1358,18 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
             <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
             <span style={{color:'var(--gd)',fontSize:20}}>›</span>
           </div>))}
+        </div>
+      )}
+        <div>
+          {loadingFollowers && <div style={{textAlign:'center',padding:20,color:'var(--tm)'}}>⏳</div>}
+          {followers.length===0 && !loadingFollowers && <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>👥 {t('لا يوجد متابعون بعد','No followers yet',lang)}</div>}
+          {followers.map(f=>(
+            <div key={f.id} className='post-card' style={{display:'flex',gap:10,alignItems:'center'}}>
+              <Avatar emoji={f.avatar_emoji||'👑'} size={44} url={f.avatar_url} />
+              <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
+              <button className='btn btn-g' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>usersAPI.follow(f.id)}>+ {t('تابع','Follow',lang)}</button>
+            </div>
+          ))}
         </div>
       )}
       {tab==='inbox' && (
