@@ -1899,6 +1899,14 @@ function EgyptNewsTab({ lang }) {
           <span style={{fontSize:10,color:"var(--gd)",letterSpacing:2,textTransform:"uppercase"}}>{selected.category} • {selected.date}</span>
           <h2 style={{color:"var(--g)",fontSize:20,fontWeight:800,margin:"10px 0",lineHeight:1.4}}>{lang==="ar"?selected.title_ar:selected.title_en}</h2>
           <div className="gdiv"/>
+          <div style={{display:'flex',justifyContent:'flex-end',position:'relative',marginBottom:8}}>
+            <button className='btn btn-gh' style={{fontSize:12,padding:'4px 10px',border:'1px solid rgba(201,168,76,0.3)',borderRadius:20}} onClick={()=>setShowLangMenu(showLangMenu===selected.id?null:selected.id)}>{String.fromCodePoint(127760)} {t('ترجمة','Translate',lang)}</button>
+            {showLangMenu===selected.id && <div style={{position:'absolute',right:0,top:'100%',background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:8,padding:6,zIndex:100,minWidth:110,marginTop:4}}>
+              {[['English','EN'],['Arabic','AR'],['French','FR'],['German','DE'],['Italian','IT'],['Russian','RU']].map(([l,c])=>(<button key={c} className='btn btn-gh' style={{width:'100%',fontSize:12,padding:'5px 8px'}} onClick={()=>translateNews(selected,l)}>{c}</button>))}
+            </div>}
+          </div>
+          {translatingId===selected.id && <div style={{fontSize:12,color:'var(--tm)',padding:'4px 0',textAlign:'center'}}>{t('جاري الترجمة...','Translating...',lang)}</div>}
+          {translatedNews[selected.id] && <div style={{fontSize:13,lineHeight:1.8,color:'#8BC4E0',padding:'10px 12px',background:'rgba(139,196,224,0.06)',borderRadius:8,marginBottom:10,borderRight:'3px solid #4A9EC4'}}>{translatedNews[selected.id]}<button onClick={()=>{const c={...translatedNews};delete c[selected.id];setTranslatedNews(c);}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:10,marginRight:6}}>×</button></div>}
           <p style={{color:"var(--gl)",fontSize:14,lineHeight:1.9}}>{lang==="ar"?selected.summary_ar:selected.summary_en}</p>
           {(lang==="ar"?selected.content_ar:selected.content_en) && <p style={{color:"var(--gl)",fontSize:14,lineHeight:2,marginTop:14,whiteSpace:"pre-wrap"}}>{lang==="ar"?selected.content_ar:selected.content_en}</p>}
         </div>
