@@ -1236,6 +1236,8 @@ function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
   );
 }
 function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onStartChat }) {
+  const [profileStats, setProfileStats] = useState({ followers_count: user?.followers_count||0, following_count: user?.following_count||0 });
+  useEffect(()=>{ usersAPI.getProfile(user?.id).then(r=>{ if(r.ok) setProfileStats({ followers_count: r.data?.followers_count||0, following_count: r.data?.following_count||0 }); }); },[user?.id]);
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'', cover_url: user?.cover_url||'' });
@@ -1327,7 +1329,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
             {user?.country && <span style={{ fontSize:12, color:'var(--tm)', marginRight:10 }}>🌍 {user.country}</span>}
           </div>
           <div style={{ display:'flex', gap:24, marginTop:14 }}>
-            {[[myPosts.length, t('منشورات','Posts',lang)],[user?.followers_count||248,t('متابعون','Followers',lang)],[user?.following_count||89,t('متابَعون','Following',lang)]].map(([n,l])=>(
+            {[[myPosts.length, t('منشورات','Posts',lang)],[profileStats.followers_count,t('متابعون','Followers',lang)],[profileStats.following_count,t('متابَعون','Following',lang)]].map(([n,l])=>(
               <div key={l}><div style={{ fontWeight:800, fontSize:18, color:'var(--g)' }}>{n}</div><div style={{ fontSize:11, color:'var(--tm)' }}>{l}</div></div>
             ))}
           </div>
