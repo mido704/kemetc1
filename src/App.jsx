@@ -964,13 +964,14 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   const handleLike = async (postId) => {
     await postsAPI.likePost(postId);
   };
-
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
+        <button className={feedTab==='foryou'?'tab on':'tab'} onClick={()=>setFeedTab('foryou')}>{t('لك','For You',lang)}</button>
         <button className={feedTab==='egypt'?'tab on':'tab'} onClick={()=>setFeedTab('egypt')}>{t('أخبار مصر','Egypt News',lang)}</button>
       </div>
       {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>✕</button></div>}
+      {feedTab==='egypt' && <EgyptNewsTab lang={lang} />}
       {feedTab==='foryou' && <CreatePost user={user} lang={lang} onPosted={handlePosted} />}
       {feedTab==='foryou' && (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).slice(0,visibleCount).map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
       {loadingMore && <div style={{textAlign:'center',padding:'20px 0',color:'var(--gd)',fontSize:22}}>⏳</div>}
