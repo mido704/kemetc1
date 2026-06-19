@@ -969,7 +969,7 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
         <button className={feedTab==='following'?'tab on':'tab'} onClick={()=>{setFeedTab('following');loadFollowing();}}>{t('الأصدقاء','Following',lang)}</button>
-        <button className={feedTab==='egypt'?'tab on':'tab'} onClick={()=>setFeedTab('egypt')}>{t('مصر','Egypt',lang)}</button>
+        <button className={feedTab==='egypt'?'tab on':'tab'} onClick={()=>setFeedTab('egypt')}>{t('أخبار مصر','Egypt News',lang)}</button>
       </div>
       {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>✕</button></div>}
       {feedTab==='following' && (loadingFollowing ? <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>⏳</div> : followingPosts.length===0 ? <div style={{textAlign:'center',padding:40}}><div style={{fontSize:48}}>👥</div><div style={{color:'var(--tm)',marginTop:10}}>{t('تابع أشخاصاً لترى منشوراتهم','Follow people to see their posts',lang)}</div></div> : followingPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />))}
