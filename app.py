@@ -206,6 +206,9 @@ def toggle_follow(user_id):
             import uuid as _u
             cur.execute('INSERT INTO follows (id,follower_id,following_id) VALUES (%s,%s,%s)', (str(_u.uuid4()), uid, user_id))
             cur.execute('UPDATE users SET followers_count=followers_count+1 WHERE id=%s', (user_id,))
+            import uuid as _u2
+            nid = str(_u2.uuid4())
+            cur.execute('INSERT INTO notifications (id,user_id,actor_id,type) VALUES (%s,%s,%s,%s)', (nid, user_id, uid, 'follow'))
             cur.execute('UPDATE users SET following_count=following_count+1 WHERE id=%s', (uid,))
             get_db().conn.commit()
             return ok({'following': True})
@@ -362,6 +365,13 @@ def send_message(receiver_id):
         return err('ط¸â€¦ط·آ­ط·ع¾ط¸ث†ط¸â€° ط·آ§ط¸â€‍ط·آ±ط·آ³ط·آ§ط¸â€‍ط·آ© ط¸â€¦ط·آ·ط¸â€‍ط¸ث†ط·آ¨')
     uid = request.current_user['id']
     result = get_db().send_message(uid, receiver_id, b['content'])
+    try:
+        import uuid as _um
+        cur = get_db().conn.cursor()
+        nid = str(_um.uuid4())
+        cur.execute('INSERT INTO notifications (id,user_id,actor_id,type,content) VALUES (%s,%s,%s,%s,%s)', (nid, receiver_id, uid, 'message', b['content'][:50]))
+        get_db().conn.commit()
+    except: pass
     return ok(result), 201
 
 # أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯
