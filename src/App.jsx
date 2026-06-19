@@ -968,12 +968,10 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   return (
     <div style={{ maxWidth:600, margin:'0 auto', padding:'14px 14px' }}>
       <div style={{ display:'flex', borderBottom:'1px solid var(--bb)', marginBottom:14 }}>
-        <button className={feedTab==='foryou'?'tab on':'tab'} onClick={()=>setFeedTab('foryou')}>{t('لك','For You',lang)}</button>
         <button className={feedTab==='following'?'tab on':'tab'} onClick={()=>{setFeedTab('following');loadFollowing();}}>{t('الأصدقاء','Following',lang)}</button>
         <button className={feedTab==='egypt'?'tab on':'tab'} onClick={()=>setFeedTab('egypt')}>{t('مصر','Egypt',lang)}</button>
       </div>
       {hashFilter && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'6px 12px',background:'rgba(201,168,76,.1)',borderRadius:20}}><span style={{color:'var(--gd)',fontSize:13}}>{hashFilter}</span><button onClick={()=>setHashFilter('')} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:14}}>✕</button></div>}
-      {feedTab==='egypt' && <EgyptNewsTab lang={lang} />}
       {feedTab==='following' && (loadingFollowing ? <div style={{textAlign:'center',padding:40,color:'var(--tm)'}}>⏳</div> : followingPosts.length===0 ? <div style={{textAlign:'center',padding:40}}><div style={{fontSize:48}}>👥</div><div style={{color:'var(--tm)',marginTop:10}}>{t('تابع أشخاصاً لترى منشوراتهم','Follow people to see their posts',lang)}</div></div> : followingPosts.map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />))}
       {feedTab==='foryou' && <CreatePost user={user} lang={lang} onPosted={handlePosted} />}
       {feedTab==='foryou' && (hashFilter ? posts.filter(p=>p.hashtags&&p.hashtags.includes(hashFilter)) : posts).slice(0,visibleCount).map(p=><PostCard key={p.id} post={p} lang={lang} onLike={handleLike} currentUserId={user?.id} user={user} onToast={onToast} onViewProfile={onViewProfile} />)}
@@ -1275,6 +1273,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
   const [loadingFriends, setLoadingFriends] = useState(false);
   const [followers, setFollowers] = useState([]);
   const [loadingFollowers, setLoadingFollowers] = useState(false);
+  const [followedBack, setFollowedBack] = useState({});
   const loadFollowers = async () => { setLoadingFollowers(true); const token=storage.getToken(); const r=await fetch('https://kemetc1-production.up.railway.app/api/users/followers',{headers:{'Authorization':'Bearer '+token}}); const d=await r.json(); if(d.ok) setFollowers(d.data||[]); setLoadingFollowers(false); };
   const loadFriends = async () => {
     if (friends.length > 0) return;
@@ -1367,7 +1366,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
             <div key={f.id} className='post-card' style={{display:'flex',gap:10,alignItems:'center'}}>
               <Avatar emoji={f.avatar_emoji||'👑'} size={44} url={f.avatar_url} />
               <div style={{flex:1}}><div style={{fontWeight:700,color:'var(--g)',fontSize:14}}>{f.nickname}</div><div style={{fontSize:12,color:'var(--tm)'}}>{f.name}</div></div>
-              <button className='btn btn-g' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>usersAPI.follow(f.id)}>+ {t('تابع','Follow',lang)}</button>
+              <button className={'btn '+(followedBack[f.id]?'btn-gh':'btn-g')} style={{fontSize:12,padding:'6px 12px'}} onClick={async()=>{ await usersAPI.follow(f.id); setFollowedBack(p=>({...p,[f.id]:true})); }}>{ followedBack[f.id] ? '✓ '+t('متابَع','Following',lang) : '+ '+t('تابع','Follow',lang)}</button>
             </div>
           ))}
         </div>
