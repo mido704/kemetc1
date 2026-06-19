@@ -1890,9 +1890,9 @@ function EgyptNewsTab({ lang }) {
 
   if (selected) return (
     <div className="fi" style={{maxWidth:600,margin:'0 auto',padding:'0 0 14px'}}>
-      <button className="btn btn-gh" onClick={()=>setSelected(null)} style={{marginBottom:14}}>← {t('رجوع','Back',lang)}</button>
       <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:14,overflow:'hidden'}}>
         <div style={{textAlign:'center',padding:'32px 16px',background:'linear-gradient(135deg,#0D0A02,#1A1200)',fontSize:72,position:'relative',minHeight:200,overflow:'hidden'}}>
+      <button className="btn btn-gh" onClick={()=>setSelected(null)} style={{marginBottom:14}}>← {t('رجوع','Back',lang)}</button>
           {selected.image_url ? <img src={selected.image_url} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} /> : <span style={{position:'relative',zIndex:1}}>{selected.image}</span>}
         </div>
         <div style={{padding:20}}>
