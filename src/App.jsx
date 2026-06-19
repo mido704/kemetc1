@@ -1274,7 +1274,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
   const [followers, setFollowers] = useState([]);
   const [loadingFollowers, setLoadingFollowers] = useState(false);
   const [followedBack, setFollowedBack] = useState({});
-  const loadFollowers = async () => { setLoadingFollowers(true); const token=storage.getToken(); const r=await fetch('https://kemetc1-production.up.railway.app/api/users/followers',{headers:{'Authorization':'Bearer '+token}}); const d=await r.json(); if(d.ok) setFollowers(d.data||[]); setLoadingFollowers(false); };
+  const loadFollowers = async () => { setLoadingFollowers(true); const token=storage.getToken(); const [r1,r2] = await Promise.all([fetch('https://kemetc1-production.up.railway.app/api/users/followers',{headers:{'Authorization':'Bearer '+token}}), fetch('https://kemetc1-production.up.railway.app/api/users/following',{headers:{'Authorization':'Bearer '+token}})]); const d1=await r1.json(); const d2=await r2.json(); if(d1.ok) setFollowers(d1.data||[]); if(d2.ok){ const followingIds={}; (d2.data||[]).forEach(u=>{followingIds[u.id]=true;}); setFollowedBack(followingIds); } setLoadingFollowers(false); };
   const loadFriends = async () => {
     if (friends.length > 0) return;
     setLoadingFriends(true);
