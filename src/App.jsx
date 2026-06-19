@@ -1236,8 +1236,8 @@ function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
   );
 }
 function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onStartChat }) {
-  const [profileStats, setProfileStats] = useState({ followers_count: user?.followers_count||0, following_count: user?.following_count||0 });
-  useEffect(()=>{ usersAPI.getUser(user?.id).then(r=>{ if(r.ok) setProfileStats({ followers_count: r.data?.followers_count||0, following_count: r.data?.following_count||0 }); }); },[user?.id]);
+  const [profileStats, setProfileStats] = useState({ followers_count: user?.followers_count||0, following_count: user?.following_count||0, posts_count: user?.posts_count||0 });
+  useEffect(()=>{ usersAPI.getUser(user?.id).then(r=>{ if(r.ok) setProfileStats({ followers_count: r.data?.followers_count||0, following_count: r.data?.following_count||0, posts_count: r.data?.posts_count||0 }); }); },[user?.id]);
   const myPosts = posts.filter(p=>p.user_id===user?.id);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: user?.name||'', nickname: user?.nickname||'', bio: user?.bio||'', cover_url: user?.cover_url||'' });
@@ -1332,7 +1332,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
             {user?.country && <span style={{ fontSize:12, color:'var(--tm)', marginRight:10 }}>🌍 {user.country}</span>}
           </div>
           <div style={{ display:'flex', gap:24, marginTop:14 }}>
-            {[[myPosts.length, t('منشورات','Posts',lang)],[profileStats.followers_count,t('متابعون','Followers',lang)],[profileStats.following_count,t('متابَعون','Following',lang)]].map(([n,l])=>(
+            {[[profileStats.posts_count||myPosts.length, t('منشورات','Posts',lang)],[profileStats.followers_count,t('متابعون','Followers',lang)],[profileStats.following_count,t('متابَعون','Following',lang)]].map(([n,l])=>(
               <div key={l}><div style={{ fontWeight:800, fontSize:18, color:'var(--g)' }}>{n}</div><div style={{ fontSize:11, color:'var(--tm)' }}>{l}</div></div>
             ))}
           </div>
@@ -2168,7 +2168,7 @@ export default function App() {
   const [viewUserId, setViewUserId] = useState(null);
   const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
-  const [posts, setPosts] = useState(DEMO_POSTS);
+  const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
   useEffect(()=>{
     window.handleGoogleLogin = async (response) => {
