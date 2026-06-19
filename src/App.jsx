@@ -1381,7 +1381,7 @@ function ProfilePage({ user, lang, posts, onToast, onUpdateUser, onSetPage, onSt
   );
 }
 
-function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost }) {
+function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost, onGoToProfile, onGoToMessages }) {
   const [notifs, setNotifs] = useState([]);
   const icons = { like:'❤️', comment:'💬', follow:'👥', booking:'🏛️', system:'🔺' };
   return (
@@ -1393,7 +1393,7 @@ function NotificationsPage({ lang, user, onToast, notifsList, onGoToPost }) {
           <div>{t('لا توجد إشعارات بعد','No notifications yet',lang)}</div>
         </div>
       ) : (notifsList||notifs).map(n=>(
-        <div key={n.id} className='post-card' style={{ display:'flex', gap:12, alignItems:'center', cursor:n.post_id?'pointer':'default' }} onClick={()=>n.post_id&&onGoToPost&&onGoToPost(n.post_id)}>
+        <div key={n.id} className='post-card' style={{ display:'flex', gap:12, alignItems:'center', cursor:'pointer' }} onClick={()=>{ if((n.type==='like'||n.type==='comment')&&n.post_id&&onGoToPost) onGoToPost(n.post_id); else if(n.type==='follow'&&onGoToProfile) onGoToProfile(n.actor_id); else if(n.type==='message'&&onGoToMessages) onGoToMessages(); }}>
           <Avatar emoji={n.actor_avatar||icons[n.type]||'🔔'} size={40} url={n.actor_url||null} />
           <div style={{ flex:1, textAlign:'right' }}>
             <div style={{ fontSize:13, color:'var(--g)', fontWeight:700 }}>{n.actor_name} {icons[n.type]||'🔔'}</div>
@@ -2296,7 +2296,7 @@ export default function App() {
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='news_admin' && user?.email==='mido704@gmail.com' && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTimeout(()=>{ const el=document.getElementById('post-'+postId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },500); }} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTimeout(()=>{ const el=document.getElementById('post-'+postId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },500); }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
