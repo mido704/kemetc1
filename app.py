@@ -189,16 +189,6 @@ def update_profile():
 
 @app.route('/api/users/<user_id>/follow', methods=['POST'])
 @require_auth
-def follow_user(user_id):
-    uid = request.current_user['id']
-    result = get_db().toggle_follow(uid, user_id)
-    if not result['ok']:
-        return err(result['error'])
-    return ok(result)
-
-
-@app.route('/api/users/<user_id>/follow', methods=['POST'])
-@require_auth
 def toggle_follow(user_id):
     uid = request.current_user['id']
     if uid == user_id: return err('لا يمكنك متابعة نفسك')
