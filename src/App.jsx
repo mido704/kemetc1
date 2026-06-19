@@ -1889,33 +1889,18 @@ function EgyptNewsTab({ lang }) {
   const filtered = catFilter==='all' ? newsData : newsData.filter(n=>n.category===catFilter);
 
   if (selected) return (
-    <div className="fi" style={{maxWidth:600,margin:'0 auto',padding:'0 0 14px'}}>
-      <div style={{background:'var(--bc)',border:'1px solid var(--bb)',borderRadius:14,overflow:'hidden'}}>
-        <div style={{textAlign:'center',padding:'32px 16px',background:'linear-gradient(135deg,#0D0A02,#1A1200)',fontSize:72,position:'relative',minHeight:200,overflow:'hidden'}}>
-      <button className="btn btn-gh" onClick={()=>setSelected(null)} style={{marginBottom:14}}>← {t('رجوع','Back',lang)}</button>
-          {selected.image_url ? <img src={selected.image_url} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} /> : <span style={{position:'relative',zIndex:1}}>{selected.image}</span>}
+    <div className="fi" style={{maxWidth:600,margin:"0 auto",padding:"0 0 14px"}}>
+      <button className="btn btn-gh" onClick={()=>setSelected(null)} style={{marginBottom:14}}>← {t("رجوع","Back",lang)}</button>
+      <div style={{background:"var(--bc)",border:"1px solid var(--bb)",borderRadius:14,overflow:"hidden"}}>
+        <div style={{textAlign:"center",padding:"32px 16px",background:"linear-gradient(135deg,#0D0A02,#1A1200)",fontSize:72,position:"relative",minHeight:200,overflow:"hidden"}}>
+          {selected.image_url ? <img src={selected.image_url} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} /> : <span style={{position:"relative",zIndex:1}}>{selected.image||"🗞"}</span>}
         </div>
         <div style={{padding:20}}>
-          <span style={{fontSize:10,color:'var(--gd)',letterSpacing:2,textTransform:'uppercase'}}>{selected.category} • {selected.date}</span>
-          <h2 style={{color:'var(--g)',fontSize:20,fontWeight:800,margin:'10px 0',lineHeight:1.4}}>{lang==='ar'?selected.title_ar:selected.title_en}</h2>
+          <span style={{fontSize:10,color:"var(--gd)",letterSpacing:2,textTransform:"uppercase"}}>{selected.category} • {selected.date}</span>
+          <h2 style={{color:"var(--g)",fontSize:20,fontWeight:800,margin:"10px 0",lineHeight:1.4}}>{lang==="ar"?selected.title_ar:selected.title_en}</h2>
           <div className="gdiv"/>
-          <div style={{display:'flex',justifyContent:'flex-end',position:'relative',marginTop:8}}>
-            <button className='btn btn-gh' style={{fontSize:12,padding:'4px 10px',border:'1px solid rgba(201,168,76,0.3)',borderRadius:20}} onClick={()=>setShowLangMenu(showLangMenu===selected.id?null:selected.id)}>{String.fromCodePoint(127760)} {t('ترجمة','Translate',lang)}</button>
-            {showLangMenu===selected.id && <div style={{position:'absolute',right:0,top:'100%',background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:8,padding:6,zIndex:100,minWidth:110,marginTop:4}}>
-              {[['English','EN'],['Arabic','AR'],['French','FR'],['German','DE'],['Italian','IT'],['Russian','RU']].map(([l,c])=>(<button key={c} className='btn btn-gh' style={{width:'100%',fontSize:12,padding:'5px 8px',textAlign:'right'}} onClick={()=>translateNews(selected,l)}>{c}</button>))}
-            </div>}
-          </div>
-          {translatingId===selected.id && <div style={{fontSize:12,color:'var(--tm)',padding:'8px 0',textAlign:'center'}}>{t('جاري الترجمة...','Translating...',lang)}</div>}
-          {translatedNews[selected.id] && <div style={{fontSize:14,lineHeight:1.8,color:'#8BC4E0',padding:'12px 14px',background:'rgba(139,196,224,0.06)',borderRadius:10,marginTop:10,borderRight:'3px solid #4A9EC4'}}>
-            {translatedNews[selected.id]}
-            <button onClick={()=>{const copy={...translatedNews};delete copy[selected.id];setTranslatedNews(copy);}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:11,marginRight:8,display:'block',marginTop:6}}>{t('إغلاق','Close',lang)}</button>
-          </div>}
-          <p style={{color:'var(--gl)',fontSize:14,lineHeight:1.9}}>{lang==='ar'?selected.summary_ar:selected.summary_en}</p>
-          {(lang==='ar'?selected.content_ar:selected.content_en) && <p style={{color:'var(--gl)',fontSize:14,lineHeight:2,marginTop:14,whiteSpace:'pre-wrap'}}>{lang==='ar'?selected.content_ar:selected.content_en}</p>}
-          <div style={{marginTop:20,padding:16,background:'rgba(201,168,76,0.05)',borderRadius:10,border:'1px solid rgba(201,168,76,0.15)'}}>
-            <div style={{fontSize:12,color:'var(--gd)',marginBottom:8}}>🔺 {t('هل تريد معرفة المزيد؟','Want to know more?',lang)}</div>
-            <div style={{fontSize:13,color:'var(--tm)'}}>{t('تحدث مع رمسيس AI للحصول على معلومات تفصيلية','Talk to Ramesses AI for detailed information',lang)}</div>
-          </div>
+          <p style={{color:"var(--gl)",fontSize:14,lineHeight:1.9}}>{lang==="ar"?selected.summary_ar:selected.summary_en}</p>
+          {(lang==="ar"?selected.content_ar:selected.content_en) && <p style={{color:"var(--gl)",fontSize:14,lineHeight:2,marginTop:14,whiteSpace:"pre-wrap"}}>{lang==="ar"?selected.content_ar:selected.content_en}</p>}
         </div>
       </div>
     </div>
