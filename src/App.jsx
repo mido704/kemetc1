@@ -616,10 +616,11 @@ function CreatePost({ user, lang, onPosted }) {
   const emojis = ['😊','❤️','🔺','🏛️','✈️','🌍','👑','⭐','🎉','🌅','🏖️','🐪','🦅','🌺','💎','⚔️','🌙','☀️','🎭','🏆'];
   const uploadImage = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
     setUploading(true);
+    if (!file) return;
     setIsVideo(file.type.startsWith('video/'));
     const url = await uploadToCloudinary(file);
+    setImageUrl(url);
     setUploading(false);
   };
   const submit = async () => {
