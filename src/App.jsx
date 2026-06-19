@@ -620,15 +620,17 @@ function CreatePost({ user, lang, onPosted }) {
     setUploading(true);
     setIsVideo(file.type.startsWith('video/'));
     const url = await uploadToCloudinary(file);
-    setImageUrl(url);
     setUploading(false);
   };
+    setUploading(false);
   const submit = async () => {
     if (!text.trim() && !imageUrl) return;
     setPosting(true);
     const content = text.trim() || (isVideo ? '🎥' : '📷');
     const hashtags = JSON.stringify((content.match(/#[\w\u0600-\u06FF]+/g)||[]));
     const r = await postsAPI.createPost({ content, language:'ar', image_url: isVideo?'':imageUrl, video_url: isVideo?imageUrl:'', hashtags });
+    if (r.ok) { onPosted&&onPosted(content, r.data?.post_id, isVideo?'':imageUrl, isVideo?imageUrl:''); setText(''); setImageUrl(''); setIsVideo(false); }
+    setPosting(false);
   };
 
   return (
@@ -638,17 +640,17 @@ function CreatePost({ user, lang, onPosted }) {
         <div style={{ flex:1 }}>
           <textarea className="inp" placeholder={t('ما الذي تفكر فيه ؟ 🔺','What are you thinking? 🔺',lang)}
             value={text} onChange={e=>setText(e.target.value)} rows={3} />
-          {imageUrl && !isVideo && <img src={imageUrl} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:8}} />}
-          {imageUrl && isVideo && <video src={imageUrl} controls style={{width:'100%',maxHeight:200,borderRadius:8,marginTop:8}} />}
           {showEmoji && (
             <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:8,background:'var(--bb)',padding:10,borderRadius:8}}>
               {emojis.map(em=><span key={em} style={{cursor:'pointer',fontSize:22}} onClick={()=>{setText(t=>t+em);setShowEmoji(false)}}>{em}</span>)}
             </div>
           )}
+          )}
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:9 }}>
             <div style={{ display:'flex', gap:6, alignItems:'center' }}>
-              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)',title:'صورة'}}>
-                {uploading ? '⏳' : '🖼️'}
+              <button onClick={()=>setShowEmoji(v=>!v)} style={{background:'none',border:'none',cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>😊</button>
+              <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>
+                {uploading?'...':'🖼️'}
                 <input type='file' accept='image/*' onChange={uploadImage} style={{display:'none'}} />
               </label>
               <label style={{cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>
@@ -657,7 +659,7 @@ function CreatePost({ user, lang, onPosted }) {
               </label>
             </div>
             <button className='btn btn-g' onClick={submit} disabled={posting||(!text.trim()&&!imageUrl)} style={{ padding:'8px 20px' }}>
-              {posting?'⏳':t('نشر','Post',lang)}
+              {posting?'...':'Post'}
             </button>
           </div>
         </div>
