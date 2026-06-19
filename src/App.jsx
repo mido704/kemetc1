@@ -642,10 +642,10 @@ function CreatePost({ user, lang, onPosted }) {
             value={text} onChange={e=>setText(e.target.value)} rows={3} />
           {showEmoji && (
             <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:8,background:'var(--bb)',padding:10,borderRadius:8}}>
-              {emojis.map(em=><span key={em} style={{cursor:'pointer',fontSize:22}} onClick={()=>{setText(t=>t+em);setShowEmoji(false)}}>{em}</span>)}
             </div>
           )}
-          )}
+          {imageUrl && !isVideo && <img src={imageUrl} style={{width:'100%',maxHeight:200,objectFit:'cover',borderRadius:8,marginTop:8}} />}
+          {imageUrl && isVideo && <video src={imageUrl} controls style={{width:'100%',maxHeight:200,borderRadius:8,marginTop:8}} />}
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:9 }}>
             <div style={{ display:'flex', gap:6, alignItems:'center' }}>
               <button onClick={()=>setShowEmoji(v=>!v)} style={{background:'none',border:'none',cursor:'pointer',padding:'3px 8px',fontSize:16,color:'var(--tm)'}}>😊</button>
