@@ -2160,9 +2160,9 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
-  useEffect(()=>{
   const [targetPostId, setTargetPostId] = useState(null);
   useEffect(()=>{ if(targetPostId && posts.length>0){ setTimeout(()=>{ const el=document.getElementById('post-'+targetPostId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.border='2px solid var(--gd)'; setTimeout(()=>el.style.border='',2000); } setTargetPostId(null); },800); } },[targetPostId, posts]);
+  useEffect(()=>{
     window.handleGoogleLogin = async (response) => {
       const r = await fetch('https://kemetc1-production.up.railway.app/api/auth/google', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
       const d = await r.json();
