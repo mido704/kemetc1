@@ -944,7 +944,7 @@ function FeedPage({ user, lang, posts, setPosts, onToast, onViewProfile }) {
   const [feedTab, setFeedTab] = useState('foryou');
   const [followingPosts, setFollowingPosts] = useState([]);
   const [loadingFollowing, setLoadingFollowing] = useState(false);
-  const loadFollowing = async () => { if(followingPosts.length>0) return; setLoadingFollowing(true); const token=localStorage.getItem('kemet_token'); const r=await fetch('https://kemetc1-production.up.railway.app/api/posts/following',{headers:{'Authorization':'Bearer '+token}}); const d=await r.json(); if(d.ok) setFollowingPosts(d.data||[]); setLoadingFollowing(false); };
+  const loadFollowing = async () => { setLoadingFollowing(true); setFollowingPosts([]); const token=localStorage.getItem('kemet_token'); const r=await fetch('https://kemetc1-production.up.railway.app/api/posts/following',{headers:{'Authorization':'Bearer '+token}}); const d=await r.json(); if(d.ok) setFollowingPosts(d.data||[]); setLoadingFollowing(false); };
   const [visibleCount, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
   useEffect(()=>{ window.setHashtagFilter=(h)=>setHashFilter(h); return ()=>delete window.setHashtagFilter; },[]);
