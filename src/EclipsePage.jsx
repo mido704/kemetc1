@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { storeAPI } from './utils/api.js';
 
 export default function EclipsePage({ lang, user, onToast, onBook }) {
   const [episodes, setEpisodes] = useState([]);
