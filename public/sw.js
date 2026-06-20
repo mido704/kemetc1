@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kemet-v3';
+const CACHE_NAME = 'kemet-v4';
 const urlsToCache = ['/', '/index.html'];
 
 self.addEventListener('install', e => {
