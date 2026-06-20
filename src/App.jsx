@@ -2162,8 +2162,8 @@ export default function App() {
   const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
   const [targetPostId, setTargetPostId] = useState(null);
-  useEffect(()=>{ if(!targetPostId) return; let attempts=0; const tryScroll=()=>{ const el=document.getElementById('post-'+targetPostId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='2px solid gold'; setTimeout(()=>{if(el)el.style.outline='';},2000); setTargetPostId(null); } else if(attempts<10){ attempts++; setTimeout(tryScroll,500); } }; setTimeout(tryScroll,500); },[targetPostId]);
   useEffect(()=>{
+  const [targetPostId, setTargetPostId] = useState(null);
     window.handleGoogleLogin = async (response) => {
       const r = await fetch('https://kemetc1-production.up.railway.app/api/auth/google', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
       const d = await r.json();
@@ -2299,7 +2299,7 @@ export default function App() {
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='news_admin' && user?.email==='mido704@gmail.com' && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTargetPostId(postId); postsAPI.getPost(postId).then(r=>{ if(r.ok){ setPosts(p=>{ const exists=p.find(x=>x.id===postId); if(!exists) return [r.data,...p]; return p; }); } }); }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ postsAPI.getPost(postId).then(r=>{ if(r.ok) setTargetPost(r.data); }); }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
@@ -2307,6 +2307,7 @@ export default function App() {
 
         <RightSidebar lang={lang} />
       </div>
+      {targetPost && <div className='modal-bg' onClick={()=>setTargetPost(null)} style={{alignItems:'flex-start',paddingTop:60,overflowY:'auto'}}><div style={{width:'100%',maxWidth:600}} onClick={e=>e.stopPropagation()}><button className='btn btn-gh' onClick={()=>setTargetPost(null)} style={{marginBottom:10}}>← {t('رجوع','Back',lang)}</button><PostCard post={targetPost} lang={lang} onLike={()=>{}} user={user} onToast={showToast} currentUserId={user?.id} onViewProfile={(uid)=>{ setTargetPost(null); setViewUserId(uid); setPage('view_profile'); }} /></div></div>}
 
       {toast && <Toast msg={toast} onDone={()=>setToast(null)} />}
       {user && showAI && <AIAssistant lang={lang} user={user} onClose={()=>setShowAI(false)} />}
