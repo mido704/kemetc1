@@ -429,6 +429,9 @@ function RegisterModal({ onClose, onSuccess, lang }) {
 // ── POST CARD ─────────────────────────────────────────────
 function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProfile }) {
   const [showComments, setShowComments] = useState(false);
+  const [showPostMenu, setShowPostMenu] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editText, setEditText] = useState(post.content);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
@@ -510,23 +513,34 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
             {post.membership==='gold' && <span className="badge" style={{ fontSize:10 }}>Gold</span>}
             {post.membership==='platinum' && <span className="badge" style={{ fontSize:10, background:'linear-gradient(135deg,#6B5B95,#9B8EC4)' }}>Platinum</span>}
           </div>
-          <div style={{ fontSize:11, color:'var(--tm)', marginTop:1 }}>{timeAgo(post.created_at, lang)}</div>
                {post.user_id !== currentUserId && (
-  <button className="btn btn-gh" style={{fontSize:11,padding:'2px 8px',color:'var(--gd)',border:'1px solid var(--gd)',borderRadius:20,marginTop:2}}
-    onClick={async(e)=>{
-      e.stopPropagation();
-      const r = await usersAPI.follow(post.user_id);
-      onToast && onToast(t('تمت المتابعة','Followed',lang));
-    }}>
-    + {t('متابعة','Follow',lang)}
-  </button>
+                 <button className='btn btn-gh' style={{fontSize:11,padding:'2px 8px',color:'var(--gd)',border:'1px solid var(--gd)',borderRadius:20,marginTop:2}} onClick={async(e)=>{e.stopPropagation();await usersAPI.follow(post.user_id);onToast&&onToast(t('تمت المتابعة','Followed',lang));}}>+ {t('متابعة','Follow',lang)}</button>
+               )}
+               {post.user_id === currentUserId && (
+                 <div style={{position:'relative',marginTop:4}}>
+                   <button onClick={()=>setShowPostMenu(v=>!v)} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:18,padding:'2px 8px'}}>⋯</button>
+                   {showPostMenu && <div style={{position:'absolute',right:0,top:'100%',background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:8,padding:4,zIndex:100,minWidth:120}}>
+                     <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:13,padding:'6px 10px'}} onClick={()=>{setEditMode(true);setShowPostMenu(false);}}>✏️ {t('تعديل','Edit',lang)}</button>
+                     <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:13,padding:'6px 10px',color:'#e55'}} onClick={async()=>{ if(window.confirm(t('هل تريد حذف البوست؟','Delete this post?',lang))){ await postsAPI.deletePost(post.id); onToast&&onToast(t('تم الحذف','Deleted',lang)); setShowPostMenu(false); window.location.reload(); } }}>🗑️ {t('حذف','Delete',lang)}</button>
+                   </div>}
+                 </div>
+               )}
 )}
         </div>
       </div>
 
-      <div style={{ fontSize:14, lineHeight:1.85, color:'#D4B660', marginBottom:10 }}>
-        {lang==='ar' ? post.content : (post.content_en||post.content)}
-      </div>
+      {editMode ? (
+        <div style={{marginBottom:10}}>
+          <textarea className='inp' value={editText} onChange={e=>setEditText(e.target.value)} rows={3} style={{marginBottom:8}} />
+          <div style={{display:'flex',gap:8}}>
+            <button className='btn btn-g' onClick={async()=>{ await postsAPI.updatePost(post.id,{content:editText}); onToast&&onToast(t('تم التعديل','Updated',lang)); setEditMode(false); post.content=editText; }}>{t('حفظ','Save',lang)}</button>
+            <button className='btn btn-gh' onClick={()=>setEditMode(false)}>{t('إلغاء','Cancel',lang)}</button>
+          </div>
+        </div>
+      ) : (
+        <div style={{ fontSize:14, lineHeight:1.85, color:'#D4B660', marginBottom:10 }}>
+        </div>
+      )}
 
       {translating && <div style={{fontSize:13,color:'var(--tm)',padding:'8px 0'}}>⏳ Translating...</div>}
       {translated && <div style={{fontSize:14,lineHeight:1.85,color:'#8BC4E0',marginBottom:10,padding:'10px 12px',background:'rgba(139,196,224,0.06)',borderRadius:8,borderRight:'3px solid #4A9EC4'}}>{translated}<button onClick={()=>setTranslated(String())} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:11,marginRight:8}}>x</button></div>}

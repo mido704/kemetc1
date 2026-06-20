@@ -122,6 +122,7 @@ export const postsAPI = {
   getPost: (id) => apiFetch('/posts/'+id),
 
   deletePost: (id) => apiFetch(`/posts/${id}`, { method: 'DELETE' }),
+  updatePost: (id, data) => apiFetch('/posts/'+id, { method: 'PUT', body: data }),
 
   likePost: (id) => apiFetch(`/posts/${id}/like`, { method: 'POST' }),
 
