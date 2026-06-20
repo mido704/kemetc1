@@ -2298,7 +2298,7 @@ export default function App() {
           {page==='admin' && user?.email==='mido704@gmail.com' && <AdminDashboard lang={lang} user={user} onBack={()=>setPage('feed')} />}
           {page==='news_admin' && user?.email==='mido704@gmail.com' && <NewsAdminPage lang={lang} user={user} onToast={showToast} />}
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
-          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTargetPostId(postId); }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
+          {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ setPage('feed'); setTargetPostId(postId); if(posts.length===0){ postsAPI.getFeed(50,0).then(r=>{ if(r.ok) setPosts(r.data||[]); }); } }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
