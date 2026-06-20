@@ -2160,7 +2160,6 @@ export default function App() {
   const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [notifsList, setNotifsList] = useState([]);
   const [targetPost, setTargetPost] = useState(null);
   useEffect(()=>{
   const [targetPostId, setTargetPostId] = useState(null);
