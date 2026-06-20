@@ -300,17 +300,6 @@ def get_post(post_id):
         if not row: return err('Post not found', 404)
         return ok(dict(row))
     except Exception as e: return err(str(e))
-@app.route('/api/posts/<post_id>', methods=['GET'])
-@require_auth
-def get_post(post_id):
-    uid = request.current_user['id']
-    try:
-        cur = get_db().conn.cursor()
-        cur.execute('''SELECT p.id, p.content, p.content_en, p.image_emoji, p.image_url, COALESCE(p.video_url,'') as video_url, p.hashtags, p.likes_count, p.comments_count, p.shares_count, p.created_at, u.id as user_id, u.nickname, u.avatar_emoji, u.avatar_url, CASE WHEN l.id IS NOT NULL THEN 1 ELSE 0 END as liked FROM posts p JOIN users u ON p.user_id=u.id LEFT JOIN likes l ON l.post_id=p.id AND l.user_id=%s WHERE p.id=%s AND p.is_deleted=0''', (uid, post_id))
-        row = cur.fetchone()
-        if not row: return err('Post not found', 404)
-        return ok(dict(row))
-    except Exception as e: return err(str(e))
 
 @app.route('/api/posts/<post_id>', methods=['PUT'])
 @require_auth
