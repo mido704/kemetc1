@@ -278,6 +278,14 @@ def create_post():
         cur = get_db().conn.cursor()
         cur.execute('INSERT INTO posts (id,user_id,content,content_en,image_emoji,image_url,video_url,hashtags,language) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)',
             (pid, uid, b['content'], b.get('content_en',''), b.get('image_emoji',''), b.get('image_url',''), b.get('video_url',''), b.get('hashtags','[]'), b.get('language','ar')))
+        try:
+            cur.execute('SELECT follower_id FROM follows WHERE following_id=%s', (uid,))
+            followers = [r['follower_id'] for r in cur.fetchall()]
+            for fid in followers:
+                nid = str(uuid.uuid4())
+                cur.execute('INSERT INTO notifications (id,user_id,actor_id,type,post_id,content) VALUES (%s,%s,%s,%s,%s,%s)', (nid, fid, uid, 'post', pid, b['content'][:50]))
+            get_db().conn.commit()
+        except: pass
         get_db().conn.commit()
         return ok({'post_id': pid}), 201
     except Exception as e: return err(str(e))

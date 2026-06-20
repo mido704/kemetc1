@@ -2161,7 +2161,7 @@ export default function App() {
   const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
   const [targetPostId, setTargetPostId] = useState(null);
-  useEffect(()=>{ if(targetPostId && posts.length>0){ setTimeout(()=>{ const el=document.getElementById('post-'+targetPostId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.border='2px solid var(--gd)'; setTimeout(()=>el.style.border='',2000); } setTargetPostId(null); },800); } },[targetPostId, posts]);
+  useEffect(()=>{ if(!targetPostId) return; const timer=setTimeout(()=>{ const el=document.getElementById('post-'+targetPostId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='2px solid gold'; setTimeout(()=>{if(el)el.style.outline='';},2000); setTargetPostId(null); } },2500); return ()=>clearTimeout(timer); },[targetPostId, posts.length]);
   useEffect(()=>{
     window.handleGoogleLogin = async (response) => {
       const r = await fetch('https://kemetc1-production.up.railway.app/api/auth/google', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
