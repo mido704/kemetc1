@@ -2161,7 +2161,7 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
-  const [targetPostId, setTargetPostId] = useState(null);
+  const [targetPost, setTargetPost] = useState(null);
   useEffect(()=>{
   const [targetPostId, setTargetPostId] = useState(null);
     window.handleGoogleLogin = async (response) => {
