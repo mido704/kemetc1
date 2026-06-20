@@ -524,7 +524,6 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
                      <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:13,padding:'6px 10px',color:'#e55'}} onClick={async()=>{ if(window.confirm(t('هل تريد حذف البوست؟','Delete this post?',lang))){ await postsAPI.deletePost(post.id); onToast&&onToast(t('تم الحذف','Deleted',lang)); setShowPostMenu(false); window.location.reload(); } }}>🗑️ {t('حذف','Delete',lang)}</button>
                    </div>}
                  </div>
-               )}
 )}
         </div>
       </div>
@@ -539,6 +538,7 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
         </div>
       ) : (
         <div style={{ fontSize:14, lineHeight:1.85, color:'#D4B660', marginBottom:10 }}>
+          {lang==='ar' ? post.content : (post.content_en||post.content)}
         </div>
       )}
 
