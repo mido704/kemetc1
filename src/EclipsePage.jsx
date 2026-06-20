@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
-import { storeAPI } from "./utils/api.js";
-
-const DEFAULT_EPISODES = [];
 
 export default function EclipsePage({ lang, user, onToast, onBook }) {
-  const [episodes, setEpisodes] = useState(() => {
   const [episodes, setEpisodes] = useState([]);
-  });
   const [tours, setTours] = useState([]);
   const [selectedTour, setSelectedTour] = useState(null);
   useEffect(()=>{ storeAPI.getTours().then(r=>{ if(r.ok && r.data?.length) setTours(r.data); }); },[]);
