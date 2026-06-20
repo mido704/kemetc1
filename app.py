@@ -404,10 +404,10 @@ def notifications():
     limit = min(int(request.args.get('limit', 20)), 50)
     try:
         cur = get_db().conn.cursor()
-        cur.execute('''SELECT n.id, n.type, n.post_id, n.content, n.is_read, n.created_at, u.nickname as actor_name, u.avatar_emoji as actor_avatar, u.avatar_url as actor_url, u.id as actor_id FROM notifications n LEFT JOIN users u ON n.actor_id=u.id WHERE n.user_id=%s ORDER BY n.created_at DESC OFFSET 0 ROWS FETCH NEXT %s ROWS ONLY''', (uid, limit))
+        cur.execute('SELECT n.id, n.type, n.post_id, n.content, n.is_read, n.created_at, u.nickname as actor_name, u.avatar_emoji as actor_avatar, u.avatar_url as actor_url, u.id as actor_id FROM notifications n LEFT JOIN users u ON n.actor_id=u.id WHERE n.user_id=%s ORDER BY n.created_at DESC', (uid,))
         notifs = [dict(r) for r in cur.fetchall()]
         return ok(notifs)
-    return ok(notifs)
+    except Exception as e: return err(str(e))
 
 @app.route('/api/notifications/read', methods=['POST'])
 @require_auth
