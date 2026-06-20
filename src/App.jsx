@@ -2159,6 +2159,8 @@ export default function App() {
   const [viewUserId, setViewUserId] = useState(null);
   const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [notifsList, setNotifsList] = useState([]);
   const [targetPostId, setTargetPostId] = useState(null);
   const [targetPost, setTargetPost] = useState(null);
   useEffect(()=>{
