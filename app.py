@@ -402,7 +402,11 @@ def send_message(receiver_id):
 def notifications():
     uid = request.current_user['id']
     limit = min(int(request.args.get('limit', 20)), 50)
-    notifs = get_db().get_notifications(uid, limit)
+    try:
+        cur = get_db().conn.cursor()
+        cur.execute('''SELECT n.id, n.type, n.post_id, n.content, n.is_read, n.created_at, u.nickname as actor_name, u.avatar_emoji as actor_avatar, u.avatar_url as actor_url, u.id as actor_id FROM notifications n LEFT JOIN users u ON n.actor_id=u.id WHERE n.user_id=%s ORDER BY n.created_at DESC OFFSET 0 ROWS FETCH NEXT %s ROWS ONLY''', (uid, limit))
+        notifs = [dict(r) for r in cur.fetchall()]
+        return ok(notifs)
     return ok(notifs)
 
 @app.route('/api/notifications/read', methods=['POST'])
