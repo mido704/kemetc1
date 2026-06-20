@@ -1184,17 +1184,17 @@ function StorePage({ lang, user, onToast, initialTour, onTourViewed }) {
 
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnrfsmtbi/auto/upload';
 const CLOUDINARY_PRESET = 'kemet_upload';
-async function uploadToCloudinary(file) {
+async function uploadToCloudinary(fileObj) {
   try {
   const fd = new FormData();
-  fd.append('file', file);
+  fd.append('file', fileObj, fileObj.name||'upload');
   fd.append('upload_preset', CLOUDINARY_PRESET);
   const r = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
+  if(!r.ok) { console.error('Cloudinary HTTP error:', r.status); return ''; }
   const d = await r.json();
   return d.secure_url||'';
   } catch(e) { console.error('Cloudinary upload error:', e); return ''; }
 }
-
 function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
