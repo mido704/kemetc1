@@ -5,7 +5,7 @@ const DEFAULT_EPISODES = [];
 
 export default function EclipsePage({ lang, user, onToast, onBook }) {
   const [episodes, setEpisodes] = useState(() => {
-    try { const s = localStorage.getItem('eclipse_episodes'); return s ? JSON.parse(s) : DEFAULT_EPISODES; } catch { return DEFAULT_EPISODES; }
+  const [episodes, setEpisodes] = useState([]);
   });
   const [tours, setTours] = useState([]);
   const [selectedTour, setSelectedTour] = useState(null);
