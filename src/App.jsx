@@ -2159,10 +2159,9 @@ export default function App() {
   const [viewUserId, setViewUserId] = useState(null);
   const [lang, setLang] = useState('en');
   const [modal, setModal] = useState(null);
-  const [posts, setPosts] = useState([]);
+  const [targetPostId, setTargetPostId] = useState(null);
   const [targetPost, setTargetPost] = useState(null);
   useEffect(()=>{
-  const [targetPostId, setTargetPostId] = useState(null);
     window.handleGoogleLogin = async (response) => {
       const r = await fetch('https://kemetc1-production.up.railway.app/api/auth/google', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
       const d = await r.json();
