@@ -2316,7 +2316,6 @@ export default function App() {
           {page==='store_manager' && <StoreManagerPage lang={lang} user={user} onBack={()=>setPage('feed')} onToast={showToast} />}
           {page==='notifications' && <NotificationsPage lang={lang} user={user} onToast={showToast} notifsList={notifsList} onGoToPost={(postId)=>{ postsAPI.getPost(postId).then(r=>{ if(r.ok) setTargetPost(r.data); }); }} onGoToProfile={(uid)=>{ setViewUserId(uid); setPage('view_profile'); }} onGoToMessages={()=>setPage('messages')} />}
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
-          {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={()=>setPage('store')} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
         </div>
 
