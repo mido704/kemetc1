@@ -119,6 +119,7 @@ export const postsAPI = {
   // data can include: { content, language, media_url, media_type }
   // media_url and media_type come from Cloudinary upload in the frontend
   createPost: (data) => apiFetch('/posts', { method: 'POST', body: data }),
+  getPost: (id) => apiFetch(/posts/+id),
 
   deletePost: (id) => apiFetch(`/posts/${id}`, { method: 'DELETE' }),
 
