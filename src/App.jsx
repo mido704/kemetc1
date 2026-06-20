@@ -2160,7 +2160,7 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const [posts, setPosts] = useState([]);
   const [notifsList, setNotifsList] = useState([]);
-  const [targetPostId, setTargetPostId] = useState(null);
+  useEffect(()=>{ if(!targetPostId) return; let attempts=0; const tryScroll=()=>{ const el=document.getElementById('post-'+targetPostId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='2px solid gold'; setTimeout(()=>{if(el)el.style.outline='';},2000); setTargetPostId(null); } else if(attempts<10){ attempts++; setTimeout(tryScroll,500); } }; const timer=setTimeout(tryScroll,500); return ()=>clearTimeout(timer); },[targetPostId, posts.length]);
   useEffect(()=>{ if(!targetPostId) return; const timer=setTimeout(()=>{ const el=document.getElementById('post-'+targetPostId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.outline='2px solid gold'; setTimeout(()=>{if(el)el.style.outline='';},2000); setTargetPostId(null); } },2500); return ()=>clearTimeout(timer); },[targetPostId, posts.length]);
   useEffect(()=>{
     window.handleGoogleLogin = async (response) => {
