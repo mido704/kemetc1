@@ -902,7 +902,6 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
           <span>{t('إدارة المتجر','Store Mgr',lang)}</span>
         </div>
       )}
-      
       {navItems.map(item=>(
         <div key={item.key} className={`si ${page===item.key?'on':''}`} onClick={()=>setPage(item.key)}>
           <span style={{ fontSize:17, width:22, textAlign:'center' }}>{item.icon}</span>
