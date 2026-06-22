@@ -1185,14 +1185,19 @@ function StorePage({ lang, user, onToast, initialTour, onTourViewed }) {
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnrfsmtbi/auto/upload';
 const CLOUDINARY_PRESET = 'kemet_upload';
 async function uploadToCloudinary(fileObj) {
-  const fd = new FormData();
-  fd.append('file', fileObj);
-  fd.append('upload_preset', CLOUDINARY_PRESET);
-  try {
-    const r = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
-    const d = await r.json();
-    return d.secure_url||'';
-  } catch(e) { return ''; }
+  return new Promise((resolve) => {
+    const fd = new FormData();
+    fd.append('file', fileObj);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', CLOUDINARY_URL, true);
+    xhr.onload = () => {
+      try { const d = JSON.parse(xhr.responseText); resolve(d.secure_url||''); }
+      catch { resolve(''); }
+    };
+    xhr.onerror = () => resolve('');
+    xhr.send(fd);
+  });
 }
 function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
   const [profile, setProfile] = useState(null);
