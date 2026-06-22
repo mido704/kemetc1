@@ -1928,6 +1928,12 @@ function EgyptNewsTab({ lang }) {
           {translatedNews[selected.id] && <div style={{fontSize:13,lineHeight:1.8,color:'#8BC4E0',padding:'10px 12px',background:'rgba(139,196,224,0.06)',borderRadius:8,marginBottom:10,borderRight:'3px solid #4A9EC4'}}>{translatedNews[selected.id]}<button onClick={()=>{const c={...translatedNews};delete c[selected.id];setTranslatedNews(c);}} style={{background:'none',border:'none',color:'var(--tm)',cursor:'pointer',fontSize:10,marginRight:6}}>×</button></div>}
           <p style={{color:"var(--gl)",fontSize:14,lineHeight:1.9}}>{lang==="ar"?selected.summary_ar:selected.summary_en}</p>
           {(lang==="ar"?selected.content_ar:selected.content_en) && <p style={{color:"var(--gl)",fontSize:14,lineHeight:2,marginTop:14,whiteSpace:"pre-wrap"}}>{lang==="ar"?selected.content_ar:selected.content_en}</p>}
+          <div style={{display:'flex',gap:8,marginTop:16,flexWrap:'wrap'}}>
+            <button className='btn btn-gh' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://kemetlegancy.com')+'&quote='+encodeURIComponent((lang==='ar'?selected.title_ar:selected.title_en)),'_blank')}>📘 Facebook</button>
+            <button className='btn btn-gh' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent((lang==='ar'?selected.title_ar:selected.title_en))+'&url='+encodeURIComponent('https://kemetlegancy.com'),'_blank')}>🐦 X</button>
+            <button className='btn btn-gh' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>window.open('https://wa.me/?text='+encodeURIComponent((lang==='ar'?selected.title_ar:selected.title_en)+' https://kemetlegancy.com'),'_blank')}>💬 WhatsApp</button>
+            <button className='btn btn-gh' style={{fontSize:12,padding:'6px 12px'}} onClick={()=>{ navigator.clipboard.writeText('https://kemetlegancy.com'); }}>🔗 {t('نسخ','Copy',lang)}</button>
+          </div>
         </div>
       </div>
     </div>
