@@ -267,8 +267,8 @@ def get_feed():
 @require_auth
 def create_post():
     b = request.get_json() or {}
-    if not b.get('content', '').strip(): return err('محتوى مطلوب')
-    if len(b['content']) > 500:
+    if len(b['content']) > 2000:
+        return err('المحتوى لا يتجاوز 2000 حرف')
         return err('ط·آ§ط¸â€‍ط¸â€¦ط¸â€ ط·آ´ط¸ث†ط·آ± ط¸â€‍ط·آ§ ط¸ظ¹ط·ع¾ط·آ¬ط·آ§ط¸ث†ط·آ² 500 ط·آ­ط·آ±ط¸ظ¾')
     uid = request.current_user['id']
     uid = request.current_user['id']
