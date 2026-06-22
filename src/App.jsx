@@ -556,31 +556,30 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
       )}
 
       <GoldDivider />
-
-      <div style={{ display:'flex', gap:4 }}>
-        <button className='btn btn-gh' onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:13 }}>
-          {liked?'❤️':'🤍'} {t('إعجاب','Like',lang)} {likesCount>0&&<span style={{fontSize:11,opacity:.7}}>({likesCount})</span>}
+      <div style={{ display:'flex', gap:4, flexWrap:'nowrap' }}>
+        <button className='btn btn-gh' onClick={handleLike} style={{ flex:1, color:liked?'var(--red)':'var(--tm)', fontSize:12 }}>
+          {liked?'❤️':'🤍'} {t('إعجاب','Like',lang)}
         </button>
-        <button className='btn btn-gh' onClick={loadComments} style={{ flex:1, fontSize:13 }}>
-          💬 {t('تعليق','Comment',lang)} {post.comments_count>0&&<span style={{fontSize:11,opacity:.7}}>({post.comments_count})</span>}
+        <button className='btn btn-gh' onClick={loadComments} style={{ flex:1, fontSize:12 }}>
+          💬 {t('تعليق','Comment',lang)}
         </button>
-      <div style={{position:"relative",flex:1}}>
-        <button className="btn btn-gh" style={{width:"100%",fontSize:13}} onClick={()=>setShowLangs(v=>!v)}>🌐 {lang==='ar'?'ترجمة':'Translate'}</button>
-        {showLangs && <div style={{position:"absolute",bottom:"100%",left:0,background:"var(--bc)",border:"1px solid var(--gd)",borderRadius:10,padding:8,zIndex:100,display:"flex",flexDirection:"column",gap:4,minWidth:120}}>
-          {[['English','English'],['Arabic','العربية'],['French','Français'],['German','Deutsch'],['Italian','Italiano'],['Russian','Русский']].map(([code,label])=>(
-            <button key={code} className="btn btn-gh" style={{fontSize:12,padding:"4px 8px",textAlign:"right"}} onClick={()=>translatePost(code)}>{label}</button>
-          ))}
-        </div>}
-      <div style={{position:'relative',flex:1}}>
-        <button className='btn btn-gh' style={{width:'100%',fontSize:13}} onClick={()=>setShowShareMenu(v=>!v)}>🔁 {t('مشاركة','Share',lang)}</button>
-        {showShareMenu && <div style={{position:'absolute',bottom:'100%',left:0,background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:10,padding:6,zIndex:200,minWidth:160,marginBottom:4}}>
-          <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://kemetlegancy.com')+'&quote='+encodeURIComponent(post.content),'_blank'); setShowShareMenu(false); }}>📘 Facebook</button>
-          <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(post.content)+'&url='+encodeURIComponent('https://kemetlegancy.com'),'_blank'); setShowShareMenu(false); }}>🐦 X (Twitter)</button>
-          <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://wa.me/?text='+encodeURIComponent(post.content+' https://kemetlegancy.com'),'_blank'); setShowShareMenu(false); }}>💬 WhatsApp</button>
-        </div>}
-      </div>
-      </div>
-
+        <div style={{position:'relative',flex:1}}>
+          <button className='btn btn-gh' style={{width:'100%',fontSize:12}} onClick={()=>setShowLangs(v=>!v)}>🌐 {t('ترجمة','Translate',lang)}</button>
+          {showLangs && <div style={{position:'absolute',bottom:'100%',left:0,background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:10,padding:8,zIndex:100,display:'flex',flexDirection:'column',gap:4,minWidth:120}}>
+            {[['English','English'],['Arabic','العربية'],['French','Français'],['German','Deutsch'],['Italian','Italiano'],['Russian','Русский']].map(([code,label])=>(
+              <button key={code} className='btn btn-gh' style={{fontSize:12,padding:'4px 8px',textAlign:'right'}} onClick={()=>translatePost(code)}>{label}</button>
+            ))}
+          </div>}
+        </div>
+        <div style={{position:'relative',flex:1}}>
+          <button className='btn btn-gh' style={{width:'100%',fontSize:12}} onClick={()=>setShowShareMenu(v=>!v)}>🔁 {t('شارك','Share',lang)}</button>
+          {showShareMenu && <div style={{position:'absolute',bottom:'100%',left:0,background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:10,padding:6,zIndex:200,minWidth:160,marginBottom:4}}>
+            <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://kemetlegancy.com')+'&quote='+encodeURIComponent(post.content),'_blank'); setShowShareMenu(false); }}>📘 Facebook</button>
+            <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(post.content)+'&url='+encodeURIComponent('https://kemetlegancy.com'),'_blank'); setShowShareMenu(false); }}>🐦 X</button>
+            <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://wa.me/?text='+encodeURIComponent(post.content+' https://kemetlegancy.com'),'_blank'); setShowShareMenu(false); }}>💬 WhatsApp</button>
+            <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ navigator.clipboard.writeText('https://kemetlegancy.com'); onToast&&onToast(t('تم نسخ الرابط','Link copied',lang)); setShowShareMenu(false); }}>🔗 {t('نسخ','Copy',lang)}</button>
+          </div>}
+        </div>
       </div>
       {showComments && (
         <div className='fi' style={{marginTop:11,borderTop:'1px solid var(--bb)',paddingTop:11}}>
