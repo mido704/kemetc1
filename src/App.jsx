@@ -430,6 +430,7 @@ function RegisterModal({ onClose, onSuccess, lang }) {
 function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProfile }) {
   const [showComments, setShowComments] = useState(false);
   const [showPostMenu, setShowPostMenu] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editText, setEditText] = useState(post.content);
   const [comments, setComments] = useState([]);
@@ -570,16 +571,15 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
             <button key={code} className="btn btn-gh" style={{fontSize:12,padding:"4px 8px",textAlign:"right"}} onClick={()=>translatePost(code)}>{label}</button>
           ))}
         </div>}
+      <div style={{position:'relative',flex:1}}>
+        <button className='btn btn-gh' style={{width:'100%',fontSize:13}} onClick={()=>setShowShareMenu(v=>!v)}>🔁 {t('مشاركة','Share',lang)}</button>
+        {showShareMenu && <div style={{position:'absolute',bottom:'100%',left:0,background:'var(--bc)',border:'1px solid var(--gd)',borderRadius:10,padding:6,zIndex:200,minWidth:160,marginBottom:4}}>
+          <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://kemetlegancy.com')+'&quote='+encodeURIComponent(post.content),'_blank'); setShowShareMenu(false); }}>📘 Facebook</button>
+          <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(post.content)+'&url='+encodeURIComponent('https://kemetlegancy.com'),'_blank'); setShowShareMenu(false); }}>🐦 X (Twitter)</button>
+          <button className='btn btn-gh' style={{width:'100%',textAlign:'right',fontSize:12,padding:'6px 10px'}} onClick={()=>{ window.open('https://wa.me/?text='+encodeURIComponent(post.content+' https://kemetlegancy.com'),'_blank'); setShowShareMenu(false); }}>💬 WhatsApp</button>
+        </div>}
       </div>
-      <button className="btn btn-gh" style={{ flex:1, fontSize:13 }} onClick={async()=>{
-        const r = await postsAPI.createPost({
-         content: `🔁 ${post.nickname}: ${post.content}`,
-          language: post.language || 'ar'
-       });
-        if (r.ok) onToast && onToast(t('تمت المشاركة','Shared',lang));
-      }}>
-      🔁 {t('مشاركة','Share',lang)}
-    </button>
+      </div>
 
       </div>
       {showComments && (
