@@ -424,9 +424,9 @@ def translate_text():
         r = req.post('https://api.anthropic.com/v1/messages',
             headers={'x-api-key': api_key, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json'},
             json={'model': 'claude-haiku-4-5-20251001', 'max_tokens': 1000,
-                 'messages': [{'role': 'user', 'content': 'Translate to '+target_lang+' only: '+text}]})
         d = r.json()
-        translated = d.get('content', [{}])[0].get('text', '')
+        print('ANTHROPIC RESPONSE:', d)
+        translated = d.get('content', [{}])[0].get('text', '') if isinstance(d.get('content'), list) else str(d)
         return ok({'translated': translated})
     except Exception as e: return err(str(e))
 
