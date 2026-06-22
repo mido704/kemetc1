@@ -1185,22 +1185,14 @@ function StorePage({ lang, user, onToast, initialTour, onTourViewed }) {
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnrfsmtbi/auto/upload';
 const CLOUDINARY_PRESET = 'kemet_upload';
 async function uploadToCloudinary(fileObj) {
+  const fd = new FormData();
+  fd.append('file', fileObj);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
   try {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (isIOS) {
-      const base64 = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsDataURL(fileObj); });
-      const r = await fetch(CLOUDINARY_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ file: base64, upload_preset: CLOUDINARY_PRESET }) });
-      const d = await r.json();
-      return d.secure_url||'';
-    }
-    const fd = new FormData();
-    fd.append('file', fileObj, fileObj.name||'upload');
-    fd.append('upload_preset', CLOUDINARY_PRESET);
     const r = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
-    if(!r.ok) return '';
     const d = await r.json();
     return d.secure_url||'';
-  } catch(e) { console.error('Upload error:', e); return ''; }
+  } catch(e) { return ''; }
 }
 function ViewProfilePage({ userId, lang, user, onBack, onStartChat }) {
   const [profile, setProfile] = useState(null);
