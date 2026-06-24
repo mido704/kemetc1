@@ -1,6 +1,8 @@
-import { useState, useRef } from "react";
+import { useState } from 'react';
 
-export default function MedicalTourismPage() {
+export default function MedicalTourismPage({ user, onBack }) {
+  const isAdmin = user?.email === 'mido704@gmail.com';
+  const [adminMode, setAdminMode] = useState(false);
   const [disease, setDisease] = useState("");
   const [medFile, setMedFile] = useState(null);
   const [selectedHotel, setSelectedHotel] = useState(null);
