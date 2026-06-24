@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, createContext, useContext, useRef } f
 import { authAPI, postsAPI, storeAPI, bookingsAPI, messagesAPI, notificationsAPI, usersAPI, storage } from "./utils/api.js";
 import EclipsePage from "./EclipsePage.jsx";
 
+import MedicalTourismPage from './MedicalTourismPage.jsx';
 // ── App Context ───────────────────────────────────────────
 const AppCtx = createContext(null);
 const useApp = () => useContext(AppCtx);
@@ -872,6 +873,7 @@ function LeftSidebar({ user, page, setPage, lang, onLogout }) {
     { icon:'💬', ar:'الرسائل',   en:'Messages',      key:'messages' },
     { icon:'🔍', ar:'البحث',      en:'Search',        key:'search' },
     { icon:'⚙️', ar:'الإعدادات', en:'Settings', key:'settings' },
+    { icon:'🏥', ar:'السياحة العلاجية', en:'Medical Tourism', key:'medical' },
     { icon:'🌑', ar:'كسوف 2027', en:'Eclipse 2027', key:'eclipse' },
   ];
   const isNewsAdmin = isAdmin;
@@ -2326,6 +2328,7 @@ export default function App() {
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
         </div>
+          {page==='medical' && <MedicalTourismPage lang={lang} onBack={()=>setPage('feed')} />}
 
         <RightSidebar lang={lang} />
       </div>
