@@ -2277,6 +2277,7 @@ export default function App() {
 
   const navIcons = [['feed','🏠'],['store','🏛️'],['notifications','🔔'],['messages','💬']];
 
+  if (window.location.pathname==='/medical') return <MedicalTourismPage lang={lang} onBack={()=>{ window.location.href='/'; }} />;
   if (screen==='landing') return (
     <>
       <style>{CSS}</style>
