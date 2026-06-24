@@ -52,6 +52,7 @@ export default function MedicalTourismPage({ user, onBack }) {
 
   return (
     <div style={c.page}>
+    {isAdmin && <div style={{background:'#1A3A4A',padding:'12px 20px',display:'flex',alignItems:'center',justifyContent:'space-between'}}><span style={{color:'#2EAE8A',fontWeight:700,fontSize:14}}>👑 لوحة الإدارة</span><button style={{background:'#1A7FA8',color:'#fff',border:'none',borderRadius:10,padding:'8px 16px',cursor:'pointer',fontWeight:700}} onClick={()=>setAdminMode(v=>!v)}>{adminMode?'🔒 إغلاق':'✏️ تحرير'}</button></div>}
       <div style={c.header}>
         <div style={{fontSize:56}}>🏥</div>
         <h1 style={c.h1}>مركز استشارات السياحة العلاجية في مصر</h1>
