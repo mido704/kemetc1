@@ -2277,7 +2277,7 @@ export default function App() {
 
   const navIcons = [['feed','🏠'],['store','🏛️'],['notifications','🔔'],['messages','💬']];
 
-  if (window.location.pathname==='/medical') return <MedicalTourismPage lang={lang} onBack={()=>{ window.location.href='/'; }} />;
+  if (window.location.pathname==='/medical') return <MedicalTourismPage lang={lang} user={user} onBack={()=>{ window.location.href='/'; }} />;
   if (screen==='landing') return (
     <>
       <style>{CSS}</style>
@@ -2329,7 +2329,7 @@ export default function App() {
           {page==='messages'      && <MessagesPage      lang={lang} user={user} initialChat={activeChatUser} onChatOpened={()=>setActiveChatUser(null)} />}
           {page==='eclipse' && <EclipsePage lang={lang} user={user} onToast={showToast} onBook={(tour)=>{ setEclipseTour(tour||null); setPage('store'); }} />}
         </div>
-          {page==='medical' && <MedicalTourismPage lang={lang} onBack={()=>setPage('feed')} />}
+          {page==='medical' && <MedicalTourismPage lang={lang} user={user} onBack={()=>setPage('feed')} />}
 
         <RightSidebar lang={lang} />
       </div>
