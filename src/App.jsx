@@ -2177,7 +2177,7 @@ We may update this Policy and will notify users of material changes. Continued u
 // -- MAIN APP --
 export default function App() {
   const [screen, setScreen] = useState(()=>{ const p = window.location.pathname; if (p==='/eclipse' || p==='/store') return 'app'; return 'landing'; });
-  const [page, setPage] = useState(()=>{ const p = window.location.pathname; if (p==='/eclipse') return 'eclipse'; if (p==='/store') return 'store'; return 'feed'; });
+  const [page, setPage] = useState(()=>{ const p = window.location.pathname; if (p==='/eclipse') return 'eclipse'; if (p==='/store') return 'store'; if (p==='/medical') return 'medical'; return 'feed'; });
   const [eclipseTour, setEclipseTour] = useState(null);
   const [activeChatUser, setActiveChatUser] = useState(null);
   const [user, setUser] = useState(()=>storage.getUser());
