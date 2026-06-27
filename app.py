@@ -486,6 +486,65 @@ def delete_medical_car(car_id):
     get_db().conn.commit()
     return ok({})
 
+# MEDICAL TOURISM ROUTES
+@app.route('/api/medical/hotels', methods=['GET'])
+def get_medical_hotels():
+    cur = get_db().conn.cursor()
+    cur.execute('SELECT * FROM medical_hotels ORDER BY created_at DESC')
+    rows = cur.fetchall()
+    return ok({'hotels': [dict(r) for r in rows]})
+
+@app.route('/api/medical/hotels', methods=['POST'])
+@require_auth
+def save_medical_hotel():
+    b = request.get_json() or {}
+    cur = get_db().conn.cursor()
+    if b.get('id'):
+        cur.execute('UPDATE medical_hotels SET name=%s,type=%s,price=%s,area=%s,rooms=%s,video_url=%s,description=%s WHERE id=%s',
+            (b.get('name'),b.get('type'),b.get('price',0),b.get('area'),b.get('rooms'),b.get('videoUrl',''),b.get('desc',''),b.get('id')))
+    else:
+        cur.execute('INSERT INTO medical_hotels (name,type,price,area,rooms,video_url,description) VALUES (%s,%s,%s,%s,%s,%s,%s)',
+            (b.get('name'),b.get('type'),b.get('price',0),b.get('area'),b.get('rooms'),b.get('videoUrl',''),b.get('desc','')))
+    get_db().conn.commit()
+    return ok({})
+
+@app.route('/api/medical/hotels/<int:hotel_id>', methods=['DELETE'])
+@require_auth
+def delete_medical_hotel(hotel_id):
+    cur = get_db().conn.cursor()
+    cur.execute('DELETE FROM medical_hotels WHERE id=%s', (hotel_id,))
+    get_db().conn.commit()
+    return ok({})
+
+@app.route('/api/medical/cars', methods=['GET'])
+def get_medical_cars():
+    cur = get_db().conn.cursor()
+    cur.execute('SELECT * FROM medical_cars ORDER BY created_at DESC')
+    rows = cur.fetchall()
+    return ok({'cars': [dict(r) for r in rows]})
+
+@app.route('/api/medical/cars', methods=['POST'])
+@require_auth
+def save_medical_car():
+    b = request.get_json() or {}
+    cur = get_db().conn.cursor()
+    if b.get('id'):
+        cur.execute('UPDATE medical_cars SET name=%s,type=%s,price=%s,seats=%s,ac=%s,img_url=%s,description=%s WHERE id=%s',
+            (b.get('name'),b.get('type'),b.get('price',0),b.get('seats'),b.get('ac'),b.get('imgUrl',''),b.get('desc',''),b.get('id')))
+    else:
+        cur.execute('INSERT INTO medical_cars (name,type,price,seats,ac,img_url,description) VALUES (%s,%s,%s,%s,%s,%s,%s)',
+            (b.get('name'),b.get('type'),b.get('price',0),b.get('seats'),b.get('ac'),b.get('imgUrl',''),b.get('desc','')))
+    get_db().conn.commit()
+    return ok({})
+
+@app.route('/api/medical/cars/<int:car_id>', methods=['DELETE'])
+@require_auth
+def delete_medical_car(car_id):
+    cur = get_db().conn.cursor()
+    cur.execute('DELETE FROM medical_cars WHERE id=%s', (car_id,))
+    get_db().conn.commit()
+    return ok({})
+
 # NOTIFICATIONS ROUTES
 # أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯أ¢â€¢ع¯
 @app.route('/api/notifications', methods=['GET'])
