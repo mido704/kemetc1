@@ -446,13 +446,17 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const [showLangMenuComment, setShowLangMenuComment] = useState(null);
 
   const myMemoryTranslate = async (text, targetLang) => {
-    const langMap = {'English':'en','Arabic':'ar','French':'fr','German':'de','Italian':'it','Russian':'ru','EN':'en','AR':'ar','FR':'fr','DE':'de','IT':'it','RU':'ru'};
-    const tl = langMap[targetLang] || 'en';
-    const sl = tl === 'ar' ? 'en' : 'ar';
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sl}|${tl}`;
-    const r = await fetch(url);
-    const d = await r.json();
-    return d.responseData?.translatedText || '';
+    const token = localStorage.getItem('kemet_token');
+    try {
+      const r = await fetch('https://kemetc1-production.up.railway.app/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ text, lang: targetLang })
+      });
+      const d = await r.json();
+      if (d.ok && d.data?.translated) return d.data.translated;
+      return text;
+    } catch(e) { return text; }
   };
   const translateComment = async (c, targetLang) => {
     setShowLangMenuComment(null); setTranslatingComment(c.id);
