@@ -178,36 +178,21 @@ CREATE TABLE IF NOT EXISTS payments (
   created_at  TEXT DEFAULT (datetime('now'))
 );
 
-    -- News table
-    CREATE TABLE IF NOT EXISTS news (
-        id SERIAL PRIMARY KEY,
-        title_ar TEXT NOT NULL,
-        title_en TEXT NOT NULL,
-        summary_ar TEXT,
-        summary_en TEXT,
-        content_ar TEXT,
-        content_en TEXT,
-        category VARCHAR(50) DEFAULT 'tourism',
-        image VARCHAR(10) DEFAULT '🏛️',
-        image_url TEXT DEFAULT '',
-        views INTEGER DEFAULT 0,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
-        CREATE TABLE IF NOT EXISTS news (
-        id SERIAL PRIMARY KEY,
-        title_ar TEXT NOT NULL,
-        title_en TEXT NOT NULL,
-        summary_ar TEXT DEFAULT '',
-        summary_en TEXT DEFAULT '',
-        content_ar TEXT DEFAULT '',
-        content_en TEXT DEFAULT '',
-        category VARCHAR(50) DEFAULT 'tourism',
-        image VARCHAR(20) DEFAULT '🏛️',
-        image_url TEXT DEFAULT '',
-        keywords TEXT DEFAULT '',
-        views INTEGER DEFAULT 0,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
+CREATE TABLE IF NOT EXISTS news (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  title_ar   TEXT NOT NULL,
+  title_en   TEXT NOT NULL,
+  summary_ar TEXT DEFAULT '',
+  summary_en TEXT DEFAULT '',
+  content_ar TEXT DEFAULT '',
+  content_en TEXT DEFAULT '',
+  category   TEXT DEFAULT 'tourism',
+  image      TEXT DEFAULT '🏛️',
+  image_url  TEXT DEFAULT '',
+  keywords   TEXT DEFAULT '',
+  views      INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now'))
+);
     CREATE TABLE IF NOT EXISTS reviews (
   id         TEXT PRIMARY KEY,
   user_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
