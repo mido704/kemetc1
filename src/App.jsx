@@ -444,7 +444,24 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
   const [translatedComments, setTranslatedComments] = useState({});
   const [translatingComment, setTranslatingComment] = useState(null);
   const [showLangMenuComment, setShowLangMenuComment] = useState(null);
-  const translateComment = async (c, targetLang) => { setShowLangMenuComment(null); setTranslatingComment(c.id); try { const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'Content-Type':'application/json','x-api-key':import.meta.env.VITE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:'Translate to '+targetLang+' only: '+c.content}]})}); const d=await r.json(); setTranslatedComments(t=>({...t,[c.id]:d.content?.[0]?.text||''})); } catch(e){} setTranslatingComment(null); };
+
+  const myMemoryTranslate = async (text, targetLang) => {
+    const langMap = {'English':'en','Arabic':'ar','French':'fr','German':'de','Italian':'it','Russian':'ru','EN':'en','AR':'ar','FR':'fr','DE':'de','IT':'it','RU':'ru'};
+    const tl = langMap[targetLang] || 'en';
+    const sl = tl === 'ar' ? 'en' : 'ar';
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sl}|${tl}`;
+    const r = await fetch(url);
+    const d = await r.json();
+    return d.responseData?.translatedText || '';
+  };
+  const translateComment = async (c, targetLang) => {
+    setShowLangMenuComment(null); setTranslatingComment(c.id);
+    try {
+      const translated = await myMemoryTranslate(c.content, targetLang);
+      setTranslatedComments(t=>({...t,[c.id]:translated}));
+    } catch(e){}
+    setTranslatingComment(null);
+  };
   const [showReplyEmoji, setShowReplyEmoji] = useState(false);
   const submitReply = async () => {
     if (!replyText.trim() && !replyImage) return;
@@ -461,13 +478,8 @@ function PostCard({ post, lang, onLike, currentUserId, user, onToast, onViewProf
     setShowLangs(false);
     setTranslating(true);
     try {
-      const r = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json','x-api-key':import.meta.env.VITE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:'Translate this text to '+targetLang+'. Return ONLY the translation, nothing else: '+post.content}]})
-      });
-      const d = await r.json();
-      setTranslated(d.content?.[0]?.text || '');
+      const translated = await myMemoryTranslate(post.content, targetLang);
+      setTranslated(translated);
     } catch(e) { setTranslated('Translation error'); }
     setTranslating(false);
   };
@@ -1011,7 +1023,15 @@ function TourDetailPage({ tour, lang, user, onBack, onToast }) {
   const [translatedTour, setTranslatedTour] = useState(null);
   const [translatingTour, setTranslatingTour] = useState(false);
   const [showLangMenuTour, setShowLangMenuTour] = useState(false);
-  const translateTour = async (targetLang) => { setShowLangMenuTour(false); setTranslatingTour(true); try { const fullText = (lang==='ar'?tour.title_ar:tour.title_en)+String.fromCharCode(10,10)+(lang==='ar'?tour.description_ar:tour.description_en)+(itin.length>0?(String.fromCharCode(10,10)+itin.join(String.fromCharCode(10))):''); const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'Content-Type':'application/json','x-api-key':import.meta.env.VITE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:'Translate to '+targetLang+' only, keep paragraph breaks: '+fullText}]})}); const d=await r.json(); setTranslatedTour(d.content?.[0]?.text||''); } catch(e){} setTranslatingTour(false); };
+  const translateTour = async (targetLang) => {
+    setShowLangMenuTour(false); setTranslatingTour(true);
+    try {
+      const fullText = (lang==='ar'?tour.title_ar:tour.title_en)+'\n\n'+(lang==='ar'?tour.description_ar:tour.description_en)+(itin.length>0?('\n'+itin.join('\n')):'');
+      const translated = await myMemoryTranslate(fullText, targetLang);
+      setTranslatedTour(translated);
+    } catch(e){}
+    setTranslatingTour(false);
+  };
   const total = tour.price * guests;
   return (
     <div style={{ maxWidth:700, margin:'0 auto', padding:'14px 14px' }}>
@@ -1903,7 +1923,15 @@ function EgyptNewsTab({ lang }) {
   const [translatedNews, setTranslatedNews] = useState({});
   const [translatingId, setTranslatingId] = useState(null);
   const [showLangMenu, setShowLangMenu] = useState(null);
-  const translateNews = async (newsItem, targetLang) => { setShowLangMenu(null); setTranslatingId(newsItem.id); try { const token=localStorage.getItem('kemet_token'); const text=(lang==='ar'?newsItem.title_ar:newsItem.title_en)+'\n'+(lang==='ar'?newsItem.summary_ar:newsItem.summary_en)+(newsItem.content_en?'\n'+newsItem.content_en:''); const r=await fetch('https://kemetc1-production.up.railway.app/api/translate',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({text,lang:targetLang})}); const d=await r.json(); if(d.ok) setTranslatedNews(prev=>({...prev,[newsItem.id]:d.data?.translated||''})); } catch(e){} setTranslatingId(null); };
+  const translateNews = async (newsItem, targetLang) => {
+    setShowLangMenu(null); setTranslatingId(newsItem.id);
+    try {
+      const text = (lang==='ar'?newsItem.title_ar:newsItem.title_en)+'\n'+(lang==='ar'?newsItem.summary_ar:newsItem.summary_en)+(newsItem.content_en?'\n'+newsItem.content_en:'');
+      const translated = await myMemoryTranslate(text, targetLang);
+      setTranslatedNews(prev=>({...prev,[newsItem.id]:translated}));
+    } catch(e){}
+    setTranslatingId(null);
+  };
   useEffect(()=>{ fetch('https://kemetc1-production.up.railway.app/api/news').then(r=>r.json()).then(d=>{ if(d.ok && d.data?.length) setNewsData(d.data); setLoading(false); }).catch(()=>setLoading(false)); },[]);
   const cats = [['all', t('الكل','All',lang)], ['eclipse', t('كسوف','Eclipse',lang)], ['tourism', t('سياحة','Tourism',lang)], ['culture', t('ثقافة','Culture',lang)]];
   const filtered = catFilter==='all' ? newsData : newsData.filter(n=>n.category===catFilter);
