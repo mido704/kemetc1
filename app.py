@@ -413,20 +413,46 @@ def send_message(receiver_id):
 @app.route('/api/translate', methods=['POST'])
 @require_auth
 def translate_text():
-    import os, requests as req
+    import requests as _req, re as _re
     b = request.get_json() or {}
     text = b.get('text', '').strip()
     target_lang = b.get('lang', 'English')
     if not text: return err('No text provided')
-    api_key = os.environ.get('ANTHROPIC_API_KEY', '')
-    if not api_key: return err('Translation not configured')
+    lang_map = {
+        'English':'en','Arabic':'ar','French':'fr','German':'de',
+        'Italian':'it','Russian':'ru','Spanish':'es','Turkish':'tr',
+        'EN':'en','AR':'ar','FR':'fr','DE':'de','IT':'it','RU':'ru'
+    }
+    tl = lang_map.get(target_lang, 'en')
+    is_arabic = bool(_re.search(r'[\u0600-\u06FF]', text))
+    sl = 'ar' if is_arabic else 'en'
+    if sl == tl:
+        return ok({'translated': text})
     try:
-        r = req.post('https://api.anthropic.com/v1/messages', headers={'x-api-key': api_key, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json'}, json={'model': 'claude-haiku-4-5-20251001', 'max_tokens': 500, 'messages': [{'role': 'user', 'content': 'Translate to '+target_lang+' only: '+text}]})
-        d = r.json()
-        print('ANT_RESP:', str(d)[:300], flush=True)
-        translated = d.get('content', [{}])[0].get('text', '') if isinstance(d.get('content'), list) else ''
+        CHUNK = 400
+        def translate_chunk(chunk):
+            url = f'https://translate.googleapis.com/translate_a/single?client=gtx&sl={sl}&tl={tl}&dt=t&q={_req.utils.quote(chunk)}'
+            r = _req.get(url, headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}, timeout=10)
+            d = r.json()
+            return ''.join([item[0] for item in d[0] if item and item[0]])
+        if len(text) <= CHUNK:
+            translated = translate_chunk(text)
+        else:
+            sentences = _re.split(r'(?<=[.!?\n])', text)
+            chunks, cur = [], ''
+            for s in sentences:
+                if len(cur + s) > CHUNK and cur:
+                    chunks.append(cur.strip())
+                    cur = s
+                else:
+                    cur += s
+            if cur.strip(): chunks.append(cur.strip())
+            parts = [translate_chunk(c) for c in chunks if c.strip()]
+            translated = ' '.join(parts)
         return ok({'translated': translated})
-    except Exception as e: print('ANT_ERR:', str(e)); return err(str(e))
+    except Exception as e:
+        print('TRANSLATE_ERR:', str(e), flush=True)
+        return err(str(e))
 # MEDICAL TOURISM ROUTES
 @app.route('/api/medical/hotels', methods=['GET'])
 def get_medical_hotels():
