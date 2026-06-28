@@ -852,6 +852,41 @@ def delete_news(news_id):
         return ok({'deleted': True})
     except Exception as e:
         return err(str(e))
+# CLAUDE PROXY — لتطبيق تسويق العمرة
+@app.route('/api/claude-proxy', methods=['POST', 'OPTIONS'])
+def claude_proxy():
+    if request.method == 'OPTIONS':
+        response = jsonify({})
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        return response
+    try:
+        import requests as _requests
+        body = request.get_json() or {}
+        api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+        if not api_key:
+            return jsonify({'error': 'ANTHROPIC_API_KEY not set'}), 500
+        r = _requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'x-api-key': api_key,
+                'anthropic-version': '2023-06-01',
+                'Content-Type': 'application/json'
+            },
+            json={
+                'model': 'claude-sonnet-4-6',
+                'max_tokens': 2000,
+                'messages': body.get('messages', [])
+            },
+            timeout=60
+        )
+        response = jsonify(r.json())
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     init_app()
     print("\nظ‹ع؛â€‌ط› Kemet Social API starting on http://localhost:5000")
