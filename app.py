@@ -418,7 +418,7 @@ def translate_text():
     text = b.get('text', '').strip()
     target_lang = b.get('lang', 'English')
     if not text: return err('No text provided')
-    api_key = os.environ.get('ANTHROPIC_KEY', '')
+    api_key = os.environ.get('ANTHROPIC_API_KEY', '')
     if not api_key: return err('Translation not configured')
     try:
         r = req.post('https://api.anthropic.com/v1/messages', headers={'x-api-key': api_key, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json'}, json={'model': 'claude-haiku-4-5-20251001', 'max_tokens': 500, 'messages': [{'role': 'user', 'content': 'Translate to '+target_lang+' only: '+text}]})
